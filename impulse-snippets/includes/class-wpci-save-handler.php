@@ -117,7 +117,7 @@ class Wpci_Save_Handler {
 						'wpci_url_not_found_' . get_current_user_id(),
 						sprintf(
 							/* translators: %s: the URL the user pasted. */
-							__( 'The link you pasted (%s) didn\'t match any page or post on this site, so it wasn\'t added.', 'wp-code-injector' ),
+							__( 'The link you pasted (%s) didn\'t match any page or post on this site, so it wasn\'t added.', 'impulse-snippets' ),
 							$pasted_url
 						),
 						60

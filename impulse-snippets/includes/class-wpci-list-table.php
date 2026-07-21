@@ -20,10 +20,10 @@ class Wpci_List_Table {
 		foreach ( $columns as $key => $label ) {
 			$new_columns[ $key ] = $label;
 			if ( 'title' === $key ) {
-				$new_columns['wpci_location']   = __( 'Location', 'wp-code-injector' );
-				$new_columns['wpci_type']       = __( 'Type', 'wp-code-injector' );
-				$new_columns['wpci_conditions'] = __( 'Conditions', 'wp-code-injector' );
-				$new_columns['wpci_active']     = __( 'Active', 'wp-code-injector' );
+				$new_columns['wpci_location']   = __( 'Location', 'impulse-snippets' );
+				$new_columns['wpci_type']       = __( 'Type', 'impulse-snippets' );
+				$new_columns['wpci_conditions'] = __( 'Conditions', 'impulse-snippets' );
+				$new_columns['wpci_active']     = __( 'Active', 'impulse-snippets' );
 			}
 		}
 		return $new_columns;
@@ -38,7 +38,7 @@ class Wpci_List_Table {
 			$label = wpci_get_code_type_label( get_post_meta( $post_id, '_wpci_code_type', true ) );
 			if ( 'external' === get_post_meta( $post_id, '_wpci_source', true ) ) {
 				/* translators: %s: code type label, e.g. "JavaScript". */
-				$label = sprintf( __( '%s (external file)', 'wp-code-injector' ), $label );
+				$label = sprintf( __( '%s (external file)', 'impulse-snippets' ), $label );
 			}
 			echo esc_html( $label );
 

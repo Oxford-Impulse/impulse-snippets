@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: WP Code Injector
+ * Plugin Name: Impulse Snippets
  * Description: Add unlimited named code snippets (scripts, styles, HTML) to your site's head, body, or footer — manually or with one-click integrations.
  * Version: 1.14.0
  * Author: Oxford Impulse
  * Author URI: https://oxfordimpulse.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: wp-code-injector
+ * Text Domain: impulse-snippets
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

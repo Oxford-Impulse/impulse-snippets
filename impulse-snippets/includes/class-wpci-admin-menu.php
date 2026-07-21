@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Builds the top-level "Code Injector" admin menu and enqueues admin assets
+ * Builds the top-level "Impulse Snippets" admin menu and enqueues admin assets
  * only on this plugin's own screens.
  */
 class Wpci_Admin_Menu {
@@ -18,8 +18,8 @@ class Wpci_Admin_Menu {
 
 	public function register_menu() {
 		$dashboard_hook = add_menu_page(
-			__( 'Code Injector', 'wp-code-injector' ),
-			__( 'Code Injector', 'wp-code-injector' ),
+			__( 'Impulse Snippets', 'impulse-snippets' ),
+			__( 'Impulse Snippets', 'impulse-snippets' ),
 			'manage_options',
 			self::DASHBOARD_SLUG,
 			array( $this, 'render_dashboard' ),
@@ -33,8 +33,8 @@ class Wpci_Admin_Menu {
 
 		add_submenu_page(
 			self::DASHBOARD_SLUG,
-			__( 'Dashboard', 'wp-code-injector' ),
-			__( 'Dashboard', 'wp-code-injector' ),
+			__( 'Dashboard', 'impulse-snippets' ),
+			__( 'Dashboard', 'impulse-snippets' ),
 			'manage_options',
 			self::DASHBOARD_SLUG,
 			array( $this, 'render_dashboard' )
@@ -42,16 +42,16 @@ class Wpci_Admin_Menu {
 
 		add_submenu_page(
 			self::DASHBOARD_SLUG,
-			__( 'All Snippets', 'wp-code-injector' ),
-			__( 'All Snippets', 'wp-code-injector' ),
+			__( 'All Snippets', 'impulse-snippets' ),
+			__( 'All Snippets', 'impulse-snippets' ),
 			'manage_options',
 			'edit.php?post_type=' . Wpci_Cpt::POST_TYPE
 		);
 
 		add_submenu_page(
 			self::DASHBOARD_SLUG,
-			__( 'Add New Snippet', 'wp-code-injector' ),
-			__( 'Add New', 'wp-code-injector' ),
+			__( 'Add New Snippet', 'impulse-snippets' ),
+			__( 'Add New', 'impulse-snippets' ),
 			'manage_options',
 			'post-new.php?post_type=' . Wpci_Cpt::POST_TYPE
 		);
@@ -67,65 +67,65 @@ class Wpci_Admin_Menu {
 		$draft  = isset( $counts->draft ) ? (int) $counts->draft : 0;
 
 		$integrations = array(
-			__( 'Google Analytics 4', 'wp-code-injector' ) => wpci_get_integration_connected_id( 'ga4' ),
-			__( 'Google Tag Manager', 'wp-code-injector' ) => wpci_get_integration_connected_id( 'gtm_head' ),
-			__( 'Meta Pixel', 'wp-code-injector' )         => wpci_get_integration_connected_id( 'meta_pixel' ),
+			__( 'Google Analytics 4', 'impulse-snippets' ) => wpci_get_integration_connected_id( 'ga4' ),
+			__( 'Google Tag Manager', 'impulse-snippets' ) => wpci_get_integration_connected_id( 'gtm_head' ),
+			__( 'Meta Pixel', 'impulse-snippets' )         => wpci_get_integration_connected_id( 'meta_pixel' ),
 		);
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'WP Code Injector', 'wp-code-injector' ); ?></h1>
-			<p><?php esc_html_e( 'Add code snippets to your site\'s head, body, or footer — manually, or with one-click integrations.', 'wp-code-injector' ); ?></p>
+			<h1><?php esc_html_e( 'Impulse Snippets', 'impulse-snippets' ); ?></h1>
+			<p><?php esc_html_e( 'Add code snippets to your site\'s head, body, or footer — manually, or with one-click integrations.', 'impulse-snippets' ); ?></p>
 
 			<div class="wpci-dashboard-stats">
 				<a class="wpci-stat-box" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Wpci_Cpt::POST_TYPE . '&post_status=publish' ) ); ?>">
 					<span class="wpci-stat-number"><?php echo esc_html( $active ); ?></span>
-					<span class="wpci-stat-label"><?php esc_html_e( 'Active snippets', 'wp-code-injector' ); ?></span>
+					<span class="wpci-stat-label"><?php esc_html_e( 'Active snippets', 'impulse-snippets' ); ?></span>
 				</a>
 				<a class="wpci-stat-box" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Wpci_Cpt::POST_TYPE . '&post_status=draft' ) ); ?>">
 					<span class="wpci-stat-number"><?php echo esc_html( $draft ); ?></span>
-					<span class="wpci-stat-label"><?php esc_html_e( 'Inactive (draft) snippets', 'wp-code-injector' ); ?></span>
+					<span class="wpci-stat-label"><?php esc_html_e( 'Inactive (draft) snippets', 'impulse-snippets' ); ?></span>
 				</a>
 			</div>
 
 			<div class="wpci-integration-cards">
 				<div class="postbox wpci-integration-card">
-					<h2><?php esc_html_e( 'Snippets', 'wp-code-injector' ); ?></h2>
-					<p><?php esc_html_e( 'Create and manage individual code snippets for your head, body, or footer, each with its own on/off switch and targeting rules.', 'wp-code-injector' ); ?></p>
+					<h2><?php esc_html_e( 'Snippets', 'impulse-snippets' ); ?></h2>
+					<p><?php esc_html_e( 'Create and manage individual code snippets for your head, body, or footer, each with its own on/off switch and targeting rules.', 'impulse-snippets' ); ?></p>
 					<div class="wpci-button-row">
-						<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . Wpci_Cpt::POST_TYPE ) ); ?>" class="button button-primary"><?php esc_html_e( 'Add New Snippet', 'wp-code-injector' ); ?></a>
-						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Wpci_Cpt::POST_TYPE ) ); ?>" class="button"><?php esc_html_e( 'View All Snippets', 'wp-code-injector' ); ?></a>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-settings' ) ); ?>" class="button"><?php esc_html_e( 'Settings', 'wp-code-injector' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . Wpci_Cpt::POST_TYPE ) ); ?>" class="button button-primary"><?php esc_html_e( 'Add New Snippet', 'impulse-snippets' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . Wpci_Cpt::POST_TYPE ) ); ?>" class="button"><?php esc_html_e( 'View All Snippets', 'impulse-snippets' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-settings' ) ); ?>" class="button"><?php esc_html_e( 'Settings', 'impulse-snippets' ); ?></a>
 					</div>
 				</div>
 
 				<div class="postbox wpci-integration-card">
-					<h2><?php esc_html_e( 'Integrations', 'wp-code-injector' ); ?></h2>
-					<p><?php esc_html_e( 'One-click setup for common analytics and tracking tools.', 'wp-code-injector' ); ?></p>
+					<h2><?php esc_html_e( 'Integrations', 'impulse-snippets' ); ?></h2>
+					<p><?php esc_html_e( 'One-click setup for common analytics and tracking tools.', 'impulse-snippets' ); ?></p>
 					<ul style="margin:0 0 12px;list-style:none;padding:0;">
 						<?php foreach ( $integrations as $label => $connected_id ) : ?>
 							<li style="margin-bottom:4px;">
 								<span class="dashicons <?php echo $connected_id ? 'dashicons-yes-alt' : 'dashicons-marker'; ?>" style="color:<?php echo $connected_id ? '#00a32a' : '#dcdcde'; ?>;"></span>
 								<?php echo esc_html( $label ); ?>
 								<?php if ( $connected_id ) : ?>
-									&mdash; <?php esc_html_e( 'Connected', 'wp-code-injector' ); ?>
+									&mdash; <?php esc_html_e( 'Connected', 'impulse-snippets' ); ?>
 								<?php else : ?>
-									&mdash; <?php esc_html_e( 'Not connected', 'wp-code-injector' ); ?>
+									&mdash; <?php esc_html_e( 'Not connected', 'impulse-snippets' ); ?>
 								<?php endif; ?>
 							</li>
 						<?php endforeach; ?>
 					</ul>
 					<p>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-integrations' ) ); ?>" class="button button-primary"><?php esc_html_e( 'Manage Integrations', 'wp-code-injector' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-integrations' ) ); ?>" class="button button-primary"><?php esc_html_e( 'Manage Integrations', 'impulse-snippets' ); ?></a>
 					</p>
 				</div>
 
 				<div class="postbox wpci-integration-card">
-					<h2><?php esc_html_e( 'Need help?', 'wp-code-injector' ); ?></h2>
-					<p><?php esc_html_e( 'Found a bug, or have an idea for a feature? We would like to hear about it.', 'wp-code-injector' ); ?></p>
+					<h2><?php esc_html_e( 'Need help?', 'impulse-snippets' ); ?></h2>
+					<p><?php esc_html_e( 'Found a bug, or have an idea for a feature? We would like to hear about it.', 'impulse-snippets' ); ?></p>
 					<div class="wpci-button-row">
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-contact#wpci-bug' ) ); ?>" class="button"><?php esc_html_e( 'Report a Bug', 'wp-code-injector' ); ?></a>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-contact#wpci-feature' ) ); ?>" class="button"><?php esc_html_e( 'Suggest a Feature', 'wp-code-injector' ); ?></a>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-docs' ) ); ?>" class="button"><?php esc_html_e( 'Documentation', 'wp-code-injector' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-contact#wpci-bug' ) ); ?>" class="button"><?php esc_html_e( 'Report a Bug', 'impulse-snippets' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-contact#wpci-feature' ) ); ?>" class="button"><?php esc_html_e( 'Suggest a Feature', 'impulse-snippets' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpci-docs' ) ); ?>" class="button"><?php esc_html_e( 'Documentation', 'impulse-snippets' ); ?></a>
 					</div>
 				</div>
 			</div>
@@ -139,42 +139,42 @@ class Wpci_Admin_Menu {
 		$features = array(
 			array(
 				'icon'  => 'dashicons-editor-code',
-				'title' => __( 'Unlimited snippets', 'wp-code-injector' ),
-				'desc'  => __( 'Create as many named snippets as you need (e.g. "Live Chat Widget", "Google Analytics"). Each one has its own on/off switch, so turning one off never affects the others.', 'wp-code-injector' ),
+				'title' => __( 'Unlimited snippets', 'impulse-snippets' ),
+				'desc'  => __( 'Create as many named snippets as you need (e.g. "Live Chat Widget", "Google Analytics"). Each one has its own on/off switch, so turning one off never affects the others.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-align-center',
-				'title' => __( 'Three placements: Head, Body, Footer', 'wp-code-injector' ),
-				'desc'  => __( 'Choose exactly where each snippet loads: in the page <head> (before the page renders), right after the opening <body> tag, or down in the footer.', 'wp-code-injector' ),
+				'title' => __( 'Three placements: Head, Body, Footer', 'impulse-snippets' ),
+				'desc'  => __( 'Choose exactly where each snippet loads: in the page <head> (before the page renders), right after the opening <body> tag, or down in the footer.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-media-code',
-				'title' => __( 'Paste code, or link to a file', 'wp-code-injector' ),
-				'desc'  => __( 'Paste JavaScript, CSS, or HTML directly into a snippet, or point it at an externally-hosted file (like a library .js or .css file) instead.', 'wp-code-injector' ),
+				'title' => __( 'Paste code, or link to a file', 'impulse-snippets' ),
+				'desc'  => __( 'Paste JavaScript, CSS, or HTML directly into a snippet, or point it at an externally-hosted file (like a library .js or .css file) instead.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-admin-tools',
-				'title' => __( 'Auto-detect formatting', 'wp-code-injector' ),
-				'desc'  => __( "If you paste bare code without <script> or <style> tags, the plugin adds the right tags for you automatically — you don't have to remember the syntax.", 'wp-code-injector' ),
+				'title' => __( 'Auto-detect formatting', 'impulse-snippets' ),
+				'desc'  => __( "If you paste bare code without <script> or <style> tags, the plugin adds the right tags for you automatically — you don't have to remember the syntax.", 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-filter',
-				'title' => __( 'Display conditions', 'wp-code-injector' ),
-				'desc'  => __( 'Show a snippet on every page, or restrict it to specific pages/posts, post types, or categories — with a search box and a "paste a link" shortcut to find pages quickly.', 'wp-code-injector' ),
+				'title' => __( 'Display conditions', 'impulse-snippets' ),
+				'desc'  => __( 'Show a snippet on every page, or restrict it to specific pages/posts, post types, or categories — with a search box and a "paste a link" shortcut to find pages quickly.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-chart-line',
-				'title' => __( 'One-click integrations', 'wp-code-injector' ),
-				'desc'  => __( 'Paste a Measurement/Container/Pixel ID and Google Analytics 4, Google Tag Manager, or Meta Pixel get set up correctly, automatically — no code required.', 'wp-code-injector' ),
+				'title' => __( 'One-click integrations', 'impulse-snippets' ),
+				'desc'  => __( 'Paste a Measurement/Container/Pixel ID and Google Analytics 4, Google Tag Manager, or Meta Pixel get set up correctly, automatically — no code required.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-controls-play',
-				'title' => __( 'Instant on/off', 'wp-code-injector' ),
-				'desc'  => __( 'Every snippet can be switched to Draft to disable it immediately without deleting it, then switched back to Published to bring it back.', 'wp-code-injector' ),
+				'title' => __( 'Instant on/off', 'impulse-snippets' ),
+				'desc'  => __( 'Every snippet can be switched to Draft to disable it immediately without deleting it, then switched back to Published to bring it back.', 'impulse-snippets' ),
 			),
 		);
 		?>
-		<h2><?php esc_html_e( 'What you can do', 'wp-code-injector' ); ?></h2>
+		<h2><?php esc_html_e( 'What you can do', 'impulse-snippets' ); ?></h2>
 		<div class="wpci-feature-grid">
 			<?php foreach ( $features as $feature ) : ?>
 				<div class="wpci-feature">

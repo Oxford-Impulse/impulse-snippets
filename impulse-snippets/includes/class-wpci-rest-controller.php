@@ -54,7 +54,7 @@ class Wpci_Rest_Controller {
 		$post    = get_post( $post_id );
 
 		if ( ! $post ) {
-			return new WP_Error( 'wpci_not_found', __( 'Snippet not found.', 'wp-code-injector' ), array( 'status' => 404 ) );
+			return new WP_Error( 'wpci_not_found', __( 'Snippet not found.', 'impulse-snippets' ), array( 'status' => 404 ) );
 		}
 
 		$new_status = in_array( $post->post_status, array( 'publish', 'future' ), true ) ? 'draft' : 'publish';

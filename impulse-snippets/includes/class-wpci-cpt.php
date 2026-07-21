@@ -43,17 +43,17 @@ class Wpci_Cpt {
 
 	public function register_post_type() {
 		$labels = array(
-			'name'               => __( 'Snippets', 'wp-code-injector' ),
-			'singular_name'      => __( 'Snippet', 'wp-code-injector' ),
-			'add_new'            => __( 'Add New', 'wp-code-injector' ),
-			'add_new_item'       => __( 'Add New Snippet', 'wp-code-injector' ),
-			'edit_item'          => __( 'Edit Snippet', 'wp-code-injector' ),
-			'new_item'           => __( 'New Snippet', 'wp-code-injector' ),
-			'view_item'          => __( 'View Snippet', 'wp-code-injector' ),
-			'search_items'       => __( 'Search Snippets', 'wp-code-injector' ),
-			'not_found'          => __( 'No snippets found. Add your first one to get started.', 'wp-code-injector' ),
-			'not_found_in_trash' => __( 'No snippets found in Trash.', 'wp-code-injector' ),
-			'all_items'          => __( 'All Snippets', 'wp-code-injector' ),
+			'name'               => __( 'Snippets', 'impulse-snippets' ),
+			'singular_name'      => __( 'Snippet', 'impulse-snippets' ),
+			'add_new'            => __( 'Add New', 'impulse-snippets' ),
+			'add_new_item'       => __( 'Add New Snippet', 'impulse-snippets' ),
+			'edit_item'          => __( 'Edit Snippet', 'impulse-snippets' ),
+			'new_item'           => __( 'New Snippet', 'impulse-snippets' ),
+			'view_item'          => __( 'View Snippet', 'impulse-snippets' ),
+			'search_items'       => __( 'Search Snippets', 'impulse-snippets' ),
+			'not_found'          => __( 'No snippets found. Add your first one to get started.', 'impulse-snippets' ),
+			'not_found_in_trash' => __( 'No snippets found in Trash.', 'impulse-snippets' ),
+			'all_items'          => __( 'All Snippets', 'impulse-snippets' ),
 		);
 
 		register_post_type(
@@ -205,7 +205,7 @@ class Wpci_Cpt {
 	public function filter_title_placeholder( $placeholder ) {
 		$screen = get_current_screen();
 		if ( $screen && self::POST_TYPE === $screen->post_type ) {
-			return __( 'Snippet name (for your reference only, e.g. "Live Chat Widget")', 'wp-code-injector' );
+			return __( 'Snippet name (for your reference only, e.g. "Live Chat Widget")', 'impulse-snippets' );
 		}
 		return $placeholder;
 	}

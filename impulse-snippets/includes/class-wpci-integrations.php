@@ -62,8 +62,8 @@ class Wpci_Integrations {
 	public function register_menu() {
 		$hook = add_submenu_page(
 			Wpci_Admin_Menu::DASHBOARD_SLUG,
-			__( 'Integrations', 'wp-code-injector' ),
-			__( 'Integrations', 'wp-code-injector' ),
+			__( 'Integrations', 'impulse-snippets' ),
+			__( 'Integrations', 'impulse-snippets' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
@@ -96,8 +96,8 @@ class Wpci_Integrations {
 	public function render_page() {
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Integrations', 'wp-code-injector' ); ?></h1>
-			<p><?php esc_html_e( 'Paste an ID below and the correct snippet(s) are created for you automatically. Re-entering a different ID later updates the same snippet(s) instead of creating duplicates.', 'wp-code-injector' ); ?></p>
+			<h1><?php esc_html_e( 'Integrations', 'impulse-snippets' ); ?></h1>
+			<p><?php esc_html_e( 'Paste an ID below and the correct snippet(s) are created for you automatically. Re-entering a different ID later updates the same snippet(s) instead of creating duplicates.', 'impulse-snippets' ); ?></p>
 
 			<?php $this->maybe_render_status_notice(); ?>
 
@@ -106,9 +106,9 @@ class Wpci_Integrations {
 				$this->render_card(
 					array(
 						'key'         => 'ga4',
-						'title'       => __( 'Google Analytics 4', 'wp-code-injector' ),
-						'description' => __( 'Tracks visitor behavior on your site — pageviews, events, and conversions — inside Google Analytics.', 'wp-code-injector' ),
-						'help'        => __( 'Find it in Google Analytics: Admin (gear icon) → Data Streams → select your web stream. The Measurement ID is shown at the top right.', 'wp-code-injector' ),
+						'title'       => __( 'Google Analytics 4', 'impulse-snippets' ),
+						'description' => __( 'Tracks visitor behavior on your site — pageviews, events, and conversions — inside Google Analytics.', 'impulse-snippets' ),
+						'help'        => __( 'Find it in Google Analytics: Admin (gear icon) → Data Streams → select your web stream. The Measurement ID is shown at the top right.', 'impulse-snippets' ),
 						'prefix'      => 'G-',
 						'example'     => 'ABC1234XY',
 						'field_name'  => 'wpci_ga4_id',
@@ -117,9 +117,9 @@ class Wpci_Integrations {
 				$this->render_card(
 					array(
 						'key'         => 'gtm',
-						'title'       => __( 'Google Tag Manager', 'wp-code-injector' ),
-						'description' => __( 'Lets you manage multiple tracking scripts (Analytics, Ads, other pixels) from one place, without editing code every time.', 'wp-code-injector' ),
-						'help'        => __( 'Find it in Google Tag Manager: your Container ID is shown next to your container name in the top-left of the workspace.', 'wp-code-injector' ),
+						'title'       => __( 'Google Tag Manager', 'impulse-snippets' ),
+						'description' => __( 'Lets you manage multiple tracking scripts (Analytics, Ads, other pixels) from one place, without editing code every time.', 'impulse-snippets' ),
+						'help'        => __( 'Find it in Google Tag Manager: your Container ID is shown next to your container name in the top-left of the workspace.', 'impulse-snippets' ),
 						'prefix'      => 'GTM-',
 						'example'     => 'ABC1234',
 						'field_name'  => 'wpci_gtm_id',
@@ -128,9 +128,9 @@ class Wpci_Integrations {
 				$this->render_card(
 					array(
 						'key'         => 'meta_pixel',
-						'title'       => __( 'Meta Pixel', 'wp-code-injector' ),
-						'description' => __( 'Tracks visitor actions for Facebook/Instagram ad targeting and reporting.', 'wp-code-injector' ),
-						'help'        => __( 'Find it in Meta Events Manager: Data Sources → select your pixel → Settings tab.', 'wp-code-injector' ),
+						'title'       => __( 'Meta Pixel', 'impulse-snippets' ),
+						'description' => __( 'Tracks visitor actions for Facebook/Instagram ad targeting and reporting.', 'impulse-snippets' ),
+						'help'        => __( 'Find it in Meta Events Manager: Data Sources → select your pixel → Settings tab.', 'impulse-snippets' ),
 						'prefix'      => '',
 						'example'     => '1234567890123',
 						'field_name'  => 'wpci_meta_pixel_id',
@@ -164,7 +164,7 @@ class Wpci_Integrations {
 					<?php
 					printf(
 						/* translators: %s: the connected ID. */
-						esc_html__( 'Connected: %s', 'wp-code-injector' ),
+						esc_html__( 'Connected: %s', 'impulse-snippets' ),
 						esc_html( $current_id )
 					);
 					?>
@@ -175,7 +175,7 @@ class Wpci_Integrations {
 					<?php
 					printf(
 						/* translators: %s: the connected ID. */
-						esc_html__( 'Paused: %s', 'wp-code-injector' ),
+						esc_html__( 'Paused: %s', 'impulse-snippets' ),
 						esc_html( $current_id )
 					);
 					?>
@@ -191,7 +191,7 @@ class Wpci_Integrations {
 						<?php
 						printf(
 							/* translators: %s: example ID suffix, e.g. "ABC1234XY". */
-							esc_html__( 'Example: %s', 'wp-code-injector' ),
+							esc_html__( 'Example: %s', 'impulse-snippets' ),
 							esc_html( $prefix . $args['example'] )
 						);
 						?>
@@ -206,7 +206,7 @@ class Wpci_Integrations {
 					<?php endif; ?>
 				</p>
 				<button type="submit" class="button button-primary">
-					<?php echo $current_id ? esc_html__( 'Update', 'wp-code-injector' ) : esc_html__( 'Connect', 'wp-code-injector' ); ?>
+					<?php echo $current_id ? esc_html__( 'Update', 'impulse-snippets' ) : esc_html__( 'Connect', 'impulse-snippets' ); ?>
 				</button>
 			</form>
 
@@ -216,13 +216,13 @@ class Wpci_Integrations {
 						<input type="checkbox" class="wpci-integration-toggle" data-integration="<?php echo esc_attr( $key ); ?>" <?php checked( $is_active ); ?>>
 						<span class="wpci-toggle-slider"></span>
 					</label>
-					<span><?php esc_html_e( 'Active', 'wp-code-injector' ); ?></span>
+					<span><?php esc_html_e( 'Active', 'impulse-snippets' ); ?></span>
 
-					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-left:auto;" onsubmit="return confirm('<?php echo esc_js( __( 'Remove this integration and its snippet(s)?', 'wp-code-injector' ) ); ?>');">
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-left:auto;" onsubmit="return confirm('<?php echo esc_js( __( 'Remove this integration and its snippet(s)?', 'impulse-snippets' ) ); ?>');">
 						<?php wp_nonce_field( 'wpci_remove_integration_action', 'wpci_remove_nonce' ); ?>
 						<input type="hidden" name="action" value="wpci_remove_integration">
 						<input type="hidden" name="wpci_integration" value="<?php echo esc_attr( $key ); ?>">
-						<button type="submit" class="button-link-delete"><?php esc_html_e( 'Remove', 'wp-code-injector' ); ?></button>
+						<button type="submit" class="button-link-delete"><?php esc_html_e( 'Remove', 'impulse-snippets' ); ?></button>
 					</form>
 				</p>
 			<?php endif; ?>
@@ -232,17 +232,17 @@ class Wpci_Integrations {
 
 	private function maybe_render_status_notice() {
 		if ( isset( $_GET['wpci_success'] ) ) {
-			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration saved.', 'wp-code-injector' ) );
+			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration saved.', 'impulse-snippets' ) );
 		} elseif ( isset( $_GET['wpci_error'] ) ) {
-			printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html__( "That ID doesn't look right for this integration — please check the format and try again.", 'wp-code-injector' ) );
+			printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html__( "That ID doesn't look right for this integration — please check the format and try again.", 'impulse-snippets' ) );
 		} elseif ( isset( $_GET['wpci_removed'] ) ) {
-			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration removed.', 'wp-code-injector' ) );
+			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration removed.', 'impulse-snippets' ) );
 		}
 	}
 
 	public function handle_save() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to do this.', 'wp-code-injector' ) );
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
 		}
 		check_admin_referer( 'wpci_save_integration_action', 'wpci_integration_nonce' );
 
@@ -257,7 +257,7 @@ class Wpci_Integrations {
 				$this->upsert_snippet(
 					'ga4',
 					/* translators: %s: GA4 Measurement ID. */
-					sprintf( __( 'Google Analytics 4 (%s)', 'wp-code-injector' ), $id ),
+					sprintf( __( 'Google Analytics 4 (%s)', 'impulse-snippets' ), $id ),
 					'head',
 					$this->ga4_code( $id ),
 					$id
@@ -272,7 +272,7 @@ class Wpci_Integrations {
 				$this->upsert_snippet(
 					'gtm_head',
 					/* translators: %s: GTM Container ID. */
-					sprintf( __( 'Google Tag Manager – Head (%s)', 'wp-code-injector' ), $id ),
+					sprintf( __( 'Google Tag Manager – Head (%s)', 'impulse-snippets' ), $id ),
 					'head',
 					$this->gtm_head_code( $id ),
 					$id
@@ -280,7 +280,7 @@ class Wpci_Integrations {
 				$this->upsert_snippet(
 					'gtm_body',
 					/* translators: %s: GTM Container ID. */
-					sprintf( __( 'Google Tag Manager – Body (%s)', 'wp-code-injector' ), $id ),
+					sprintf( __( 'Google Tag Manager – Body (%s)', 'impulse-snippets' ), $id ),
 					'body',
 					$this->gtm_body_code( $id ),
 					$id
@@ -295,7 +295,7 @@ class Wpci_Integrations {
 				$this->upsert_snippet(
 					'meta_pixel',
 					/* translators: %s: Meta Pixel ID. */
-					sprintf( __( 'Meta Pixel (%s)', 'wp-code-injector' ), $id ),
+					sprintf( __( 'Meta Pixel (%s)', 'impulse-snippets' ), $id ),
 					'head',
 					$this->meta_pixel_code( $id ),
 					$id
@@ -337,7 +337,7 @@ class Wpci_Integrations {
 
 	public function handle_remove() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You do not have permission to do this.', 'wp-code-injector' ) );
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
 		}
 		check_admin_referer( 'wpci_remove_integration_action', 'wpci_remove_nonce' );
 

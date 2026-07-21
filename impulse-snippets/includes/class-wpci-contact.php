@@ -21,8 +21,8 @@ class Wpci_Contact {
 	public function register_menu() {
 		$hook = add_submenu_page(
 			Wpci_Admin_Menu::DASHBOARD_SLUG,
-			__( 'Contact', 'wp-code-injector' ),
-			__( 'Contact / Support', 'wp-code-injector' ),
+			__( 'Contact', 'impulse-snippets' ),
+			__( 'Contact / Support', 'impulse-snippets' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' )
@@ -40,26 +40,26 @@ class Wpci_Contact {
 	public function render_page() {
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Contact / Support', 'wp-code-injector' ); ?></h1>
-			<p><?php esc_html_e( 'Click a button below to open your email app with the right subject line already filled in.', 'wp-code-injector' ); ?></p>
+			<h1><?php esc_html_e( 'Contact / Support', 'impulse-snippets' ); ?></h1>
+			<p><?php esc_html_e( 'Click a button below to open your email app with the right subject line already filled in.', 'impulse-snippets' ); ?></p>
 
 			<div class="wpci-integration-cards">
 				<div class="postbox wpci-integration-card" id="wpci-bug">
-					<h2><?php esc_html_e( 'Report a Bug', 'wp-code-injector' ); ?></h2>
-					<p><?php esc_html_e( 'Tell us what went wrong and we will take a look.', 'wp-code-injector' ); ?></p>
-					<p><a class="button button-primary" href="<?php echo esc_url( $this->mailto_link( __( 'Bug Report', 'wp-code-injector' ) ) ); ?>"><?php esc_html_e( 'Email a Bug Report', 'wp-code-injector' ); ?></a></p>
+					<h2><?php esc_html_e( 'Report a Bug', 'impulse-snippets' ); ?></h2>
+					<p><?php esc_html_e( 'Tell us what went wrong and we will take a look.', 'impulse-snippets' ); ?></p>
+					<p><a class="button button-primary" href="<?php echo esc_url( $this->mailto_link( __( 'Bug Report', 'impulse-snippets' ) ) ); ?>"><?php esc_html_e( 'Email a Bug Report', 'impulse-snippets' ); ?></a></p>
 				</div>
 
 				<div class="postbox wpci-integration-card" id="wpci-feature">
-					<h2><?php esc_html_e( 'Suggest a Feature', 'wp-code-injector' ); ?></h2>
-					<p><?php esc_html_e( 'Have an idea that would make this plugin more useful?', 'wp-code-injector' ); ?></p>
-					<p><a class="button button-primary" href="<?php echo esc_url( $this->mailto_link( __( 'Feature Request', 'wp-code-injector' ) ) ); ?>"><?php esc_html_e( 'Email a Feature Request', 'wp-code-injector' ); ?></a></p>
+					<h2><?php esc_html_e( 'Suggest a Feature', 'impulse-snippets' ); ?></h2>
+					<p><?php esc_html_e( 'Have an idea that would make this plugin more useful?', 'impulse-snippets' ); ?></p>
+					<p><a class="button button-primary" href="<?php echo esc_url( $this->mailto_link( __( 'Feature Request', 'impulse-snippets' ) ) ); ?>"><?php esc_html_e( 'Email a Feature Request', 'impulse-snippets' ); ?></a></p>
 				</div>
 
 				<div class="postbox wpci-integration-card" id="wpci-question">
-					<h2><?php esc_html_e( 'General Question', 'wp-code-injector' ); ?></h2>
-					<p><?php esc_html_e( 'Anything else — just ask.', 'wp-code-injector' ); ?></p>
-					<p><a class="button button-primary" href="<?php echo esc_url( $this->mailto_link( __( 'Question', 'wp-code-injector' ) ) ); ?>"><?php esc_html_e( 'Email Us', 'wp-code-injector' ); ?></a></p>
+					<h2><?php esc_html_e( 'General Question', 'impulse-snippets' ); ?></h2>
+					<p><?php esc_html_e( 'Anything else — just ask.', 'impulse-snippets' ); ?></p>
+					<p><a class="button button-primary" href="<?php echo esc_url( $this->mailto_link( __( 'Question', 'impulse-snippets' ) ) ); ?>"><?php esc_html_e( 'Email Us', 'impulse-snippets' ); ?></a></p>
 				</div>
 			</div>
 
@@ -67,7 +67,7 @@ class Wpci_Contact {
 				<?php
 				printf(
 					/* translators: %s: support email address as a mailto link. */
-					esc_html__( 'Or email us directly at %s.', 'wp-code-injector' ),
+					esc_html__( 'Or email us directly at %s.', 'impulse-snippets' ),
 					'<a href="mailto:' . esc_attr( self::RECIPIENT ) . '">' . esc_html( self::RECIPIENT ) . '</a>'
 				);
 				?>
@@ -78,7 +78,7 @@ class Wpci_Contact {
 
 	private function mailto_link( $topic ) {
 		$site    = wp_parse_url( home_url(), PHP_URL_HOST );
-		$subject = sprintf( '[WP Code Injector] %1$s from %2$s', $topic, $site );
+		$subject = sprintf( '[Impulse Snippets] %1$s from %2$s', $topic, $site );
 		return 'mailto:' . self::RECIPIENT . '?subject=' . rawurlencode( $subject );
 	}
 }

@@ -17,7 +17,7 @@ class Wpci_Edit_Screen {
 	public function add_meta_boxes() {
 		add_meta_box(
 			'wpci_conditions_box',
-			__( 'Display Conditions', 'wp-code-injector' ),
+			__( 'Display Conditions', 'impulse-snippets' ),
 			array( $this, 'render_conditions_box' ),
 			Wpci_Cpt::POST_TYPE,
 			'normal',
@@ -26,7 +26,7 @@ class Wpci_Edit_Screen {
 
 		add_meta_box(
 			'wpci_code_box',
-			__( 'Snippet Code', 'wp-code-injector' ),
+			__( 'Snippet Code', 'impulse-snippets' ),
 			array( $this, 'render_code_box' ),
 			Wpci_Cpt::POST_TYPE,
 			'normal',
@@ -35,7 +35,7 @@ class Wpci_Edit_Screen {
 
 		add_meta_box(
 			'wpci_location_box',
-			__( 'Location', 'wp-code-injector' ),
+			__( 'Location', 'impulse-snippets' ),
 			array( $this, 'render_location_box' ),
 			Wpci_Cpt::POST_TYPE,
 			'side',
@@ -58,23 +58,23 @@ class Wpci_Edit_Screen {
 		?>
 		<div class="notice notice-warning inline wpci-warning">
 			<p>
-				<?php esc_html_e( 'This code is output on your live site exactly as written, without modification. Only paste code (or link to files) from sources you trust.', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'This code is output on your live site exactly as written, without modification. Only paste code (or link to files) from sources you trust.', 'impulse-snippets' ); ?>
 			</p>
 		</div>
 
 		<p>
 			<label style="margin-right:20px;">
 				<input type="radio" name="wpci_code_source" value="inline" <?php checked( $source, 'inline' ); ?> class="wpci-source-radio">
-				<?php esc_html_e( 'Paste code', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'Paste code', 'impulse-snippets' ); ?>
 			</label>
 			<label>
 				<input type="radio" name="wpci_code_source" value="external" <?php checked( $source, 'external' ); ?> class="wpci-source-radio">
-				<?php esc_html_e( 'Link to an external file (URL)', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'Link to an external file (URL)', 'impulse-snippets' ); ?>
 			</label>
 		</p>
 
 		<p>
-			<label for="wpci_code_type"><strong><?php esc_html_e( 'Code type', 'wp-code-injector' ); ?></strong></label><br>
+			<label for="wpci_code_type"><strong><?php esc_html_e( 'Code type', 'impulse-snippets' ); ?></strong></label><br>
 			<select name="wpci_code_type" id="wpci_code_type">
 				<?php foreach ( wpci_get_code_types() as $key => $label ) : ?>
 					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $code_type, $key ); ?>>
@@ -82,12 +82,12 @@ class Wpci_Edit_Screen {
 					</option>
 				<?php endforeach; ?>
 			</select>
-			<span class="description"><?php esc_html_e( '(Also used for external files: JavaScript or CSS decides which HTML tag is used to load the file.)', 'wp-code-injector' ); ?></span>
+			<span class="description"><?php esc_html_e( '(Also used for external files: JavaScript or CSS decides which HTML tag is used to load the file.)', 'impulse-snippets' ); ?></span>
 		</p>
 
 		<div class="wpci-source-panel" data-source="inline" style="<?php echo 'inline' === $source ? '' : 'display:none;'; ?>">
 			<p class="description">
-				<?php esc_html_e( 'Auto-detect: if your code doesn\'t already include <script> or <style> tags, we\'ll add <script> tags for you.', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'Auto-detect: if your code doesn\'t already include <script> or <style> tags, we\'ll add <script> tags for you.', 'impulse-snippets' ); ?>
 			</p>
 			<p>
 				<textarea id="wpci_code" name="wpci_code" rows="12" style="width:100%;font-family:monospace;"><?php echo esc_textarea( 'inline' === $source ? $code : '' ); ?></textarea>
@@ -96,7 +96,7 @@ class Wpci_Edit_Screen {
 
 		<div class="wpci-source-panel" data-source="external" style="<?php echo 'external' === $source ? '' : 'display:none;'; ?>">
 			<p>
-				<label for="wpci_external_url"><?php esc_html_e( 'External file URL', 'wp-code-injector' ); ?></label><br>
+				<label for="wpci_external_url"><?php esc_html_e( 'External file URL', 'impulse-snippets' ); ?></label><br>
 				<input type="url" id="wpci_external_url" name="wpci_external_url" style="width:100%;" placeholder="https://example.com/library.js" value="<?php echo esc_attr( 'external' === $source ? $code : '' ); ?>">
 			</p>
 		</div>
@@ -130,26 +130,26 @@ class Wpci_Edit_Screen {
 		<p>
 			<label style="display:block;margin-bottom:6px;">
 				<input type="radio" name="wpci_condition_type" value="all" <?php checked( $type, 'all' ); ?> class="wpci-condition-radio">
-				<?php esc_html_e( 'All pages (site-wide)', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'All pages (site-wide)', 'impulse-snippets' ); ?>
 			</label>
 			<label style="display:block;margin-bottom:6px;">
 				<input type="radio" name="wpci_condition_type" value="specific" <?php checked( $type, 'specific' ); ?> class="wpci-condition-radio">
-				<?php esc_html_e( 'Specific pages or posts', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'Specific pages or posts', 'impulse-snippets' ); ?>
 			</label>
 			<label style="display:block;margin-bottom:6px;">
 				<input type="radio" name="wpci_condition_type" value="post_types" <?php checked( $type, 'post_types' ); ?> class="wpci-condition-radio">
-				<?php esc_html_e( 'Post types', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'Post types', 'impulse-snippets' ); ?>
 			</label>
 			<label style="display:block;">
 				<input type="radio" name="wpci_condition_type" value="categories" <?php checked( $type, 'categories' ); ?> class="wpci-condition-radio">
-				<?php esc_html_e( 'Categories', 'wp-code-injector' ); ?>
+				<?php esc_html_e( 'Categories', 'impulse-snippets' ); ?>
 			</label>
 		</p>
 
 		<div class="wpci-condition-panel" data-condition="specific" style="<?php echo 'specific' === $type ? '' : 'display:none;'; ?>">
-			<p class="description"><?php esc_html_e( 'Select one or more pages/posts:', 'wp-code-injector' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Select one or more pages/posts:', 'impulse-snippets' ); ?></p>
 			<div class="wpci-searchable-list">
-				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'wp-code-injector' ); ?>">
+				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'impulse-snippets' ); ?>">
 				<div class="wpci-checkbox-list">
 					<?php foreach ( $this->get_selectable_posts() as $selectable ) : ?>
 						<label style="display:block;">
@@ -160,7 +160,7 @@ class Wpci_Edit_Screen {
 				</div>
 			</div>
 			<p style="margin-top:10px;">
-				<label for="wpci_condition_post_url"><?php esc_html_e( 'Or paste a page/post link to add it directly:', 'wp-code-injector' ); ?></label><br>
+				<label for="wpci_condition_post_url"><?php esc_html_e( 'Or paste a page/post link to add it directly:', 'impulse-snippets' ); ?></label><br>
 				<input type="url" id="wpci_condition_post_url" name="wpci_condition_post_url" placeholder="https://yoursite.com/some-page/" style="width:100%;">
 			</p>
 		</div>
@@ -175,9 +175,9 @@ class Wpci_Edit_Screen {
 		</div>
 
 		<div class="wpci-condition-panel" data-condition="categories" style="<?php echo 'categories' === $type ? '' : 'display:none;'; ?>">
-			<p class="description"><?php esc_html_e( 'Applies to blog posts only.', 'wp-code-injector' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Applies to blog posts only.', 'impulse-snippets' ); ?></p>
 			<div class="wpci-searchable-list">
-				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'wp-code-injector' ); ?>">
+				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'impulse-snippets' ); ?>">
 				<div class="wpci-checkbox-list">
 					<?php foreach ( get_categories( array( 'hide_empty' => false ) ) as $cat ) : ?>
 						<label style="display:block;">

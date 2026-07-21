@@ -18,7 +18,7 @@ class Wpci_Plugin_Links {
 
 	public function action_links( $links ) {
 		$custom = array(
-			'<a href="' . esc_url( admin_url( 'admin.php?page=' . Wpci_Admin_Menu::DASHBOARD_SLUG ) ) . '">' . esc_html__( 'Settings', 'wp-code-injector' ) . '</a>',
+			'<a href="' . esc_url( admin_url( 'admin.php?page=' . Wpci_Admin_Menu::DASHBOARD_SLUG ) ) . '">' . esc_html__( 'Settings', 'impulse-snippets' ) . '</a>',
 		);
 		return array_merge( $custom, $links );
 	}
@@ -28,8 +28,8 @@ class Wpci_Plugin_Links {
 			return $links;
 		}
 
-		$links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpci-docs' ) ) . '">' . esc_html__( 'View details', 'wp-code-injector' ) . '</a>';
-		$links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpci-contact' ) ) . '">' . esc_html__( 'Contact', 'wp-code-injector' ) . '</a>';
+		$links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpci-docs' ) ) . '">' . esc_html__( 'View details', 'impulse-snippets' ) . '</a>';
+		$links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpci-contact' ) ) . '">' . esc_html__( 'Contact', 'impulse-snippets' ) . '</a>';
 
 		return $links;
 	}

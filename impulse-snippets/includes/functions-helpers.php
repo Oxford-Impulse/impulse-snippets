@@ -9,9 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function wpci_get_locations() {
 	return array(
-		'head'   => __( 'Head', 'wp-code-injector' ),
-		'body'   => __( 'Body (after opening <body> tag)', 'wp-code-injector' ),
-		'footer' => __( 'Footer', 'wp-code-injector' ),
+		'head'   => __( 'Head', 'impulse-snippets' ),
+		'body'   => __( 'Body (after opening <body> tag)', 'impulse-snippets' ),
+		'footer' => __( 'Footer', 'impulse-snippets' ),
 	);
 }
 
@@ -22,10 +22,10 @@ function wpci_get_location_label( $location ) {
 
 function wpci_get_code_types() {
 	return array(
-		'auto'   => __( 'Auto-detect', 'wp-code-injector' ),
-		'script' => __( 'JavaScript', 'wp-code-injector' ),
-		'style'  => __( 'CSS', 'wp-code-injector' ),
-		'html'   => __( 'HTML / mixed', 'wp-code-injector' ),
+		'auto'   => __( 'Auto-detect', 'impulse-snippets' ),
+		'script' => __( 'JavaScript', 'impulse-snippets' ),
+		'style'  => __( 'CSS', 'impulse-snippets' ),
+		'html'   => __( 'HTML / mixed', 'impulse-snippets' ),
 	);
 }
 
@@ -96,20 +96,20 @@ function wpci_get_conditions_summary( $raw_conditions ) {
 		case 'specific':
 			$count = ! empty( $conditions['post_ids'] ) ? count( $conditions['post_ids'] ) : 0;
 			/* translators: %d: number of specific pages/posts targeted. */
-			return sprintf( _n( '%d specific page/post', '%d specific pages/posts', $count, 'wp-code-injector' ), $count );
+			return sprintf( _n( '%d specific page/post', '%d specific pages/posts', $count, 'impulse-snippets' ), $count );
 
 		case 'post_types':
 			$count = ! empty( $conditions['post_types'] ) ? count( $conditions['post_types'] ) : 0;
 			/* translators: %d: number of post types targeted. */
-			return sprintf( _n( '%d post type', '%d post types', $count, 'wp-code-injector' ), $count );
+			return sprintf( _n( '%d post type', '%d post types', $count, 'impulse-snippets' ), $count );
 
 		case 'categories':
 			$count = ! empty( $conditions['term_ids'] ) ? count( $conditions['term_ids'] ) : 0;
 			/* translators: %d: number of categories targeted. */
-			return sprintf( _n( '%d category', '%d categories', $count, 'wp-code-injector' ), $count );
+			return sprintf( _n( '%d category', '%d categories', $count, 'impulse-snippets' ), $count );
 
 		default:
-			return __( 'All pages', 'wp-code-injector' );
+			return __( 'All pages', 'impulse-snippets' );
 	}
 }
 
@@ -118,10 +118,10 @@ function wpci_get_conditions_summary( $raw_conditions ) {
  */
 function wpci_get_integration_label( $integration ) {
 	$labels = array(
-		'ga4'        => __( 'Google Analytics 4 integration', 'wp-code-injector' ),
-		'gtm_head'   => __( 'Google Tag Manager integration', 'wp-code-injector' ),
-		'gtm_body'   => __( 'Google Tag Manager integration', 'wp-code-injector' ),
-		'meta_pixel' => __( 'Meta Pixel integration', 'wp-code-injector' ),
+		'ga4'        => __( 'Google Analytics 4 integration', 'impulse-snippets' ),
+		'gtm_head'   => __( 'Google Tag Manager integration', 'impulse-snippets' ),
+		'gtm_body'   => __( 'Google Tag Manager integration', 'impulse-snippets' ),
+		'meta_pixel' => __( 'Meta Pixel integration', 'impulse-snippets' ),
 	);
 	return isset( $labels[ $integration ] ) ? $labels[ $integration ] : $integration;
 }

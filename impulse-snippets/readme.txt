@@ -1,4 +1,4 @@
-=== WP Code Injector ===
+=== Impulse Snippets — Add Code to Header, Body & Footer ===
 Contributors: (add your WordPress.org username here)
 Tags: code snippets, header footer, google analytics, google tag manager, meta pixel
 Requires at least: 5.9
@@ -12,7 +12,7 @@ Add unlimited named code snippets (scripts, styles, HTML) to your site's head, b
 
 == Description ==
 
-WP Code Injector lets you add JavaScript, CSS, or HTML snippets anywhere on your WordPress site — in the `<head>`, right after the opening `<body>` tag, or in the footer — without editing your theme's files.
+Impulse Snippets lets you add JavaScript, CSS, or HTML snippets anywhere on your WordPress site — in the `<head>`, right after the opening `<body>` tag, or in the footer — without editing your theme's files.
 
 = Key features =
 
@@ -33,7 +33,7 @@ Code you add is output exactly as written, with no modification. Only administra
 
 1. Upload the plugin files to the `/wp-content/plugins/wp-code-injector` directory, or install the plugin through the Plugins screen in WordPress directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to "Code Injector" in your admin sidebar to get started.
+3. Go to "Impulse Snippets" in your admin sidebar to get started.
 
 == Frequently Asked Questions ==
 

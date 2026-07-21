@@ -1,4 +1,4 @@
-# WP Code Injector
+# Impulse Snippets
 
 A WordPress plugin for adding unlimited named code snippets (JavaScript, CSS, HTML) to your site's head, body, or footer — manually, or with one-click integrations for Google Analytics 4, Google Tag Manager, and Meta Pixel.
 
@@ -17,9 +17,9 @@ By [Oxford Impulse](https://oxfordimpulse.com).
 
 ## Installation
 
-1. Download the latest `wp-code-injector.zip` from [Releases](../../releases), or zip the `wp-code-injector/` folder yourself.
+1. Download the latest `impulse-snippets.zip` from [Releases](../../releases), or zip the `impulse-snippets/` folder yourself.
 2. In WordPress admin: **Plugins → Add New Plugin → Upload Plugin** → choose the zip → **Install Now** → **Activate**.
-3. Find **Code Injector** in your admin sidebar.
+3. Find **Impulse Snippets** in your admin sidebar.
 
 ## Requirements
 
@@ -29,8 +29,8 @@ By [Oxford Impulse](https://oxfordimpulse.com).
 ## Structure
 
 ```
-wp-code-injector/
-├── wp-code-injector.php      Bootstrap: constants, includes, plugin header
+impulse-snippets/
+├── impulse-snippets.php      Bootstrap: constants, includes, plugin header
 ├── uninstall.php             Opt-in data removal on plugin deletion
 ├── readme.txt                WordPress.org-format readme
 ├── includes/                 One class per concern (CPT, admin UI, output engine, integrations, REST, …)
@@ -43,9 +43,9 @@ Snippet code is intentionally output as-is — that's the product. The compensat
 
 ## License
 
-[GPL v2 or later](wp-code-injector/LICENSE.txt)
+[GPL v2 or later](impulse-snippets/LICENSE.txt)
 
 ## Support
 
-- [Report a bug or request a feature](https://github.com/Oxford-Impulse/wp-code-injector/issues)
+- [Report a bug or request a feature](https://github.com/Oxford-Impulse/impulse-snippets/issues)
 - Email: info@oxfordimpulse.com
