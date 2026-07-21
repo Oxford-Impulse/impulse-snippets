@@ -1,0 +1,169 @@
+.wpci-warning {
+	margin: 0 0 15px;
+}
+
+.wpci-warning p {
+	margin: 0.5em 0;
+	padding: 2px;
+}
+
+#wpci_code_box .CodeMirror {
+	border: 1px solid #dcdcde;
+	height: auto;
+	min-height: 220px;
+}
+
+.wpci-checkbox-list {
+	max-height: 220px;
+	overflow-y: auto;
+	border: 1px solid #dcdcde;
+	padding: 8px 10px;
+	background: #fff;
+}
+
+.wpci-checkbox-list label {
+	padding: 2px 0;
+}
+
+.wpci-checkbox-filter {
+	width: 100%;
+	margin-bottom: 6px;
+}
+
+.wpci-checkbox-list label.wpci-hidden {
+	display: none;
+}
+
+.wpci-integration-cards {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.wpci-integration-card {
+	padding: 16px;
+	max-width: 360px;
+	flex: 1 1 300px;
+}
+
+.wpci-dashboard-stats {
+	display: flex;
+	gap: 16px;
+	margin: 20px 0;
+}
+
+.wpci-stat-box {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 16px 24px;
+	min-width: 160px;
+	display: block;
+	text-decoration: none;
+	box-shadow: none;
+	transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.wpci-stat-box:hover,
+.wpci-stat-box:focus {
+	border-color: #2271b1;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.wpci-stat-number {
+	display: block;
+	font-size: 32px;
+	font-weight: 600;
+	line-height: 1.2;
+	color: #2271b1;
+}
+
+.wpci-stat-label {
+	display: block;
+	color: #646970;
+}
+
+.wpci-feature-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.wpci-feature {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 14px 16px;
+}
+
+.wpci-feature h3 {
+	margin: 0 0 8px;
+	font-size: 14px;
+}
+
+.wpci-feature .dashicons {
+	color: #2271b1;
+}
+
+.wpci-feature p {
+	margin: 0;
+	color: #3c434a;
+}
+
+.wpci-button-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.wpci-toggle-switch {
+	position: relative;
+	display: inline-block;
+	width: 36px;
+	height: 20px;
+	vertical-align: middle;
+}
+
+.wpci-toggle-switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.wpci-toggle-slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #dcdcde;
+	border-radius: 20px;
+	transition: 0.15s;
+}
+
+.wpci-toggle-slider::before {
+	position: absolute;
+	content: "";
+	height: 14px;
+	width: 14px;
+	left: 3px;
+	bottom: 3px;
+	background-color: #fff;
+	border-radius: 50%;
+	transition: 0.15s;
+}
+
+.wpci-toggle-switch input:checked + .wpci-toggle-slider {
+	background-color: #2271b1;
+}
+
+.wpci-toggle-switch input:checked + .wpci-toggle-slider::before {
+	transform: translateX(16px);
+}
+
+.wpci-toggle-switch input:disabled + .wpci-toggle-slider {
+	opacity: 0.5;
+	cursor: default;
+}
