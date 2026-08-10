@@ -18,6 +18,35 @@ class Wpci_Settings {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_post_wpci_save_settings', array( $this, 'handle_save' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_render_global_pause_notice' ) );
+	}
+
+	/**
+	 * When the kill switch is on, warn on every plugin screen — not only the
+	 * Settings page (which shows its own inline notice) — so nobody spends an
+	 * afternoon wondering why no snippet outputs anything.
+	 */
+	public function maybe_render_global_pause_notice() {
+		if ( ! self::is_globally_disabled() || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return;
+		}
+
+		$on_plugin_screen = Wpci_Cpt::POST_TYPE === $screen->post_type || false !== strpos( (string) $screen->id, 'wpci-' );
+		if ( ! $on_plugin_screen || false !== strpos( (string) $screen->id, self::PAGE_SLUG ) ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-warning"><p><strong>%s</strong> <a href="%s">%s</a></p></div>',
+			esc_html__( 'All snippets are currently paused site-wide by the emergency kill switch.', 'impulse-snippets' ),
+			esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ),
+			esc_html__( 'Go to Settings to resume.', 'impulse-snippets' )
+		);
 	}
 
 	public function register_menu() {

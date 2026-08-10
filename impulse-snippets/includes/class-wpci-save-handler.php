@@ -43,17 +43,18 @@ class Wpci_Save_Handler {
 			$source = 'inline';
 		}
 
-		if ( 'external' === $source ) {
-			// A URL, so it gets the same treatment as any other URL field.
-			$code = isset( $_POST['wpci_external_url'] ) ? esc_url_raw( wp_unslash( $_POST['wpci_external_url'] ) ) : '';
-		} else {
-			// Code content is intentionally left unmodified beyond wp_unslash
-			// (undoing the quote-escaping WP applies to all $_POST data) — the
-			// entire feature is outputting the user's raw code as-is. Access to
-			// this save path is restricted to manage_options via the CPT's
-			// capability mapping, which is the actual safeguard here.
-			$code = isset( $_POST['wpci_code'] ) ? wp_unslash( $_POST['wpci_code'] ) : '';
-		}
+		// Both fields are saved on every submit, regardless of which source is
+		// selected, so switching between "Paste code" and "External URL" never
+		// destroys the other one's content (the hidden panel still submits).
+		// The URL gets the same treatment as any other URL field.
+		$external_url = isset( $_POST['wpci_external_url'] ) ? esc_url_raw( wp_unslash( $_POST['wpci_external_url'] ) ) : '';
+
+		// Code content is intentionally left unmodified beyond wp_unslash
+		// (undoing the quote-escaping WP applies to all $_POST data) — the
+		// entire feature is outputting the user's raw code as-is. Access to
+		// this save path is restricted to manage_options via the CPT's
+		// capability mapping, which is the actual safeguard here.
+		$code = isset( $_POST['wpci_code'] ) ? wp_unslash( $_POST['wpci_code'] ) : '';
 
 		// post_status is intentionally not touched here — the native
 		// Publish/Draft control handles that from the edit screen, and the
@@ -83,6 +84,7 @@ class Wpci_Save_Handler {
 		update_post_meta( $post_id, '_wpci_code_type', $code_type );
 
 		update_post_meta( $post_id, '_wpci_source', $source );
+		update_post_meta( $post_id, '_wpci_external_url', $external_url );
 
 		update_post_meta( $post_id, '_wpci_conditions', wp_json_encode( $this->sanitize_conditions() ) );
 	}

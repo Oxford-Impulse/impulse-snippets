@@ -4,7 +4,7 @@ Tags: code snippets, header footer, google analytics, google tag manager, meta p
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.14.1
+Stable tag: 1.15.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ Code you add is output exactly as written, with no modification. Only administra
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/wp-code-injector` directory, or install the plugin through the Plugins screen in WordPress directly.
+1. Upload the plugin files to the `/wp-content/plugins/impulse-snippets` directory, or install the plugin through the Plugins screen in WordPress directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to "Impulse Snippets" in your admin sidebar to get started.
 
@@ -56,6 +56,14 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel setup.
 
 == Changelog ==
+
+= 1.15.0 =
+* Fixed: re-saving a snippet no longer silently removes "specific pages" targeting for pages outside the visible selection list (sites with 200+ pages, or custom post types added via the paste-a-URL field).
+* Fixed: switching between "Paste code" and "External URL" no longer erases the other field's content — both are now stored independently.
+* Fixed: snippets with corrupted targeting data are now labeled "Invalid targeting — output disabled" in the snippets list instead of misleadingly showing "All pages".
+* New: while the emergency kill switch is active, a warning notice now appears on every plugin screen, not just Settings.
+* New: uninstall cleanup is now multisite-aware (each site's own opt-in is honored).
+* Added the Update URI plugin header and translation loading from the languages folder.
 
 = 1.14.1 =
 * Fixed: "Auto-detect" no longer mistakes JavaScript containing a `<` (less-than) sign for HTML. Such code is now correctly wrapped in script tags and executes instead of being printed on the page.

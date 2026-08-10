@@ -138,10 +138,29 @@ class Wpci_Cpt {
 			)
 		);
 
+		// External-file snippets keep their URL here (since 1.15.0), separate
+		// from post_content, so switching between "Paste code" and "External
+		// URL" never overwrites the other one's value. Pre-1.15.0 snippets
+		// stored the URL in post_content; Wpci_Output falls back to that when
+		// this meta is empty, and the first re-save migrates it here.
+		register_post_meta(
+			self::POST_TYPE,
+			'_wpci_external_url',
+			array(
+				'type'              => 'string',
+				'single'            => true,
+				'show_in_rest'      => false,
+				'sanitize_callback' => 'esc_url_raw',
+				'auth_callback'     => function () {
+					return current_user_can( 'manage_options' );
+				},
+			)
+		);
+
 		// Stores the targeting rule as one JSON blob (see Wpci_Conditions).
-		// Actual field-by-field sanitizing happens in Wpci_Save_Handler
-		// before this is written; sanitize_text_field here is just a
-		// baseline safety net, not the primary sanitization path.
+		// No sanitize_callback on purpose: field-by-field sanitizing happens
+		// in Wpci_Save_Handler before this is written, and Wpci_Conditions
+		// fails closed on malformed data at output time.
 		register_post_meta(
 			self::POST_TYPE,
 			'_wpci_conditions',

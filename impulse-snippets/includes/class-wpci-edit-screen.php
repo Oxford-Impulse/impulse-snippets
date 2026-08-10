@@ -55,6 +55,14 @@ class Wpci_Edit_Screen {
 		if ( '' === $source ) {
 			$source = 'inline';
 		}
+
+		$external_url = get_post_meta( $post->ID, '_wpci_external_url', true );
+		if ( '' === $external_url && 'external' === $source && '' !== $code ) {
+			// Legacy (pre-1.15.0): external snippets stored their URL in
+			// post_content. Show it in the URL field, not the code box.
+			$external_url = $code;
+			$code         = '';
+		}
 		?>
 		<div class="notice notice-warning inline wpci-warning">
 			<p>
@@ -90,14 +98,14 @@ class Wpci_Edit_Screen {
 				<?php esc_html_e( 'Auto-detect: if your code doesn\'t already include <script> or <style> tags, we\'ll add <script> tags for you.', 'impulse-snippets' ); ?>
 			</p>
 			<p>
-				<textarea id="wpci_code" name="wpci_code" rows="12" style="width:100%;font-family:monospace;"><?php echo esc_textarea( 'inline' === $source ? $code : '' ); ?></textarea>
+				<textarea id="wpci_code" name="wpci_code" rows="12" style="width:100%;font-family:monospace;"><?php echo esc_textarea( $code ); ?></textarea>
 			</p>
 		</div>
 
 		<div class="wpci-source-panel" data-source="external" style="<?php echo 'external' === $source ? '' : 'display:none;'; ?>">
 			<p>
 				<label for="wpci_external_url"><?php esc_html_e( 'External file URL', 'impulse-snippets' ); ?></label><br>
-				<input type="url" id="wpci_external_url" name="wpci_external_url" style="width:100%;" placeholder="https://example.com/library.js" value="<?php echo esc_attr( 'external' === $source ? $code : '' ); ?>">
+				<input type="url" id="wpci_external_url" name="wpci_external_url" style="width:100%;" placeholder="https://example.com/library.js" value="<?php echo esc_attr( $external_url ); ?>">
 			</p>
 		</div>
 		<?php
@@ -151,7 +159,7 @@ class Wpci_Edit_Screen {
 			<div class="wpci-searchable-list">
 				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'impulse-snippets' ); ?>">
 				<div class="wpci-checkbox-list">
-					<?php foreach ( $this->get_selectable_posts() as $selectable ) : ?>
+					<?php foreach ( $this->get_selectable_posts( $post_ids ) as $selectable ) : ?>
 						<label style="display:block;">
 							<input type="checkbox" name="wpci_condition_post_ids[]" value="<?php echo esc_attr( $selectable->ID ); ?>" <?php echo in_array( $selectable->ID, $post_ids, true ) ? 'checked' : ''; ?>>
 							<?php echo esc_html( $selectable->post_title . ' (' . $selectable->post_type . ')' ); ?>
@@ -191,8 +199,8 @@ class Wpci_Edit_Screen {
 		<?php
 	}
 
-	private function get_selectable_posts() {
-		return get_posts(
+	private function get_selectable_posts( $include_ids = array() ) {
+		$posts = get_posts(
 			array(
 				'post_type'      => array( 'post', 'page' ),
 				'posts_per_page' => 200,
@@ -201,6 +209,25 @@ class Wpci_Edit_Screen {
 				'order'          => 'ASC',
 			)
 		);
+
+		// Always render the currently-targeted posts too, even when they fall
+		// outside the 200-item window (large sites) or aren't a post/page
+		// (custom post types added via the paste-a-URL field). Unrendered
+		// checkboxes don't submit, so omitting them here would silently drop
+		// that targeting on the next save.
+		$missing = array_diff( $include_ids, wp_list_pluck( $posts, 'ID' ) );
+		if ( ! empty( $missing ) ) {
+			$extra = get_posts(
+				array(
+					'post_type'   => 'any',
+					'post_status' => 'any',
+					'include'     => $missing,
+				)
+			);
+			$posts = array_merge( $extra, $posts );
+		}
+
+		return $posts;
 	}
 
 	private function get_selectable_post_types() {

@@ -110,6 +110,12 @@ function wpci_get_conditions_summary( $raw_conditions ) {
 			/* translators: %d: number of categories targeted. */
 			return sprintf( _n( '%d category', '%d categories', $count, 'impulse-snippets' ), $count );
 
+		// Matches Wpci_Conditions::matches(), which suppresses output for
+		// malformed data — the list must not claim "All pages" for a snippet
+		// that in fact prints nowhere.
+		case 'invalid':
+			return __( 'Invalid targeting — output disabled', 'impulse-snippets' );
+
 		default:
 			return __( 'All pages', 'impulse-snippets' );
 	}

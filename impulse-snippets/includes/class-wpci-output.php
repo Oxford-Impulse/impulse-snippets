@@ -73,7 +73,11 @@ class Wpci_Output {
 			$source    = get_post_meta( $snippet->ID, '_wpci_source', true );
 
 			if ( 'external' === $source ) {
-				echo wpci_render_external_tag( $snippet->post_content, $code_type ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wpci_render_external_tag() already esc_url()s the URL itself.
+				$url = get_post_meta( $snippet->ID, '_wpci_external_url', true );
+				if ( '' === $url ) {
+					$url = $snippet->post_content; // Legacy pre-1.15.0 storage; migrated to meta on next save.
+				}
+				echo wpci_render_external_tag( $url, $code_type ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wpci_render_external_tag() already esc_url()s the URL itself.
 			} else {
 				echo wpci_maybe_wrap_code( $snippet->post_content, $code_type ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- intentional: user-authored injection code, output as-is by design. Access to author/edit snippets is restricted to manage_options.
 			}

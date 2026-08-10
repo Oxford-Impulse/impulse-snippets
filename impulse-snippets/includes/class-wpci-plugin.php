@@ -18,6 +18,8 @@ class Wpci_Plugin {
 	}
 
 	private function __construct() {
+		add_action( 'init', array( $this, 'load_textdomain' ) );
+
 		new Wpci_Cpt();
 		new Wpci_Admin_Menu();
 		new Wpci_Plugin_Links();
@@ -30,5 +32,13 @@ class Wpci_Plugin {
 		new Wpci_Settings();
 		new Wpci_Rest_Controller();
 		new Wpci_Output();
+	}
+
+	/**
+	 * Loads translations from languages/. WordPress.org-hosted installs get
+	 * translations automatically, but self-distributed copies need this.
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'impulse-snippets', false, dirname( WPCI_PLUGIN_BASENAME ) . '/languages' );
 	}
 }
