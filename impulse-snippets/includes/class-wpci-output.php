@@ -74,8 +74,11 @@ class Wpci_Output {
 
 			if ( 'external' === $source ) {
 				$url = get_post_meta( $snippet->ID, '_wpci_external_url', true );
-				if ( '' === $url ) {
-					$url = $snippet->post_content; // Legacy pre-1.15.0 storage; migrated to meta on next save.
+				if ( '' === $url && 0 === strpos( $snippet->post_content, 'http' ) ) {
+					// Legacy pre-1.15.0 storage kept the URL in post_content;
+					// migrated to meta on next save. The http check keeps
+					// leftover inline code from being misused as a URL.
+					$url = $snippet->post_content;
 				}
 				echo wpci_render_external_tag( $url, $code_type ) . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wpci_render_external_tag() already esc_url()s the URL itself.
 			} else {

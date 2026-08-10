@@ -202,6 +202,18 @@ class Wpci_Import_Export {
 		// this site's content — that's expected and visible in the list.
 		$conditions = Wpci_Conditions::decode( wp_json_encode( isset( $item['conditions'] ) && is_array( $item['conditions'] ) ? $item['conditions'] : array( 'type' => 'all' ) ) );
 
+		// Matching compares IDs strictly, so hand-edited files with quoted
+		// numbers ("7") must be normalized to integers or they'd import fine
+		// yet silently never match anything.
+		foreach ( array( 'post_ids', 'term_ids' ) as $id_key ) {
+			if ( isset( $conditions[ $id_key ] ) && is_array( $conditions[ $id_key ] ) ) {
+				$conditions[ $id_key ] = array_values( array_filter( array_map( 'intval', $conditions[ $id_key ] ) ) );
+			}
+		}
+		if ( isset( $conditions['pages'] ) && is_array( $conditions['pages'] ) ) {
+			$conditions['pages'] = array_values( array_intersect( array_map( 'strval', $conditions['pages'] ), Wpci_Conditions::ALLOWED_SPECIAL ) );
+		}
+
 		$post_id = wp_insert_post(
 			array(
 				'post_type'    => Wpci_Cpt::POST_TYPE,

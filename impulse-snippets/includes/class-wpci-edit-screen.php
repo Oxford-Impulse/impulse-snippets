@@ -235,7 +235,7 @@ class Wpci_Edit_Screen {
 				<option value="logged_out" <?php selected( $visitor, 'logged_out' ); ?>><?php esc_html_e( 'Logged-out visitors only', 'impulse-snippets' ); ?></option>
 			</select>
 		</p>
-		<p class="description"><?php esc_html_e( 'Applies on top of the page rule above. Handy for showing a snippet only to visitors (e.g. analytics) or only to logged-in users.', 'impulse-snippets' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Applies on top of the page rule above. Handy for showing a snippet only to visitors (e.g. analytics) or only to logged-in users. Note: full-page caching plugins can make per-visitor rules unreliable, because they serve the same cached page to everyone.', 'impulse-snippets' ); ?></p>
 		<?php
 	}
 
