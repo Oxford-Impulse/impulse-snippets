@@ -4,7 +4,7 @@ Tags: code snippets, header footer, google analytics, google tag manager, meta p
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.14.0
+Stable tag: 1.14.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,9 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel setup.
 
 == Changelog ==
+
+= 1.14.1 =
+* Fixed: "Auto-detect" no longer mistakes JavaScript containing a `<` (less-than) sign for HTML. Such code is now correctly wrapped in script tags and executes instead of being printed on the page.
 
 = 1.14.0 =
 * Initial public release.

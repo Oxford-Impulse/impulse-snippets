@@ -57,10 +57,12 @@ function wpci_maybe_wrap_code( $code, $type ) {
 		return ( false !== stripos( $code, '<style' ) ) ? $code : '<style>' . $code . '</style>';
 	}
 
-	// 'auto': if it already looks like markup (starts with a tag), leave it
-	// alone; otherwise assume bare JS, since that's the overwhelmingly common
-	// "I forgot the <script> tags" case.
-	if ( false !== strpos( $code, '<' ) ) {
+	// 'auto': treat as markup only when the code *starts* with a real tag —
+	// '<' followed by a letter (<div>, <script>), '!' (<!-- -->, <!DOCTYPE>),
+	// or '/' (stray closing tag). A '<' anywhere else is almost always a
+	// less-than operator in bare JS, the overwhelmingly common "I forgot the
+	// <script> tags" case (e.g. for (i = 0; i < 10; i++)).
+	if ( preg_match( '/^<[a-z!\/]/i', $code ) ) {
 		return $code;
 	}
 
