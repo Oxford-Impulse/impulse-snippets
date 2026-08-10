@@ -30,6 +30,7 @@ class Wpci_Plugin {
 		new Wpci_Contact();
 		new Wpci_Docs();
 		new Wpci_Settings();
+		new Wpci_Import_Export();
 		new Wpci_Rest_Controller();
 		new Wpci_Output();
 	}

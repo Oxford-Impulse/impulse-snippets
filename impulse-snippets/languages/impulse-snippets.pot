@@ -1,0 +1,848 @@
+# Copyright (C) 2026 Oxford Impulse
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Impulse Snippets 1.15.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/impulse-snippets\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-10T23:34:08+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: impulse-snippets\n"
+
+#. Plugin Name of the plugin
+#: impulse-snippets.php
+#: includes/class-wpci-admin-menu.php:21
+#: includes/class-wpci-admin-menu.php:22
+#: includes/class-wpci-admin-menu.php:76
+msgid "Impulse Snippets"
+msgstr ""
+
+#. Description of the plugin
+#: impulse-snippets.php
+msgid "Add unlimited named code snippets (scripts, styles, HTML) to your site's head, body, or footer — manually or with one-click integrations."
+msgstr ""
+
+#. Author of the plugin
+#: impulse-snippets.php
+msgid "Oxford Impulse"
+msgstr ""
+
+#. Author URI of the plugin
+#: impulse-snippets.php
+msgid "https://oxfordimpulse.com"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:36
+#: includes/class-wpci-admin-menu.php:37
+msgid "Dashboard"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:45
+#: includes/class-wpci-admin-menu.php:46
+#: includes/class-wpci-cpt.php:56
+msgid "All Snippets"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:53
+#: includes/class-wpci-admin-menu.php:95
+#: includes/class-wpci-cpt.php:49
+msgid "Add New Snippet"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:54
+#: includes/class-wpci-cpt.php:48
+msgid "Add New"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:70
+#: includes/class-wpci-integrations.php:109
+msgid "Google Analytics 4"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:71
+#: includes/class-wpci-integrations.php:120
+msgid "Google Tag Manager"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:72
+#: includes/class-wpci-integrations.php:131
+msgid "Meta Pixel"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:77
+msgid "Add code snippets to your site's head, body, or footer — manually, or with one-click integrations."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:82
+msgid "Active snippets"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:86
+msgid "Inactive (draft) snippets"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:92
+#: includes/class-wpci-cpt.php:46
+msgid "Snippets"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:93
+msgid "Create and manage individual code snippets for your head, body, or footer, each with its own on/off switch and targeting rules."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:96
+msgid "View All Snippets"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:97
+#: includes/class-wpci-plugin-links.php:21
+#: includes/class-wpci-settings.php:55
+#: includes/class-wpci-settings.php:56
+#: includes/class-wpci-settings.php:80
+msgid "Settings"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:102
+#: includes/class-wpci-integrations.php:65
+#: includes/class-wpci-integrations.php:66
+#: includes/class-wpci-integrations.php:99
+msgid "Integrations"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:103
+msgid "One-click setup for common analytics and tracking tools."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:110
+msgid "Connected"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:112
+msgid "Not connected"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:118
+msgid "Manage Integrations"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:123
+msgid "Need help?"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:124
+msgid "Found a bug, or have an idea for a feature? We would like to hear about it."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:126
+#: includes/class-wpci-contact.php:48
+msgid "Report a Bug"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:127
+#: includes/class-wpci-contact.php:54
+msgid "Suggest a Feature"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:128
+#: includes/class-wpci-docs.php:22
+#: includes/class-wpci-docs.php:23
+msgid "Documentation"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:142
+msgid "Unlimited snippets"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:143
+msgid "Create as many named snippets as you need (e.g. \"Live Chat Widget\", \"Google Analytics\"). Each one has its own on/off switch, so turning one off never affects the others."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:147
+msgid "Three placements: Head, Body, Footer"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:148
+msgid "Choose exactly where each snippet loads: in the page <head> (before the page renders), right after the opening <body> tag, or down in the footer."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:152
+msgid "Paste code, or link to a file"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:153
+msgid "Paste JavaScript, CSS, or HTML directly into a snippet, or point it at an externally-hosted file (like a library .js or .css file) instead."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:157
+msgid "Auto-detect formatting"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:158
+msgid "If you paste bare code without <script> or <style> tags, the plugin adds the right tags for you automatically — you don't have to remember the syntax."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:162
+msgid "Display conditions"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:163
+msgid "Show a snippet on every page, or restrict it to specific pages/posts, post types, or categories — with a search box and a \"paste a link\" shortcut to find pages quickly."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:167
+msgid "One-click integrations"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:168
+msgid "Paste a Measurement/Container/Pixel ID and Google Analytics 4, Google Tag Manager, or Meta Pixel get set up correctly, automatically — no code required."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:172
+msgid "Instant on/off"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:173
+msgid "Every snippet can be switched to Draft to disable it immediately without deleting it, then switched back to Published to bring it back."
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:177
+msgid "What you can do"
+msgstr ""
+
+#: includes/class-wpci-contact.php:24
+#: includes/class-wpci-plugin-links.php:32
+msgid "Contact"
+msgstr ""
+
+#: includes/class-wpci-contact.php:25
+#: includes/class-wpci-contact.php:43
+msgid "Contact / Support"
+msgstr ""
+
+#: includes/class-wpci-contact.php:44
+msgid "Click a button below to open your email app with the right subject line already filled in."
+msgstr ""
+
+#: includes/class-wpci-contact.php:49
+msgid "Tell us what went wrong and we will take a look."
+msgstr ""
+
+#: includes/class-wpci-contact.php:50
+msgid "Bug Report"
+msgstr ""
+
+#: includes/class-wpci-contact.php:50
+msgid "Email a Bug Report"
+msgstr ""
+
+#: includes/class-wpci-contact.php:55
+msgid "Have an idea that would make this plugin more useful?"
+msgstr ""
+
+#: includes/class-wpci-contact.php:56
+msgid "Feature Request"
+msgstr ""
+
+#: includes/class-wpci-contact.php:56
+msgid "Email a Feature Request"
+msgstr ""
+
+#: includes/class-wpci-contact.php:60
+msgid "General Question"
+msgstr ""
+
+#: includes/class-wpci-contact.php:61
+msgid "Anything else — just ask."
+msgstr ""
+
+#: includes/class-wpci-contact.php:62
+msgid "Question"
+msgstr ""
+
+#: includes/class-wpci-contact.php:62
+msgid "Email Us"
+msgstr ""
+
+#. translators: %s: support email address as a mailto link.
+#: includes/class-wpci-contact.php:70
+#, php-format
+msgid "Or email us directly at %s."
+msgstr ""
+
+#: includes/class-wpci-cpt.php:47
+msgid "Snippet"
+msgstr ""
+
+#: includes/class-wpci-cpt.php:50
+msgid "Edit Snippet"
+msgstr ""
+
+#: includes/class-wpci-cpt.php:51
+msgid "New Snippet"
+msgstr ""
+
+#: includes/class-wpci-cpt.php:52
+msgid "View Snippet"
+msgstr ""
+
+#: includes/class-wpci-cpt.php:53
+msgid "Search Snippets"
+msgstr ""
+
+#: includes/class-wpci-cpt.php:54
+msgid "No snippets found. Add your first one to get started."
+msgstr ""
+
+#: includes/class-wpci-cpt.php:55
+msgid "No snippets found in Trash."
+msgstr ""
+
+#: includes/class-wpci-cpt.php:227
+msgid "Snippet name (for your reference only, e.g. \"Live Chat Widget\")"
+msgstr ""
+
+#: includes/class-wpci-docs.php:41
+msgid "Documentation — How It Works"
+msgstr ""
+
+#: includes/class-wpci-docs.php:44
+msgid "1. Creating your first snippet"
+msgstr ""
+
+#: includes/class-wpci-docs.php:45
+msgid "Go to Impulse Snippets → Add New. Give it a name (just for your own reference), paste your code, choose where it should go (Head, Body, or Footer), then click Publish. That's it — the code is now live on your site."
+msgstr ""
+
+#: includes/class-wpci-docs.php:49
+msgid "2. Head, Body, and Footer — what's the difference?"
+msgstr ""
+
+#: includes/class-wpci-docs.php:51
+msgid "Head:"
+msgstr ""
+
+#: includes/class-wpci-docs.php:51
+msgid "loads before the page content, in the invisible <head> section. Best for tracking codes, fonts, and meta tags."
+msgstr ""
+
+#: includes/class-wpci-docs.php:52
+msgid "Body:"
+msgstr ""
+
+#: includes/class-wpci-docs.php:52
+msgid "loads immediately after the page starts rendering. Some tools (like Google Tag Manager) specifically require this placement."
+msgstr ""
+
+#: includes/class-wpci-docs.php:53
+msgid "Footer:"
+msgstr ""
+
+#: includes/class-wpci-docs.php:53
+msgid "loads near the very end of the page, after everything else. Good for chat widgets and anything that shouldn't slow down the initial page load."
+msgstr ""
+
+#: includes/class-wpci-docs.php:58
+msgid "3. Code type & Auto-detect"
+msgstr ""
+
+#: includes/class-wpci-docs.php:59
+msgid "Tell the plugin what kind of code you pasted: JavaScript, CSS, HTML/mixed, or Auto-detect. If you choose JavaScript or CSS and your pasted code doesn't already have <script> or <style> tags around it, the plugin adds them for you automatically. Choose HTML/mixed if your snippet already includes its own tags (most tracking/embed codes do) — nothing gets added or changed in that case."
+msgstr ""
+
+#: includes/class-wpci-docs.php:63
+msgid "4. Linking to an external file"
+msgstr ""
+
+#: includes/class-wpci-docs.php:64
+msgid "On the snippet editor, choose \"Link to an external file\" instead of \"Paste code\" if you want to load a script or stylesheet that's already hosted somewhere (like a library file), rather than pasting its contents directly."
+msgstr ""
+
+#: includes/class-wpci-docs.php:68
+msgid "5. Display Conditions — controlling where a snippet appears"
+msgstr ""
+
+#: includes/class-wpci-docs.php:69
+msgid "By default, a snippet appears on every page of your site. In the Display Conditions box, you can instead restrict it to:"
+msgstr ""
+
+#: includes/class-wpci-docs.php:71
+msgid "Specific pages or posts — tick the ones you want, use the search box to find one quickly, or paste its link directly."
+msgstr ""
+
+#: includes/class-wpci-docs.php:72
+msgid "Post types — e.g. only on Pages, or only on Posts."
+msgstr ""
+
+#: includes/class-wpci-docs.php:73
+msgid "Categories — only on blog posts in the categories you pick."
+msgstr ""
+
+#: includes/class-wpci-docs.php:78
+msgid "6. One-click Integrations"
+msgstr ""
+
+#: includes/class-wpci-docs.php:79
+msgid "Under Impulse Snippets → Integrations, paste your Google Analytics 4 Measurement ID, Google Tag Manager Container ID, or Meta Pixel ID and the correct snippet(s) are created for you automatically — no code needed. If you ever change the ID and reconnect, it updates the same snippet instead of creating a duplicate."
+msgstr ""
+
+#: includes/class-wpci-docs.php:83
+msgid "7. Turning a snippet on or off"
+msgstr ""
+
+#: includes/class-wpci-docs.php:84
+msgid "Every snippet is just a Published (active) or Draft (inactive) item, exactly like a WordPress post. Switch it to Draft to disable it instantly without losing the code, and switch it back to Published to bring it back."
+msgstr ""
+
+#: includes/class-wpci-docs.php:88
+msgid "A word of caution:"
+msgstr ""
+
+#: includes/class-wpci-docs.php:88
+msgid "code you add here runs exactly as written on your live site, with no safety checks. Only paste code from sources you trust, and double-check a snippet on a staging site first if you're unsure."
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:20
+msgid "Display Conditions"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:29
+msgid "Snippet Code"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:38
+#: includes/class-wpci-list-table.php:30
+msgid "Location"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:69
+msgid "This code is output on your live site exactly as written, without modification. Only paste code (or link to files) from sources you trust."
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:76
+msgid "Paste code"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:80
+msgid "Link to an external file (URL)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:85
+msgid "Code type"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:93
+msgid "(Also used for external files: JavaScript or CSS decides which HTML tag is used to load the file.)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:98
+msgid "Auto-detect: if your code doesn't already include <script> or <style> tags, we'll add <script> tags for you."
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:107
+msgid "External file URL"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:130
+#: includes/class-wpci-list-table.php:33
+msgid "Priority"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:134
+msgid "Snippets in the same location print in priority order, lowest number first. Leave at 0 unless one snippet must load before another (e.g. a consent script before analytics)."
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:151
+msgid "All pages (site-wide)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:155
+msgid "Specific pages or posts"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:159
+msgid "Post types"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:163
+msgid "Categories (single blog posts)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:167
+msgid "Special pages (front page, 404, search)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:172
+msgid "Select one or more pages/posts:"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:174
+#: includes/class-wpci-edit-screen.php:202
+msgid "Type to search…"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:185
+msgid "Or paste a page/post link to add it directly:"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:200
+msgid "Applies to single blog posts in these categories (not the category archive pages)."
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:217
+msgid "Front page (homepage)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:221
+msgid "404 \"page not found\" page"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:225
+msgid "Search results page"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:231
+msgid "Show for"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:233
+msgid "Everyone"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:234
+msgid "Logged-in users only"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:235
+msgid "Logged-out visitors only"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:238
+msgid "Applies on top of the page rule above. Handy for showing a snippet only to visitors (e.g. analytics) or only to logged-in users."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:31
+#: includes/class-wpci-import-export.php:32
+#: includes/class-wpci-import-export.php:51
+msgid "Import / Export"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:57
+msgid "Export"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:58
+msgid "Downloads every snippet (including disabled ones) as a single JSON file — use it as a backup, or to move snippets to another site."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:62
+msgid "Download Export File"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:67
+msgid "Import"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:68
+msgid "Upload an export file to add its snippets to this site. Imported snippets always arrive switched OFF (draft), so nothing runs until you review and enable it."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:73
+msgid "Import Snippets"
+msgstr ""
+
+#. translators: %d: number of snippets imported.
+#: includes/class-wpci-import-export.php:87
+#, php-format
+msgid "%d snippet imported (as draft — enable it from the snippets list)."
+msgid_plural "%d snippets imported (as drafts — enable them from the snippets list)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wpci-import-export.php:92
+msgid "That file couldn't be read as an Impulse Snippets export. Please upload an unmodified export file."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:99
+#: includes/class-wpci-import-export.php:146
+#: includes/class-wpci-import-export.php:255
+#: includes/class-wpci-integrations.php:245
+#: includes/class-wpci-integrations.php:340
+#: includes/class-wpci-settings.php:128
+msgid "You do not have permission to do this."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:208
+msgid "Imported snippet"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:247
+msgid "Duplicate"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:261
+#: includes/class-wpci-rest-controller.php:57
+msgid "Snippet not found."
+msgstr ""
+
+#. translators: %s: title of the snippet being duplicated.
+#: includes/class-wpci-import-export.php:268
+#, php-format
+msgid "%s (Copy)"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:100
+msgid "Paste an ID below and the correct snippet(s) are created for you automatically. Re-entering a different ID later updates the same snippet(s) instead of creating duplicates."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:110
+msgid "Tracks visitor behavior on your site — pageviews, events, and conversions — inside Google Analytics."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:111
+msgid "Find it in Google Analytics: Admin (gear icon) → Data Streams → select your web stream. The Measurement ID is shown at the top right."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:121
+msgid "Lets you manage multiple tracking scripts (Analytics, Ads, other pixels) from one place, without editing code every time."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:122
+msgid "Find it in Google Tag Manager: your Container ID is shown next to your container name in the top-left of the workspace."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:132
+msgid "Tracks visitor actions for Facebook/Instagram ad targeting and reporting."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:133
+msgid "Find it in Meta Events Manager: Data Sources → select your pixel → Settings tab."
+msgstr ""
+
+#. translators: %s: the connected ID.
+#: includes/class-wpci-integrations.php:167
+#, php-format
+msgid "Connected: %s"
+msgstr ""
+
+#. translators: %s: the connected ID.
+#: includes/class-wpci-integrations.php:178
+#, php-format
+msgid "Paused: %s"
+msgstr ""
+
+#. translators: %s: example ID suffix, e.g. "ABC1234XY".
+#: includes/class-wpci-integrations.php:194
+#, php-format
+msgid "Example: %s"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:209
+msgid "Update"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:209
+msgid "Connect"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:219
+#: includes/class-wpci-list-table.php:34
+msgid "Active"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:221
+msgid "Remove this integration and its snippet(s)?"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:225
+msgid "Remove"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:235
+msgid "Integration saved."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:237
+msgid "That ID doesn't look right for this integration — please check the format and try again."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:239
+msgid "Integration removed."
+msgstr ""
+
+#. translators: %s: GA4 Measurement ID.
+#: includes/class-wpci-integrations.php:260
+#, php-format
+msgid "Google Analytics 4 (%s)"
+msgstr ""
+
+#. translators: %s: GTM Container ID.
+#: includes/class-wpci-integrations.php:275
+#, php-format
+msgid "Google Tag Manager – Head (%s)"
+msgstr ""
+
+#. translators: %s: GTM Container ID.
+#: includes/class-wpci-integrations.php:283
+#, php-format
+msgid "Google Tag Manager – Body (%s)"
+msgstr ""
+
+#. translators: %s: Meta Pixel ID.
+#: includes/class-wpci-integrations.php:298
+#, php-format
+msgid "Meta Pixel (%s)"
+msgstr ""
+
+#: includes/class-wpci-list-table.php:31
+msgid "Type"
+msgstr ""
+
+#: includes/class-wpci-list-table.php:32
+msgid "Conditions"
+msgstr ""
+
+#. translators: %s: code type label, e.g. "JavaScript".
+#: includes/class-wpci-list-table.php:49
+#, php-format
+msgid "%s (external file)"
+msgstr ""
+
+#: includes/class-wpci-plugin-links.php:31
+msgid "View details"
+msgstr ""
+
+#. translators: %s: the URL the user pasted.
+#: includes/class-wpci-save-handler.php:134
+#, php-format
+msgid "The link you pasted (%s) didn't match any page or post on this site, so it wasn't added."
+msgstr ""
+
+#: includes/class-wpci-settings.php:46
+msgid "All snippets are currently paused site-wide by the emergency kill switch."
+msgstr ""
+
+#: includes/class-wpci-settings.php:48
+msgid "Go to Settings to resume."
+msgstr ""
+
+#: includes/class-wpci-settings.php:86
+msgid "All snippets are currently paused site-wide."
+msgstr ""
+
+#: includes/class-wpci-settings.php:98
+msgid "Pause all snippets (emergency kill switch)"
+msgstr ""
+
+#: includes/class-wpci-settings.php:100
+msgid "Stops every snippet from outputting anywhere on the site, without changing any individual snippet's own on/off setting. Use this if a snippet breaks something and you need to shut everything off immediately."
+msgstr ""
+
+#: includes/class-wpci-settings.php:108
+msgid "Delete all snippets and settings when this plugin is deleted"
+msgstr ""
+
+#: includes/class-wpci-settings.php:110
+msgid "Off by default, so deleting the plugin by accident never loses your data. Turn this on only if you want a completely clean removal."
+msgstr ""
+
+#: includes/class-wpci-settings.php:113
+msgid "Save Settings"
+msgstr ""
+
+#: includes/class-wpci-settings.php:122
+msgid "Settings saved."
+msgstr ""
+
+#: includes/functions-helpers.php:12
+msgid "Head"
+msgstr ""
+
+#: includes/functions-helpers.php:13
+msgid "Body (after opening <body> tag)"
+msgstr ""
+
+#: includes/functions-helpers.php:14
+msgid "Footer"
+msgstr ""
+
+#: includes/functions-helpers.php:25
+msgid "Auto-detect"
+msgstr ""
+
+#: includes/functions-helpers.php:26
+msgid "JavaScript"
+msgstr ""
+
+#: includes/functions-helpers.php:27
+msgid "CSS"
+msgstr ""
+
+#: includes/functions-helpers.php:28
+msgid "HTML / mixed"
+msgstr ""
+
+#. translators: %d: number of specific pages/posts targeted.
+#: includes/functions-helpers.php:101
+#, php-format
+msgid "%d specific page/post"
+msgid_plural "%d specific pages/posts"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of post types targeted.
+#: includes/functions-helpers.php:107
+#, php-format
+msgid "%d post type"
+msgid_plural "%d post types"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of categories targeted.
+#: includes/functions-helpers.php:113
+#, php-format
+msgid "%d category"
+msgid_plural "%d categories"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of special pages targeted (front page, 404, search).
+#: includes/functions-helpers.php:119
+#, php-format
+msgid "%d special page"
+msgid_plural "%d special pages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/functions-helpers.php:126
+msgid "Invalid targeting — output disabled"
+msgstr ""
+
+#: includes/functions-helpers.php:129
+msgid "All pages"
+msgstr ""
+
+#: includes/functions-helpers.php:133
+msgid "logged-in only"
+msgstr ""
+
+#: includes/functions-helpers.php:135
+msgid "logged-out only"
+msgstr ""
+
+#: includes/functions-helpers.php:146
+msgid "Google Analytics 4 integration"
+msgstr ""
+
+#: includes/functions-helpers.php:147
+#: includes/functions-helpers.php:148
+msgid "Google Tag Manager integration"
+msgstr ""
+
+#: includes/functions-helpers.php:149
+msgid "Meta Pixel integration"
+msgstr ""

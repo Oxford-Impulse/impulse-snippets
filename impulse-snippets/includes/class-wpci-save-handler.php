@@ -56,6 +56,10 @@ class Wpci_Save_Handler {
 		// capability mapping, which is the actual safeguard here.
 		$code = isset( $_POST['wpci_code'] ) ? wp_unslash( $_POST['wpci_code'] ) : '';
 
+		// Priority is stored as native menu_order — Wpci_Output already sorts
+		// by it (menu_order ASC), this just gives users a way to set it.
+		$priority = isset( $_POST['wpci_priority'] ) ? intval( wp_unslash( $_POST['wpci_priority'] ) ) : 0;
+
 		// post_status is intentionally not touched here — the native
 		// Publish/Draft control handles that from the edit screen, and the
 		// list table's toggle switch (Wpci_Rest_Controller) handles it from
@@ -65,6 +69,7 @@ class Wpci_Save_Handler {
 			array(
 				'ID'           => $post_id,
 				'post_content' => $code,
+				'menu_order'   => $priority,
 			)
 		);
 		add_action( self::HOOK, array( $this, 'save' ) );
@@ -96,13 +101,20 @@ class Wpci_Save_Handler {
 	 * actual registered public post types.
 	 */
 	private function sanitize_conditions() {
-		$allowed_types = array( 'all', 'specific', 'post_types', 'categories' );
-		$type           = isset( $_POST['wpci_condition_type'] ) ? sanitize_key( wp_unslash( $_POST['wpci_condition_type'] ) ) : 'all';
-		if ( ! in_array( $type, $allowed_types, true ) ) {
+		$type = isset( $_POST['wpci_condition_type'] ) ? sanitize_key( wp_unslash( $_POST['wpci_condition_type'] ) ) : 'all';
+		if ( ! in_array( $type, Wpci_Conditions::ALLOWED_TYPES, true ) ) {
 			$type = 'all';
 		}
 
 		$conditions = array( 'type' => $type );
+
+		// The visitor gate is independent of the page rule. 'all' is the
+		// default and is omitted from the stored JSON so pre-1.16.0 snippets
+		// and new unrestricted ones look identical.
+		$visitor = isset( $_POST['wpci_condition_visitor'] ) ? sanitize_key( wp_unslash( $_POST['wpci_condition_visitor'] ) ) : 'all';
+		if ( in_array( $visitor, Wpci_Conditions::ALLOWED_VISITORS, true ) && 'all' !== $visitor ) {
+			$conditions['visitor'] = $visitor;
+		}
 
 		if ( 'specific' === $type ) {
 			$post_ids = ( isset( $_POST['wpci_condition_post_ids'] ) && is_array( $_POST['wpci_condition_post_ids'] ) )
@@ -139,6 +151,11 @@ class Wpci_Save_Handler {
 				? array_map( 'absint', wp_unslash( $_POST['wpci_condition_term_ids'] ) )
 				: array();
 			$conditions['term_ids'] = array_values( array_filter( $term_ids ) );
+		} elseif ( 'special' === $type ) {
+			$pages = ( isset( $_POST['wpci_condition_special'] ) && is_array( $_POST['wpci_condition_special'] ) )
+				? array_map( 'sanitize_key', wp_unslash( $_POST['wpci_condition_special'] ) )
+				: array();
+			$conditions['pages'] = array_values( array_intersect( $pages, Wpci_Conditions::ALLOWED_SPECIAL ) );
 		}
 
 		return $conditions;

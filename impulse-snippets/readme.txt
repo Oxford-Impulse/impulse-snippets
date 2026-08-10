@@ -4,7 +4,7 @@ Tags: code snippets, header footer, google analytics, google tag manager, meta p
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.15.0
+Stable tag: 1.16.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,9 @@ Impulse Snippets lets you add JavaScript, CSS, or HTML snippets anywhere on your
 * **Three placements** — Head, Body (after the opening `<body>` tag), or Footer.
 * **Paste code or link to a file** — paste JavaScript/CSS/HTML directly, or link to an externally-hosted file instead.
 * **Auto-detect formatting** — bare code without `<script>`/`<style>` tags gets wrapped automatically.
-* **Display conditions** — target all pages, specific pages/posts, post types, or categories.
+* **Display conditions** — target all pages, specific pages/posts, post types, categories, or special pages (front page, 404, search results), plus an optional logged-in/logged-out visitor filter.
+* **Priority control** — decide the exact order snippets print in when several share a location (e.g. a consent script before analytics).
+* **Import / Export & Duplicate** — back up all snippets to a JSON file, move them between sites (imports arrive switched off for safety), and duplicate any snippet with one click.
 * **One-click integrations** — paste a Google Analytics 4, Google Tag Manager, or Meta Pixel ID and the correct snippet(s) are generated for you automatically, with instant pause/resume.
 * **Instant on/off toggle** — enable or disable any snippet with a single click, no page reload.
 * **Emergency kill switch** — pause every snippet site-wide from Settings if something ever goes wrong.
@@ -56,6 +58,15 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel setup.
 
 == Changelog ==
+
+= 1.16.0 =
+* New: Priority field — control the exact output order of snippets sharing a location (lowest number prints first). Sortable Priority column in the snippets list.
+* New: "Special pages" display condition — target the front page, the 404 page, and/or search results.
+* New: visitor filter — show any snippet to everyone, logged-in users only, or logged-out visitors only, on top of the page rule.
+* New: Import / Export page — download all snippets as JSON, import them on another site (imported snippets arrive as drafts so nothing runs unreviewed).
+* New: Duplicate row action on the snippets list.
+* Added a .pot translation template in languages/.
+* Clarified that the Categories condition applies to single blog posts, not category archive pages.
 
 = 1.15.0 =
 * Fixed: re-saving a snippet no longer silently removes "specific pages" targeting for pages outside the visible selection list (sites with 200+ pages, or custom post types added via the paste-a-URL field).

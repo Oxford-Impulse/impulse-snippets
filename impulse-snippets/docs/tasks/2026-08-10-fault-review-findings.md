@@ -11,17 +11,17 @@ Source: full read-through of every plugin file by Claude. Nothing below has been
 
 ## P2 — Missing product pieces
 
-- [ ] **No UI to reorder snippets** even though `menu_order` controls output order. Add a priority/order field (competitors: WPCode priority number).
-- [ ] **Category targeting excludes category archive pages** — either support archives or relabel to "posts in these categories".
-- [ ] **Add more display conditions**: front page, 404, search results, logged-in vs logged-out. Cheap wins with the existing tagged-union conditions format.
-- [ ] **Import/export + duplicate snippet** — standard competitor features; needed for multi-site owners and migrations.
+- [x] **No UI to reorder snippets** — DONE in 1.16.0 (2026-08-11): Priority number field on the edit screen (stored as menu_order), sortable Priority column in the list. Prerequisite for the Consent Mode V2 ordering guarantee.
+- [x] **Category targeting excludes category archive pages** — DONE in 1.16.0: relabeled "Categories (single blog posts)" with clarified description. Archive support remains a possible future condition.
+- [x] **Add more display conditions** — DONE in 1.16.0: "Special pages" type (front page, 404, search results) + independent visitor filter (everyone / logged-in only / logged-out only). Covered by 15 new matches() tests.
+- [x] **Import/export + duplicate snippet** — DONE in 1.16.0: Import/Export admin page (JSON export of all snippets; imports arrive as drafts, all fields re-whitelisted) + Duplicate row action (copy arrives as draft, integration tags deliberately not copied).
 - [x] **Kill-switch visibility** — FIXED in 1.15.0 (2026-08-11): warning notice with a "resume" link on every plugin screen while paused.
 
 ## P3 — Release housekeeping
 
 - [ ] readme.txt: replace Contributors placeholder (**needs Omer's WordPress.org username — cannot be guessed**); produce the 3 promised screenshots. Install path fixed and "Tested up to: 7.0" verified correct in 1.15.0.
 - [x] `Update URI:` header — DONE in 1.15.0 (set to https://oxfordimpulse.com/impulse-snippets).
-- [x] `load_plugin_textdomain()` + Domain Path header — DONE in 1.15.0. Generating the `.pot` file still open (needs wp-cli i18n tooling).
+- [x] `load_plugin_textdomain()` + Domain Path header — DONE in 1.15.0. `.pot` file generated in 1.16.0 (languages/impulse-snippets.pot via wp-cli i18n make-pot).
 - [x] `index.php` guard files — DONE in 1.15.0 (includes/, assets/, assets/css/, assets/js/, languages/).
 - [x] `uninstall.php` multisite-aware — DONE in 1.15.0.
 - [x] Stale comment in `class-wpci-cpt.php` — DONE in 1.15.0 (comment now states there is deliberately no sanitize_callback).

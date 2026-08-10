@@ -98,17 +98,26 @@ function wpci_get_conditions_summary( $raw_conditions ) {
 		case 'specific':
 			$count = ! empty( $conditions['post_ids'] ) ? count( $conditions['post_ids'] ) : 0;
 			/* translators: %d: number of specific pages/posts targeted. */
-			return sprintf( _n( '%d specific page/post', '%d specific pages/posts', $count, 'impulse-snippets' ), $count );
+			$summary = sprintf( _n( '%d specific page/post', '%d specific pages/posts', $count, 'impulse-snippets' ), $count );
+			break;
 
 		case 'post_types':
 			$count = ! empty( $conditions['post_types'] ) ? count( $conditions['post_types'] ) : 0;
 			/* translators: %d: number of post types targeted. */
-			return sprintf( _n( '%d post type', '%d post types', $count, 'impulse-snippets' ), $count );
+			$summary = sprintf( _n( '%d post type', '%d post types', $count, 'impulse-snippets' ), $count );
+			break;
 
 		case 'categories':
 			$count = ! empty( $conditions['term_ids'] ) ? count( $conditions['term_ids'] ) : 0;
 			/* translators: %d: number of categories targeted. */
-			return sprintf( _n( '%d category', '%d categories', $count, 'impulse-snippets' ), $count );
+			$summary = sprintf( _n( '%d category', '%d categories', $count, 'impulse-snippets' ), $count );
+			break;
+
+		case 'special':
+			$count = ! empty( $conditions['pages'] ) ? count( $conditions['pages'] ) : 0;
+			/* translators: %d: number of special pages targeted (front page, 404, search). */
+			$summary = sprintf( _n( '%d special page', '%d special pages', $count, 'impulse-snippets' ), $count );
+			break;
 
 		// Matches Wpci_Conditions::matches(), which suppresses output for
 		// malformed data — the list must not claim "All pages" for a snippet
@@ -117,8 +126,16 @@ function wpci_get_conditions_summary( $raw_conditions ) {
 			return __( 'Invalid targeting — output disabled', 'impulse-snippets' );
 
 		default:
-			return __( 'All pages', 'impulse-snippets' );
+			$summary = __( 'All pages', 'impulse-snippets' );
 	}
+
+	if ( isset( $conditions['visitor'] ) && 'logged_in' === $conditions['visitor'] ) {
+		$summary .= ' — ' . __( 'logged-in only', 'impulse-snippets' );
+	} elseif ( isset( $conditions['visitor'] ) && 'logged_out' === $conditions['visitor'] ) {
+		$summary .= ' — ' . __( 'logged-out only', 'impulse-snippets' );
+	}
+
+	return $summary;
 }
 
 /**

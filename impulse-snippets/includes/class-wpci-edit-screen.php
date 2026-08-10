@@ -125,15 +125,25 @@ class Wpci_Edit_Screen {
 				</label>
 			<?php endforeach; ?>
 		</p>
+		<hr>
+		<p>
+			<label for="wpci_priority"><strong><?php esc_html_e( 'Priority', 'impulse-snippets' ); ?></strong></label><br>
+			<input type="number" id="wpci_priority" name="wpci_priority" value="<?php echo esc_attr( $post->menu_order ); ?>" step="1" style="width:90px;">
+		</p>
+		<p class="description">
+			<?php esc_html_e( 'Snippets in the same location print in priority order, lowest number first. Leave at 0 unless one snippet must load before another (e.g. a consent script before analytics).', 'impulse-snippets' ); ?>
+		</p>
 		<?php
 	}
 
 	public function render_conditions_box( $post ) {
 		$conditions = Wpci_Conditions::decode( get_post_meta( $post->ID, '_wpci_conditions', true ) );
-		$type       = in_array( $conditions['type'], array( 'all', 'specific', 'post_types', 'categories' ), true ) ? $conditions['type'] : 'all';
+		$type       = in_array( $conditions['type'], Wpci_Conditions::ALLOWED_TYPES, true ) ? $conditions['type'] : 'all';
 		$post_ids   = ( ! empty( $conditions['post_ids'] ) && is_array( $conditions['post_ids'] ) ) ? $conditions['post_ids'] : array();
 		$post_types = ( ! empty( $conditions['post_types'] ) && is_array( $conditions['post_types'] ) ) ? $conditions['post_types'] : array();
 		$term_ids   = ( ! empty( $conditions['term_ids'] ) && is_array( $conditions['term_ids'] ) ) ? $conditions['term_ids'] : array();
+		$special    = ( ! empty( $conditions['pages'] ) && is_array( $conditions['pages'] ) ) ? $conditions['pages'] : array();
+		$visitor    = ( isset( $conditions['visitor'] ) && in_array( $conditions['visitor'], Wpci_Conditions::ALLOWED_VISITORS, true ) ) ? $conditions['visitor'] : 'all';
 		?>
 		<p>
 			<label style="display:block;margin-bottom:6px;">
@@ -148,9 +158,13 @@ class Wpci_Edit_Screen {
 				<input type="radio" name="wpci_condition_type" value="post_types" <?php checked( $type, 'post_types' ); ?> class="wpci-condition-radio">
 				<?php esc_html_e( 'Post types', 'impulse-snippets' ); ?>
 			</label>
-			<label style="display:block;">
+			<label style="display:block;margin-bottom:6px;">
 				<input type="radio" name="wpci_condition_type" value="categories" <?php checked( $type, 'categories' ); ?> class="wpci-condition-radio">
-				<?php esc_html_e( 'Categories', 'impulse-snippets' ); ?>
+				<?php esc_html_e( 'Categories (single blog posts)', 'impulse-snippets' ); ?>
+			</label>
+			<label style="display:block;">
+				<input type="radio" name="wpci_condition_type" value="special" <?php checked( $type, 'special' ); ?> class="wpci-condition-radio">
+				<?php esc_html_e( 'Special pages (front page, 404, search)', 'impulse-snippets' ); ?>
 			</label>
 		</p>
 
@@ -183,7 +197,7 @@ class Wpci_Edit_Screen {
 		</div>
 
 		<div class="wpci-condition-panel" data-condition="categories" style="<?php echo 'categories' === $type ? '' : 'display:none;'; ?>">
-			<p class="description"><?php esc_html_e( 'Applies to blog posts only.', 'impulse-snippets' ); ?></p>
+			<p class="description"><?php esc_html_e( 'Applies to single blog posts in these categories (not the category archive pages).', 'impulse-snippets' ); ?></p>
 			<div class="wpci-searchable-list">
 				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'impulse-snippets' ); ?>">
 				<div class="wpci-checkbox-list">
@@ -196,6 +210,32 @@ class Wpci_Edit_Screen {
 				</div>
 			</div>
 		</div>
+
+		<div class="wpci-condition-panel" data-condition="special" style="<?php echo 'special' === $type ? '' : 'display:none;'; ?>">
+			<label style="display:block;">
+				<input type="checkbox" name="wpci_condition_special[]" value="front" <?php echo in_array( 'front', $special, true ) ? 'checked' : ''; ?>>
+				<?php esc_html_e( 'Front page (homepage)', 'impulse-snippets' ); ?>
+			</label>
+			<label style="display:block;">
+				<input type="checkbox" name="wpci_condition_special[]" value="404" <?php echo in_array( '404', $special, true ) ? 'checked' : ''; ?>>
+				<?php esc_html_e( '404 "page not found" page', 'impulse-snippets' ); ?>
+			</label>
+			<label style="display:block;">
+				<input type="checkbox" name="wpci_condition_special[]" value="search" <?php echo in_array( 'search', $special, true ) ? 'checked' : ''; ?>>
+				<?php esc_html_e( 'Search results page', 'impulse-snippets' ); ?>
+			</label>
+		</div>
+
+		<hr>
+		<p>
+			<label for="wpci_condition_visitor"><strong><?php esc_html_e( 'Show for', 'impulse-snippets' ); ?></strong></label><br>
+			<select name="wpci_condition_visitor" id="wpci_condition_visitor">
+				<option value="all" <?php selected( $visitor, 'all' ); ?>><?php esc_html_e( 'Everyone', 'impulse-snippets' ); ?></option>
+				<option value="logged_in" <?php selected( $visitor, 'logged_in' ); ?>><?php esc_html_e( 'Logged-in users only', 'impulse-snippets' ); ?></option>
+				<option value="logged_out" <?php selected( $visitor, 'logged_out' ); ?>><?php esc_html_e( 'Logged-out visitors only', 'impulse-snippets' ); ?></option>
+			</select>
+		</p>
+		<p class="description"><?php esc_html_e( 'Applies on top of the page rule above. Handy for showing a snippet only to visitors (e.g. analytics) or only to logged-in users.', 'impulse-snippets' ); ?></p>
 		<?php
 	}
 
