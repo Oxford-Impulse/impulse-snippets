@@ -82,10 +82,10 @@ function wpci_render_external_tag( $url, $type ) {
 	}
 
 	if ( 'style' === $type ) {
-		return '<link rel="stylesheet" href="' . $url . '">';
+		return '<link rel="stylesheet" href="' . $url . '">'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet -- this builds the user's snippet for front-end output; it is the product, not an admin asset.
 	}
 
-	return '<script src="' . $url . '"></script>';
+	return '<script src="' . $url . '"></script>'; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- same as above: user-configured snippet output, not an admin asset.
 }
 
 /**

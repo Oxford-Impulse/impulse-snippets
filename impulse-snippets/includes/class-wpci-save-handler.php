@@ -38,7 +38,7 @@ class Wpci_Save_Handler {
 		}
 
 		$allowed_sources = array( 'inline', 'external' );
-		$source           = isset( $_POST['wpci_code_source'] ) ? sanitize_key( wp_unslash( $_POST['wpci_code_source'] ) ) : 'inline';
+		$source          = isset( $_POST['wpci_code_source'] ) ? sanitize_key( wp_unslash( $_POST['wpci_code_source'] ) ) : 'inline';
 		if ( ! in_array( $source, $allowed_sources, true ) ) {
 			$source = 'inline';
 		}
@@ -75,14 +75,14 @@ class Wpci_Save_Handler {
 		add_action( self::HOOK, array( $this, 'save' ) );
 
 		$allowed_locations = array( 'head', 'body', 'footer' );
-		$location           = isset( $_POST['wpci_location'] ) ? sanitize_key( wp_unslash( $_POST['wpci_location'] ) ) : 'head';
+		$location          = isset( $_POST['wpci_location'] ) ? sanitize_key( wp_unslash( $_POST['wpci_location'] ) ) : 'head';
 		if ( ! in_array( $location, $allowed_locations, true ) ) {
 			$location = 'head';
 		}
 		update_post_meta( $post_id, '_wpci_location', $location );
 
 		$allowed_types = array( 'auto', 'script', 'style', 'html' );
-		$code_type      = isset( $_POST['wpci_code_type'] ) ? sanitize_key( wp_unslash( $_POST['wpci_code_type'] ) ) : 'auto';
+		$code_type     = isset( $_POST['wpci_code_type'] ) ? sanitize_key( wp_unslash( $_POST['wpci_code_type'] ) ) : 'auto';
 		if ( ! in_array( $code_type, $allowed_types, true ) ) {
 			$code_type = 'auto';
 		}
@@ -101,6 +101,7 @@ class Wpci_Save_Handler {
 	 * actual registered public post types.
 	 */
 	private function sanitize_conditions() {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- only called from save(), which verifies the nonce and capability before reaching this.
 		$type = isset( $_POST['wpci_condition_type'] ) ? sanitize_key( wp_unslash( $_POST['wpci_condition_type'] ) ) : 'all';
 		if ( ! in_array( $type, Wpci_Conditions::ALLOWED_TYPES, true ) ) {
 			$type = 'all';
@@ -141,22 +142,23 @@ class Wpci_Save_Handler {
 
 			$conditions['post_ids'] = array_values( array_unique( array_filter( $post_ids ) ) );
 		} elseif ( 'post_types' === $type ) {
-			$public_post_types = array_keys( get_post_types( array( 'public' => true ) ) );
-			$post_types         = ( isset( $_POST['wpci_condition_post_types'] ) && is_array( $_POST['wpci_condition_post_types'] ) )
+			$public_post_types        = array_keys( get_post_types( array( 'public' => true ) ) );
+			$post_types               = ( isset( $_POST['wpci_condition_post_types'] ) && is_array( $_POST['wpci_condition_post_types'] ) )
 				? array_map( 'sanitize_key', wp_unslash( $_POST['wpci_condition_post_types'] ) )
 				: array();
 			$conditions['post_types'] = array_values( array_intersect( $post_types, $public_post_types ) );
 		} elseif ( 'categories' === $type ) {
-			$term_ids = ( isset( $_POST['wpci_condition_term_ids'] ) && is_array( $_POST['wpci_condition_term_ids'] ) )
+			$term_ids               = ( isset( $_POST['wpci_condition_term_ids'] ) && is_array( $_POST['wpci_condition_term_ids'] ) )
 				? array_map( 'absint', wp_unslash( $_POST['wpci_condition_term_ids'] ) )
 				: array();
 			$conditions['term_ids'] = array_values( array_filter( $term_ids ) );
 		} elseif ( 'special' === $type ) {
-			$pages = ( isset( $_POST['wpci_condition_special'] ) && is_array( $_POST['wpci_condition_special'] ) )
+			$pages               = ( isset( $_POST['wpci_condition_special'] ) && is_array( $_POST['wpci_condition_special'] ) )
 				? array_map( 'sanitize_key', wp_unslash( $_POST['wpci_condition_special'] ) )
 				: array();
 			$conditions['pages'] = array_values( array_intersect( $pages, Wpci_Conditions::ALLOWED_SPECIAL ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		return $conditions;
 	}

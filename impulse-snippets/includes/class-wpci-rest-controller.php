@@ -4,11 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * One small REST route powering the list table's toggle switch: flips a
- * snippet between publish/draft without a full page reload. Everything else
- * in this plugin is plain form posts on purpose — this is the one place a
- * REST endpoint earns its keep, since a checkbox that reloads the whole page
- * on every click is a bad experience for something meant to be flipped often.
+ * Two small REST routes where a page reload would be a bad experience:
+ * the list table's on/off toggle, and the edit screen's page-search picker.
+ * Everything else in this plugin is plain form posts on purpose.
  */
 class Wpci_Rest_Controller {
 
@@ -36,6 +34,56 @@ class Wpci_Rest_Controller {
 				),
 			)
 		);
+
+		// Powers the type-to-search picker on the Display Conditions box, so
+		// large sites aren't stuck scrolling a fixed checkbox list.
+		register_rest_route(
+			self::NAMESPACE_,
+			'/posts/search',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'search_posts' ),
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
+				'args'                => array(
+					'term' => array(
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+				),
+			)
+		);
+	}
+
+	public function search_posts( $request ) {
+		$term = trim( (string) $request['term'] );
+		if ( strlen( $term ) < 2 ) {
+			return array();
+		}
+
+		// Public content only — attachments are excluded because targeting a
+		// media page is almost never what a snippet author means.
+		$post_types = array_values( array_diff( array_keys( get_post_types( array( 'public' => true ) ) ), array( 'attachment' ) ) );
+
+		$posts = get_posts(
+			array(
+				's'              => $term,
+				'post_type'      => $post_types,
+				'post_status'    => 'publish',
+				'posts_per_page' => 20,
+			)
+		);
+
+		$results = array();
+		foreach ( $posts as $post ) {
+			$results[] = array(
+				'id'    => $post->ID,
+				'title' => '' !== $post->post_title ? $post->post_title : __( '(no title)', 'impulse-snippets' ),
+				'type'  => $post->post_type,
+			);
+		}
+
+		return $results;
 	}
 
 	public function permission_check( $request ) {

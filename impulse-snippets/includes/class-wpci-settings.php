@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Wpci_Settings {
 
 	const PAGE_SLUG                  = 'wpci-settings';
-	const OPTION_DISABLE_ALL          = 'wpci_disable_all';
-	const OPTION_REMOVE_ON_UNINSTALL  = 'wpci_remove_data_on_uninstall';
+	const OPTION_DISABLE_ALL         = 'wpci_disable_all';
+	const OPTION_REMOVE_ON_UNINSTALL = 'wpci_remove_data_on_uninstall';
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
@@ -118,7 +118,7 @@ class Wpci_Settings {
 	}
 
 	private function maybe_render_status_notice() {
-		if ( isset( $_GET['wpci_saved'] ) ) {
+		if ( isset( $_GET['wpci_saved'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display of a status flag set by our own redirect; no state changes here.
 			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Settings saved.', 'impulse-snippets' ) );
 		}
 	}

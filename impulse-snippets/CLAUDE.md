@@ -66,6 +66,12 @@ Other files: `assets/css/admin.css` + three small vanilla-JS files in `assets/js
 - **Data safety is a product value**: deactivation never touches data; uninstall keeps data unless explicitly opted in. Preserve this in anything new.
 - Comments in the code explain *why* decisions were made (e.g. the `wp_body_open` fallback, the capability self-heal) — read them before changing behavior, and keep that comment style.
 
+## Dev tooling (repo root, one level up from the plugin)
+
+- **Tests**: `tests/run-tests.php` — standalone logic tests, no WordPress needed. Run with any PHP 7.4+ CLI: `php tests/run-tests.php` (exit 0 = pass). Note: no PHP is installed system-wide on this machine — download a portable PHP zip from windows.php.net when needed.
+- **PHPCS**: `composer.json` + `phpcs.xml.dist` at repo root configure PHP_CodeSniffer with the WordPress-Extra standard (deliberately not full "WordPress" — the Docs docblock sniffs are omitted, this codebase documents *why* in targeted comments instead). Install with `php composer.phar install`, run with `php vendor/squizlabs/php_codesniffer/bin/phpcs`. Keep the scan at zero findings; when a rule is knowingly overridden, use `phpcs:ignore` with a written justification, never a bare ignore.
+- `vendor/` is git-ignored; `composer.lock` is committed.
+
 ## Docs & tasks
 
 - `docs/` is the project documentation folder; `docs/tasks/` holds one markdown file per planned/ongoing task (create it if missing).

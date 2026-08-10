@@ -169,18 +169,20 @@ class Wpci_Edit_Screen {
 		</p>
 
 		<div class="wpci-condition-panel" data-condition="specific" style="<?php echo 'specific' === $type ? '' : 'display:none;'; ?>">
-			<p class="description"><?php esc_html_e( 'Select one or more pages/posts:', 'impulse-snippets' ); ?></p>
-			<div class="wpci-searchable-list">
-				<input type="text" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to search…', 'impulse-snippets' ); ?>">
-				<div class="wpci-checkbox-list">
-					<?php foreach ( $this->get_selectable_posts( $post_ids ) as $selectable ) : ?>
-						<label style="display:block;">
-							<input type="checkbox" name="wpci_condition_post_ids[]" value="<?php echo esc_attr( $selectable->ID ); ?>" <?php echo in_array( $selectable->ID, $post_ids, true ) ? 'checked' : ''; ?>>
-							<?php echo esc_html( $selectable->post_title . ' (' . $selectable->post_type . ')' ); ?>
-						</label>
-					<?php endforeach; ?>
-				</div>
+			<p class="description"><?php esc_html_e( 'Search for the pages or posts this snippet should appear on:', 'impulse-snippets' ); ?></p>
+			<div class="wpci-post-picker">
+				<input type="text" id="wpci-post-search" placeholder="<?php esc_attr_e( 'Type at least 2 letters to search…', 'impulse-snippets' ); ?>" autocomplete="off" style="width:100%;">
+				<div id="wpci-post-search-results" class="wpci-picker-results" style="display:none;"></div>
 			</div>
+			<ul id="wpci-selected-posts" class="wpci-selected-list">
+				<?php foreach ( $this->get_selected_posts( $post_ids ) as $selected ) : ?>
+					<li data-id="<?php echo esc_attr( $selected->ID ); ?>">
+						<span><?php echo esc_html( ( '' !== $selected->post_title ? $selected->post_title : __( '(no title)', 'impulse-snippets' ) ) . ' (' . $selected->post_type . ')' ); ?></span>
+						<button type="button" class="wpci-remove-post button-link" aria-label="<?php esc_attr_e( 'Remove', 'impulse-snippets' ); ?>">&times;</button>
+						<input type="hidden" name="wpci_condition_post_ids[]" value="<?php echo esc_attr( $selected->ID ); ?>">
+					</li>
+				<?php endforeach; ?>
+			</ul>
 			<p style="margin-top:10px;">
 				<label for="wpci_condition_post_url"><?php esc_html_e( 'Or paste a page/post link to add it directly:', 'impulse-snippets' ); ?></label><br>
 				<input type="url" id="wpci_condition_post_url" name="wpci_condition_post_url" placeholder="https://yoursite.com/some-page/" style="width:100%;">
@@ -239,35 +241,24 @@ class Wpci_Edit_Screen {
 		<?php
 	}
 
-	private function get_selectable_posts( $include_ids = array() ) {
-		$posts = get_posts(
-			array(
-				'post_type'      => array( 'post', 'page' ),
-				'posts_per_page' => 200,
-				'post_status'    => 'publish',
-				'orderby'        => 'title',
-				'order'          => 'ASC',
-			)
-		);
-
-		// Always render the currently-targeted posts too, even when they fall
-		// outside the 200-item window (large sites) or aren't a post/page
-		// (custom post types added via the paste-a-URL field). Unrendered
-		// checkboxes don't submit, so omitting them here would silently drop
-		// that targeting on the next save.
-		$missing = array_diff( $include_ids, wp_list_pluck( $posts, 'ID' ) );
-		if ( ! empty( $missing ) ) {
-			$extra = get_posts(
-				array(
-					'post_type'   => 'any',
-					'post_status' => 'any',
-					'include'     => $missing,
-				)
-			);
-			$posts = array_merge( $extra, $posts );
+	/**
+	 * The posts a snippet currently targets, whatever their type or status —
+	 * every one of them must render (each row carries a hidden input), or the
+	 * next save would silently drop that targeting.
+	 */
+	private function get_selected_posts( $post_ids ) {
+		if ( empty( $post_ids ) ) {
+			return array();
 		}
 
-		return $posts;
+		return get_posts(
+			array(
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+				'include'        => $post_ids,
+				'posts_per_page' => -1,
+			)
+		);
 	}
 
 	private function get_selectable_post_types() {

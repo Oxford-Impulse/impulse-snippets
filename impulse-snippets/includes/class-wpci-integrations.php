@@ -231,6 +231,7 @@ class Wpci_Integrations {
 	}
 
 	private function maybe_render_status_notice() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only display of a status flag set by our own redirect; no state changes here.
 		if ( isset( $_GET['wpci_success'] ) ) {
 			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration saved.', 'impulse-snippets' ) );
 		} elseif ( isset( $_GET['wpci_error'] ) ) {
@@ -238,6 +239,7 @@ class Wpci_Integrations {
 		} elseif ( isset( $_GET['wpci_removed'] ) ) {
 			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration removed.', 'impulse-snippets' ) );
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
 
 	public function handle_save() {
@@ -315,7 +317,7 @@ class Wpci_Integrations {
 	 * anyway, so it doesn't get doubled up.
 	 */
 	private function build_id_from_suffix( $post_key, $prefix ) {
-		$suffix = isset( $_POST[ $post_key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) : '';
+		$suffix = isset( $_POST[ $post_key ] ) ? sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- only called from handle_save(), which runs check_admin_referer() first.
 		$suffix = trim( $suffix );
 		$suffix = preg_replace( '/^' . preg_quote( $prefix, '/' ) . '/i', '', $suffix );
 
@@ -403,7 +405,7 @@ class Wpci_Integrations {
 
 	private function ga4_code( $id ) {
 		$id = esc_js( $id );
-		return "<script async src=\"https://www.googletagmanager.com/gtag/js?id={$id}\"></script>\n"
+		return "<script async src=\"https://www.googletagmanager.com/gtag/js?id={$id}\"></script>\n" // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- this string becomes the user's front-end snippet; it is not an admin asset.
 			. "<script>\nwindow.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '{$id}');\n</script>";
 	}
 

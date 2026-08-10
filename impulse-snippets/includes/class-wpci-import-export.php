@@ -79,6 +79,7 @@ class Wpci_Import_Export {
 	}
 
 	private function maybe_render_status_notice() {
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only display of a status flag set by our own redirect; no state changes here.
 		if ( isset( $_GET['wpci_imported'] ) ) {
 			$count = absint( $_GET['wpci_imported'] );
 			printf(
@@ -92,6 +93,7 @@ class Wpci_Import_Export {
 				esc_html__( "That file couldn't be read as an Impulse Snippets export. Please upload an unmodified export file.", 'impulse-snippets' )
 			);
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
 
 	public function handle_export() {
@@ -150,7 +152,7 @@ class Wpci_Import_Export {
 		$redirect_args = array( 'page' => self::PAGE_SLUG );
 
 		$tmp_name = isset( $_FILES['wpci_import_file']['tmp_name'] ) ? $_FILES['wpci_import_file']['tmp_name'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- path comes from PHP's upload handling, read directly below.
-		$payload  = ( $tmp_name && is_uploaded_file( $tmp_name ) ) ? json_decode( (string) file_get_contents( $tmp_name ), true ) : null;
+		$payload  = ( $tmp_name && is_uploaded_file( $tmp_name ) ) ? json_decode( (string) file_get_contents( $tmp_name ), true ) : null; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local uploaded temp file, not a remote URL; wp_remote_get() does not apply.
 
 		if ( ! is_array( $payload ) || 'impulse-snippets' !== ( isset( $payload['plugin'] ) ? $payload['plugin'] : '' ) || empty( $payload['snippets'] ) || ! is_array( $payload['snippets'] ) ) {
 			$redirect_args['wpci_import_error'] = 1;
@@ -164,7 +166,7 @@ class Wpci_Import_Export {
 				continue;
 			}
 			if ( $this->import_one( $item ) ) {
-				$imported++;
+				++$imported;
 			}
 		}
 

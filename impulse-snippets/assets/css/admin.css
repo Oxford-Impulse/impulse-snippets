@@ -167,3 +167,62 @@
 	opacity: 0.5;
 	cursor: default;
 }
+
+/* Post-search picker (Display Conditions -> Specific pages or posts) */
+.wpci-post-picker {
+	position: relative;
+	max-width: 500px;
+}
+
+.wpci-picker-results {
+	position: absolute;
+	z-index: 100;
+	left: 0;
+	right: 0;
+	background: #fff;
+	border: 1px solid #8c8f94;
+	border-top: none;
+	max-height: 220px;
+	overflow-y: auto;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.wpci-picker-result {
+	display: block;
+	width: 100%;
+	padding: 6px 10px;
+	border: none;
+	background: none;
+	text-align: left;
+	cursor: pointer;
+}
+
+.wpci-picker-result:hover,
+.wpci-picker-result:focus {
+	background: #f0f6fc;
+}
+
+.wpci-selected-list {
+	margin: 10px 0 0;
+	max-width: 500px;
+}
+
+.wpci-selected-list li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin: 0 0 4px;
+	padding: 4px 10px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+}
+
+.wpci-remove-post {
+	color: #b32d2e;
+	font-size: 16px;
+	line-height: 1;
+	text-decoration: none;
+	cursor: pointer;
+}

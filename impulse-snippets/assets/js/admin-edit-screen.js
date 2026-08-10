@@ -59,8 +59,112 @@
 		wireRadioPanels( 'wpci-condition-radio', 'wpci-condition-panel', 'condition', 'all' );
 		wireRadioPanels( 'wpci-source-radio', 'wpci-source-panel', 'source', 'inline' );
 
-		// Live search filter above the specific-pages / categories checkbox
-		// lists: typing hides any label whose text doesn't match.
+		// Type-to-search picker for the "Specific pages or posts" condition.
+		// Queries the wpci/v1/posts/search REST route (debounced); each pick
+		// appends a row carrying a hidden input, which is what actually
+		// submits. Rows render server-side for already-targeted posts.
+		var searchInput  = document.getElementById( 'wpci-post-search' );
+		var resultsBox   = document.getElementById( 'wpci-post-search-results' );
+		var selectedList = document.getElementById( 'wpci-selected-posts' );
+
+		if ( searchInput && resultsBox && selectedList && 'undefined' !== typeof wp && wp.apiFetch ) {
+			var debounceTimer = null;
+
+			var isSelected = function( id ) {
+				return !! selectedList.querySelector( 'li[data-id="' + id + '"]' );
+			};
+
+			var addSelected = function( id, label ) {
+				if ( isSelected( id ) ) {
+					return;
+				}
+				var li = document.createElement( 'li' );
+				li.setAttribute( 'data-id', id );
+
+				var span = document.createElement( 'span' );
+				span.textContent = label;
+
+				var remove = document.createElement( 'button' );
+				remove.type = 'button';
+				remove.className = 'wpci-remove-post button-link';
+				remove.setAttribute( 'aria-label', 'Remove' );
+				remove.innerHTML = '&times;';
+
+				var hidden = document.createElement( 'input' );
+				hidden.type  = 'hidden';
+				hidden.name  = 'wpci_condition_post_ids[]';
+				hidden.value = id;
+
+				li.appendChild( span );
+				li.appendChild( remove );
+				li.appendChild( hidden );
+				selectedList.appendChild( li );
+			};
+
+			var hideResults = function() {
+				resultsBox.style.display = 'none';
+				resultsBox.innerHTML = '';
+			};
+
+			var showResults = function( items ) {
+				resultsBox.innerHTML = '';
+				if ( ! items.length ) {
+					hideResults();
+					return;
+				}
+				for ( var i = 0; i < items.length; i++ ) {
+					var btn = document.createElement( 'button' );
+					btn.type = 'button';
+					btn.className = 'wpci-picker-result';
+					btn.textContent = items[ i ].title + ' (' + items[ i ].type + ')';
+					btn.setAttribute( 'data-id', items[ i ].id );
+					resultsBox.appendChild( btn );
+				}
+				resultsBox.style.display = '';
+			};
+
+			searchInput.addEventListener( 'input', function() {
+				var term = searchInput.value.trim();
+				clearTimeout( debounceTimer );
+				if ( term.length < 2 ) {
+					hideResults();
+					return;
+				}
+				debounceTimer = setTimeout( function() {
+					wp.apiFetch( { path: 'wpci/v1/posts/search?term=' + encodeURIComponent( term ) } )
+						.then( showResults )
+						.catch( hideResults );
+				}, 300 );
+			} );
+
+			resultsBox.addEventListener( 'click', function( e ) {
+				var btn = e.target.closest ? e.target.closest( '.wpci-picker-result' ) : null;
+				if ( ! btn ) {
+					return;
+				}
+				addSelected( btn.getAttribute( 'data-id' ), btn.textContent );
+				hideResults();
+				searchInput.value = '';
+				searchInput.focus();
+			} );
+
+			selectedList.addEventListener( 'click', function( e ) {
+				if ( e.target.classList && e.target.classList.contains( 'wpci-remove-post' ) ) {
+					var li = e.target.parentElement;
+					li.parentElement.removeChild( li );
+				}
+			} );
+
+			// Typing elsewhere shouldn't leave a stale dropdown open.
+			document.addEventListener( 'click', function( e ) {
+				if ( ! resultsBox.contains( e.target ) && e.target !== searchInput ) {
+					hideResults();
+				}
+			} );
+		}
+
+		// Live search filter above the categories checkbox
+		// list: typing hides any label whose text doesn't match.
 		var filterInputs = document.querySelectorAll( '.wpci-checkbox-filter' );
 
 		for ( var k = 0; k < filterInputs.length; k++ ) {

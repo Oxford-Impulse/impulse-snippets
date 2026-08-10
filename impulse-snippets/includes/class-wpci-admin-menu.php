@@ -252,9 +252,18 @@ class Wpci_Admin_Menu {
 		wp_enqueue_script(
 			'wpci-edit-screen',
 			WPCI_PLUGIN_URL . 'assets/js/admin-edit-screen.js',
-			array( 'jquery' ),
+			array( 'jquery', 'wp-api-fetch' ),
 			WPCI_VERSION,
 			true
+		);
+
+		// Same standalone apiFetch middleware setup as the list toggle — the
+		// edit screen's post-search picker needs the REST root and nonce.
+		wp_add_inline_script(
+			'wpci-edit-screen',
+			'wp.apiFetch.use( wp.apiFetch.createRootURLMiddleware( ' . wp_json_encode( esc_url_raw( rest_url() ) ) . ' ) );'
+			. 'wp.apiFetch.use( wp.apiFetch.createNonceMiddleware( ' . wp_json_encode( wp_create_nonce( 'wp_rest' ) ) . ' ) );',
+			'before'
 		);
 
 		wp_localize_script(

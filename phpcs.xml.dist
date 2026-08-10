@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<ruleset name="Impulse Snippets">
+	<description>WordPress Coding Standards configuration for the Impulse Snippets plugin.</description>
+
+	<!--
+		WordPress-Extra = Core formatting + best-practice + security sniffs.
+		The full "WordPress" standard additionally enforces formal docblocks
+		on every function/file (WordPress-Docs); this codebase documents the
+		*why* in targeted comments instead, so Docs is intentionally omitted.
+		tests/run-tests.php is excluded: it stubs WP core functions by design.
+	-->
+
+	<file>impulse-snippets</file>
+
+	<exclude-pattern>*/impulse-snippets/.agents/*</exclude-pattern>
+	<exclude-pattern>*/impulse-snippets/.claude/*</exclude-pattern>
+	<exclude-pattern>*/impulse-snippets/languages/*</exclude-pattern>
+	<exclude-pattern>*/impulse-snippets/docs/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg value="ps"/>
+	<arg name="parallel" value="8"/>
+
+	<rule ref="WordPress-Extra"/>
+
+	<config name="minimum_wp_version" value="5.9"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="impulse-snippets"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="wpci"/>
+				<element value="Wpci"/>
+				<element value="WPCI"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

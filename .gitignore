@@ -5,6 +5,9 @@ impulse-snippets.zip
 master-code-injector.php
 master-code-injector.zip
 
+# Composer dev tooling (reinstall with: php composer.phar install)
+vendor/
+
 # OS cruft
 Thumbs.db
 .DS_Store

@@ -38,7 +38,12 @@ function wpci_uninstall_current_site() {
 // its own opt-in; a single-site install just cleans itself.
 if ( is_multisite() ) {
 	// 'number' => 0 disables get_sites()' default 100-site cap.
-	foreach ( get_sites( array( 'fields' => 'ids', 'number' => 0 ) ) as $wpci_site_id ) {
+	foreach ( get_sites(
+		array(
+			'fields' => 'ids',
+			'number' => 0,
+		)
+	) as $wpci_site_id ) {
 		switch_to_blog( $wpci_site_id );
 		wpci_uninstall_current_site();
 		restore_current_blog();
