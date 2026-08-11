@@ -71,6 +71,8 @@ class Wpci_Admin_Menu {
 			__( 'Google Tag Manager', 'impulse-snippets' ) => wpci_get_integration_connected_id( 'gtm_head' ),
 			__( 'Meta Pixel', 'impulse-snippets' )         => wpci_get_integration_connected_id( 'meta_pixel' ),
 			__( 'Google Ads', 'impulse-snippets' )         => wpci_get_integration_connected_id( 'google_ads' ),
+			__( 'Google tag (GT-)', 'impulse-snippets' )   => wpci_get_integration_connected_id( 'google_tag' ),
+			__( 'Consent Mode V2', 'impulse-snippets' )    => wpci_get_integration_connected_id( 'consent_mode' ),
 		);
 		?>
 		<div class="wrap">

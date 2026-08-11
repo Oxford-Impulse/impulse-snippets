@@ -45,7 +45,7 @@ class Wpci_Integrations {
 	public function register_rest_routes() {
 		register_rest_route(
 			'wpci/v1',
-			'/integrations/(?P<key>ga4|gtm|meta_pixel|google_ads)/toggle',
+			'/integrations/(?P<key>ga4|gtm|meta_pixel|google_ads|google_tag|consent_mode)/toggle',
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'rest_toggle' ),
@@ -169,6 +169,18 @@ class Wpci_Integrations {
 						'extra'       => array( $this, 'render_ads_conversions_section' ),
 					)
 				);
+				$this->render_card(
+					array(
+						'key'         => 'google_tag',
+						'title'       => __( 'Google tag (GT-)', 'impulse-snippets' ),
+						'description' => __( 'Newer Google accounts get a single unified "Google tag" that can serve Analytics and Ads together. If Google shows you a GT- ID, connect it here.', 'impulse-snippets' ),
+						'help'        => __( 'Find it in Google Analytics or Google Ads under Admin → Google tag. Note: connect EITHER this GT- tag OR the separate GA4/Google Ads IDs above — connecting both loads the same tag twice.', 'impulse-snippets' ),
+						'prefix'      => 'GT-',
+						'example'     => 'ABC1234',
+						'field_name'  => 'wpci_google_tag_id',
+					)
+				);
+				$this->render_consent_mode_card();
 				?>
 			</div>
 		</div>
@@ -212,6 +224,13 @@ class Wpci_Integrations {
 						esc_html( $current_id )
 					);
 					?>
+				</p>
+			<?php endif; ?>
+
+			<?php if ( $current_id && in_array( $key, array( 'ga4', 'gtm', 'google_ads', 'google_tag' ), true ) && ! wpci_get_integration_connected_id( 'consent_mode' ) ) : ?>
+				<p class="description">
+					<span class="dashicons dashicons-privacy" style="color:#dba617;"></span>
+					<?php esc_html_e( 'Recommended for EU visitors: set up Consent Mode V2 (card below) so this tag respects cookie consent.', 'impulse-snippets' ); ?>
 				</p>
 			<?php endif; ?>
 
@@ -323,6 +342,73 @@ class Wpci_Integrations {
 		<?php
 	}
 
+	/**
+	 * Consent Mode V2 card. Unlike the other cards there is no ID to paste —
+	 * the only choice is which visitors start as "denied". The generated
+	 * snippet is the consent SIGNAL Google requires; the banner that asks the
+	 * visitor belongs to a CMP plugin, which also sends the 'update' call.
+	 */
+	private function render_consent_mode_card() {
+		$preset    = wpci_get_integration_connected_id( 'consent_mode' );
+		$is_active = $this->is_integration_active( 'consent_mode' );
+		?>
+		<div class="postbox wpci-integration-card">
+			<h2><?php esc_html_e( 'Consent Mode V2', 'impulse-snippets' ); ?></h2>
+			<p><?php esc_html_e( "Tells Google's tags what a visitor has consented to, before any tag runs. Google requires this for sites with EU/UK visitors — without it, remarketing audiences and conversion accuracy degrade.", 'impulse-snippets' ); ?></p>
+			<p class="description"><?php esc_html_e( 'This is the consent signal, not a cookie banner. Pair it with a consent banner plugin (e.g. Complianz, Cookiebot, CookieYes) — certified banners flip the signal to "granted" automatically when the visitor accepts. Without a banner, denied visitors simply stay denied.', 'impulse-snippets' ); ?></p>
+
+			<?php if ( $preset && $is_active ) : ?>
+				<p>
+					<span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span>
+					<?php echo ( 'all' === $preset ) ? esc_html__( 'Active: denied by default for everyone', 'impulse-snippets' ) : esc_html__( 'Active: denied by default for EU/UK visitors', 'impulse-snippets' ); ?>
+				</p>
+			<?php elseif ( $preset && ! $is_active ) : ?>
+				<p>
+					<span class="dashicons dashicons-controls-pause" style="color:#dba617;"></span>
+					<?php esc_html_e( 'Paused', 'impulse-snippets' ); ?>
+				</p>
+			<?php endif; ?>
+
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<?php wp_nonce_field( 'wpci_save_integration_action', 'wpci_integration_nonce' ); ?>
+				<input type="hidden" name="action" value="wpci_save_integration">
+				<input type="hidden" name="wpci_integration" value="consent_mode">
+				<p>
+					<strong><?php esc_html_e( 'Deny tracking by default for:', 'impulse-snippets' ); ?></strong><br>
+					<label>
+						<input type="radio" name="wpci_consent_preset" value="eu" <?php checked( 'all' !== $preset ); ?>>
+						<?php esc_html_e( 'EU/UK visitors only (recommended — visitors elsewhere keep full tracking)', 'impulse-snippets' ); ?>
+					</label><br>
+					<label>
+						<input type="radio" name="wpci_consent_preset" value="all" <?php checked( 'all' === $preset ); ?>>
+						<?php esc_html_e( 'Everyone (strictest — one global rule)', 'impulse-snippets' ); ?>
+					</label>
+				</p>
+				<button type="submit" class="button button-primary">
+					<?php echo $preset ? esc_html__( 'Update', 'impulse-snippets' ) : esc_html__( 'Set up Consent Mode', 'impulse-snippets' ); ?>
+				</button>
+			</form>
+
+			<?php if ( $preset ) : ?>
+				<p style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+					<label class="wpci-toggle-switch">
+						<input type="checkbox" class="wpci-integration-toggle" data-integration="consent_mode" <?php checked( $is_active ); ?>>
+						<span class="wpci-toggle-slider"></span>
+					</label>
+					<span><?php esc_html_e( 'Active', 'impulse-snippets' ); ?></span>
+
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-left:auto;" onsubmit="return confirm('<?php echo esc_js( __( 'Remove this integration and its snippet(s)?', 'impulse-snippets' ) ); ?>');">
+						<?php wp_nonce_field( 'wpci_remove_integration_action', 'wpci_remove_nonce' ); ?>
+						<input type="hidden" name="action" value="wpci_remove_integration">
+						<input type="hidden" name="wpci_integration" value="consent_mode">
+						<button type="submit" class="button-link-delete"><?php esc_html_e( 'Remove', 'impulse-snippets' ); ?></button>
+					</form>
+				</p>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
 	private function maybe_render_status_notice() {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only display of a status flag set by our own redirect; no state changes here.
 		if ( isset( $_GET['wpci_success'] ) ) {
@@ -423,6 +509,36 @@ class Wpci_Integrations {
 				);
 				$redirect_args['wpci_success'] = 'google_ads';
 			}
+		} elseif ( 'google_tag' === $integration ) {
+			$id = $this->build_id_from_suffix( 'wpci_google_tag_id', 'GT-' );
+			if ( ! preg_match( '/^GT-[A-Z0-9]+$/i', $id ) ) {
+				$redirect_args['wpci_error'] = 'google_tag';
+			} else {
+				$this->upsert_snippet(
+					'google_tag',
+					/* translators: %s: unified Google tag ID (GT-…). */
+					sprintf( __( 'Google tag (%s)', 'impulse-snippets' ), $id ),
+					'head',
+					$this->google_ads_code( $id ),
+					$id
+				);
+				$redirect_args['wpci_success'] = 'google_tag';
+			}
+		} elseif ( 'consent_mode' === $integration ) {
+			$preset = isset( $_POST['wpci_consent_preset'] ) ? sanitize_key( wp_unslash( $_POST['wpci_consent_preset'] ) ) : 'eu';
+			$preset = in_array( $preset, array( 'eu', 'all' ), true ) ? $preset : 'eu';
+			$this->upsert_snippet(
+				'consent_mode',
+				( 'all' === $preset )
+					? __( 'Consent Mode V2 (denied by default, everyone)', 'impulse-snippets' )
+					: __( 'Consent Mode V2 (denied by default, EU/UK)', 'impulse-snippets' ),
+				'head',
+				$this->consent_mode_code( $preset ),
+				$preset,
+				// Must print before every Google tag: bases are 0, so -10.
+				-10
+			);
+			$redirect_args['wpci_success'] = 'consent_mode';
 		}
 
 		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
@@ -600,11 +716,13 @@ class Wpci_Integrations {
 	 * updates it, or creates a new one. This is what lets re-running the
 	 * wizard with a new ID replace the old snippet instead of duplicating.
 	 */
-	private function upsert_snippet( $integration_key, $title, $location, $code, $integration_id ) {
+	private function upsert_snippet( $integration_key, $title, $location, $code, $integration_id, $menu_order = 0 ) {
 		$existing = wpci_find_integration_post_ids( $integration_key );
 
 		if ( ! empty( $existing ) ) {
 			$post_id = $existing[0];
+			// menu_order is deliberately not updated here — a priority the
+			// user customized on the existing snippet must survive re-runs.
 			wp_update_post(
 				array(
 					'ID'           => $post_id,
@@ -620,6 +738,7 @@ class Wpci_Integrations {
 					'post_title'   => $title,
 					'post_content' => $code,
 					'post_status'  => 'publish',
+					'menu_order'   => $menu_order,
 				)
 			);
 		}
@@ -632,6 +751,25 @@ class Wpci_Integrations {
 		update_post_meta( $post_id, '_wpci_integration_id', $integration_id );
 
 		return $post_id;
+	}
+
+	/**
+	 * The Consent Mode V2 default signal (Google's "Advanced" mode: tags load
+	 * but behave according to consent). Self-contained gtag stub so it works
+	 * regardless of which Google snippet loads gtag.js later — what matters
+	 * is that this prints first (the wizard gives it priority -10).
+	 *
+	 * ads_data_redaction is always on (Google's recommended privacy pairing
+	 * with denied defaults). url_passthrough is deliberately not emitted — it
+	 * mutates page URLs and sits in a legal gray zone.
+	 */
+	private function consent_mode_code( $preset ) {
+		// EEA members + UK + CH (Swiss law mirrors the EU requirement).
+		$eu_regions = "'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH'";
+
+		$region_line = ( 'all' === $preset ) ? '' : ",\n  'region': [" . $eu_regions . ']';
+
+		return "<script>\nwindow.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('consent', 'default', {\n  'ad_storage': 'denied',\n  'ad_user_data': 'denied',\n  'ad_personalization': 'denied',\n  'analytics_storage': 'denied',\n  'wait_for_update': 500{$region_line}\n});\ngtag('set', 'ads_data_redaction', true);\n</script>";
 	}
 
 	private function google_ads_code( $id ) {

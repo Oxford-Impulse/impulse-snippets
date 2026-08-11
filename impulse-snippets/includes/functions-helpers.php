@@ -149,6 +149,8 @@ function wpci_get_integration_label( $integration ) {
 		'meta_pixel'            => __( 'Meta Pixel integration', 'impulse-snippets' ),
 		'google_ads'            => __( 'Google Ads integration', 'impulse-snippets' ),
 		'google_ads_conversion' => __( 'Google Ads conversion action', 'impulse-snippets' ),
+		'google_tag'            => __( 'Google tag integration', 'impulse-snippets' ),
+		'consent_mode'          => __( 'Consent Mode V2 integration', 'impulse-snippets' ),
 	);
 	return isset( $labels[ $integration ] ) ? $labels[ $integration ] : $integration;
 }
