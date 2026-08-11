@@ -75,6 +75,29 @@
 	margin: 2px 0 6px;
 }
 
+/* Collapsible sub-sections inside integration cards (native <details> — no
+   JS). Keeps busy cards (Google Ads) short by default: each advanced job
+   collapses to one summary line with its status until opened. */
+.wpci-card-section {
+	border-top: 1px solid #dcdcde;
+	margin-top: 14px;
+	padding-top: 10px;
+}
+
+.wpci-card-section summary {
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.wpci-card-section summary .description {
+	font-weight: 400;
+}
+
+.wpci-card-section[open] summary {
+	margin-bottom: 8px;
+}
+
 .wpci-dashboard-stats {
 	display: flex;
 	gap: 16px;

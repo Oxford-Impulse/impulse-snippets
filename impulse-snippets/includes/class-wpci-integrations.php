@@ -338,8 +338,16 @@ class Wpci_Integrations {
 	public function render_ads_conversions_section() {
 		$conversion_ids = wpci_find_integration_post_ids( 'google_ads_conversion' );
 		?>
-		<hr>
-		<h3 style="margin-bottom:4px;"><?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?></h3>
+		<details class="wpci-card-section">
+			<summary>
+				<?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?>
+				<span class="description">
+					<?php
+					/* translators: %d: number of conversion actions set up. */
+					echo esc_html( sprintf( _n( '(%d set up)', '(%d set up)', count( $conversion_ids ), 'impulse-snippets' ), count( $conversion_ids ) ) );
+					?>
+				</span>
+			</summary>
 		<p class="description"><?php esc_html_e( 'A conversion action fires on the page you choose — usually the thank-you page a visitor lands on after buying or submitting a form. You pick that page on the next screen.', 'impulse-snippets' ); ?></p>
 
 		<?php if ( ! empty( $conversion_ids ) ) : ?>
@@ -382,10 +390,9 @@ class Wpci_Integrations {
 			</p>
 			<p><button type="submit" class="button"><?php esc_html_e( 'Add conversion action', 'impulse-snippets' ); ?></button></p>
 		</form>
+		</details>
 
 		<?php $this->render_woocommerce_purchase_section(); ?>
-
-		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
 		<?php
 	}
 
@@ -397,13 +404,12 @@ class Wpci_Integrations {
 	 * immediately — it can only ever fire on a real completed order.
 	 */
 	private function render_woocommerce_purchase_section() {
-		?>
-		<hr>
-		<h3 style="margin-bottom:4px;"><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></h3>
-		<?php
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			?>
-			<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
+			<details class="wpci-card-section">
+				<summary><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></summary>
+				<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
+			</details>
 			<?php
 			return;
 		}
@@ -411,7 +417,15 @@ class Wpci_Integrations {
 		$purchase_ids = wpci_find_integration_post_ids( 'google_ads_purchase' );
 		$purchase_id  = ! empty( $purchase_ids ) ? $purchase_ids[0] : 0;
 		$enhanced_on  = $purchase_id ? (bool) get_post_meta( $purchase_id, '_wpci_ads_enhanced', true ) : false;
+		$is_active    = $purchase_id && 'publish' === get_post_status( $purchase_id );
 		?>
+		<details class="wpci-card-section">
+			<summary>
+				<?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?>
+				<span class="description">
+					<?php echo $is_active ? esc_html__( '(active)', 'impulse-snippets' ) : esc_html__( '(not set up)', 'impulse-snippets' ); ?>
+				</span>
+			</summary>
 		<p class="description"><?php esc_html_e( 'Reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits automatically). Paste the conversion label of your "Purchase" conversion action from Google Ads.', 'impulse-snippets' ); ?></p>
 
 		<?php if ( $purchase_id ) : ?>
@@ -440,6 +454,8 @@ class Wpci_Integrations {
 			</p>
 			<p><button type="submit" class="button"><?php echo $purchase_id ? esc_html__( 'Update purchase tracking', 'impulse-snippets' ) : esc_html__( 'Set up purchase tracking', 'impulse-snippets' ); ?></button></p>
 		</form>
+		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
+		</details>
 		<?php
 	}
 
