@@ -165,6 +165,23 @@ function wpci_hash_user_email( $email ) {
 }
 
 /**
+ * Cleans a Google Ads conversion label as pasted by a user: accepts either
+ * the bare label or a full "AW-123456789/AbCdEfGhIj" string (the prefix is
+ * stripped so it can't double up), trims whitespace, and returns '' unless
+ * what remains is a plausible label (letters, digits, _ and - only) — so
+ * callers can treat '' as "invalid or empty" uniformly.
+ */
+function wpci_sanitize_ads_label( $raw ) {
+	$label = trim( preg_replace( '/^AW-[A-Z0-9]+\//i', '', trim( (string) $raw ) ) );
+
+	if ( ! preg_match( '/^[A-Za-z0-9_-]+$/', $label ) ) {
+		return '';
+	}
+
+	return $label;
+}
+
+/**
  * Human-readable label for a wizard-managed snippet's _wpci_integration tag.
  */
 function wpci_get_integration_label( $integration ) {
@@ -178,6 +195,7 @@ function wpci_get_integration_label( $integration ) {
 		'google_tag'            => __( 'Google tag integration', 'impulse-snippets' ),
 		'consent_mode'          => __( 'Consent Mode V2 integration', 'impulse-snippets' ),
 		'google_ads_purchase'   => __( 'Google Ads purchase conversion (WooCommerce)', 'impulse-snippets' ),
+		'form_conversion'       => __( 'Form lead tracking', 'impulse-snippets' ),
 	);
 	return isset( $labels[ $integration ] ) ? $labels[ $integration ] : $integration;
 }

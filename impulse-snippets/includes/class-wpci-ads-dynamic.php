@@ -34,6 +34,13 @@ class Wpci_Ads_Dynamic {
 		// its own stub either way.
 		add_action( 'wp_head', array( $this, 'maybe_output_purchase_conversion' ), 5 );
 		add_action( 'wp_head', array( $this, 'maybe_output_lead_user_data' ), 0 );
+
+		// Form lead tracking: the listener goes in the footer (the forms it
+		// watches are page content, so by then they exist), and the WPForms
+		// server hook covers non-AJAX forms, where the success event never
+		// reaches the browser because the page reloads.
+		add_action( 'wp_footer', array( $this, 'maybe_output_form_listener' ), 20 );
+		add_action( 'wpforms_process_complete', array( $this, 'remember_wpforms_lead' ), 10, 3 );
 	}
 
 	/**
@@ -134,5 +141,176 @@ class Wpci_Ads_Dynamic {
 			"<script>\nwindow.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('set', 'user_data', {'sha256_email_address': '%s'});\n</script>\n",
 			esc_js( $hash )
 		);
+	}
+
+	/**
+	 * The published form-tracking snippets as plain config rows for the
+	 * listener: p = plugin, f = form ID, s = send_to ('' = GA4-only),
+	 * v/c = optional fixed value+currency, h = hash the typed email.
+	 */
+	private function get_form_tracking_config() {
+		$config = array();
+		foreach ( wpci_find_integration_post_ids( 'form_conversion' ) as $post_id ) {
+			if ( 'publish' !== get_post_status( $post_id ) ) {
+				continue;
+			}
+			$value    = get_post_meta( $post_id, '_wpci_ads_value', true );
+			$config[] = array(
+				'p' => get_post_meta( $post_id, '_wpci_form_plugin', true ),
+				'f' => (int) get_post_meta( $post_id, '_wpci_form_id', true ),
+				's' => (string) get_post_meta( $post_id, '_wpci_integration_id', true ),
+				'v' => ( '' !== $value ) ? (float) $value : 0,
+				'c' => (string) get_post_meta( $post_id, '_wpci_ads_currency', true ),
+				'h' => (bool) get_post_meta( $post_id, '_wpci_ads_enhanced', true ),
+			);
+		}
+		return $config;
+	}
+
+	/**
+	 * WPForms server-side fallback for non-AJAX forms: the page reloads on
+	 * submit, so the browser event the listener waits for never happens.
+	 * Instead this hook (which fires for AJAX submissions too) drops a
+	 * short-lived cookie; the next page view's listener fires the conversion
+	 * from it. For AJAX submissions the browser event handler clears the
+	 * cookie in the same moment it fires — one submission, one count, in
+	 * either mode.
+	 */
+	public function remember_wpforms_lead( $fields, $entry, $form_data ) {
+		if ( Wpci_Settings::is_globally_disabled() || headers_sent() ) {
+			return;
+		}
+
+		$form_id = isset( $form_data['id'] ) ? (int) $form_data['id'] : 0;
+		$tracked = null;
+		foreach ( $this->get_form_tracking_config() as $row ) {
+			if ( 'wpforms' === $row['p'] && $row['f'] === $form_id ) {
+				$tracked = $row;
+				break;
+			}
+		}
+		if ( ! $tracked ) {
+			return;
+		}
+
+		// Hash server-side here — by the next page view the typed email is
+		// long gone from the browser. Only the hash is ever stored.
+		$hash = '';
+		if ( $tracked['h'] && is_array( $fields ) ) {
+			foreach ( $fields as $field ) {
+				if ( isset( $field['type'], $field['value'] ) && 'email' === $field['type'] ) {
+					$hash = wpci_hash_user_email( $field['value'] );
+					break;
+				}
+			}
+		}
+
+		// NOT httponly: the listener must clear it after firing so a lead is
+		// only ever counted once.
+		setcookie( 'wpci_lead', $form_id . '|' . $hash, time() + 600, '/', '', is_ssl(), false );
+	}
+
+	/**
+	 * Prints the submit-event listener for tracked forms, plus any pending
+	 * lead remembered by the WPForms cookie fallback. Fires generate_lead
+	 * always (a free GA4 lead event — inert if nothing reads the dataLayer)
+	 * and the Google Ads conversion when a send_to label is configured. The
+	 * enhanced-conversion email is normalized and SHA-256 hashed in the
+	 * visitor's own browser (secure contexts only); the address itself is
+	 * never transmitted.
+	 */
+	public function maybe_output_form_listener() {
+		if ( Wpci_Settings::is_globally_disabled() ) {
+			return;
+		}
+
+		$config = $this->get_form_tracking_config();
+		if ( empty( $config ) ) {
+			return;
+		}
+
+		// The cookie is validated strictly before anything from it is
+		// re-emitted: integer ID that matches a tracked WPForms entry, and
+		// either an empty hash or exactly 64 hex chars.
+		$pending = null;
+		if ( isset( $_COOKIE['wpci_lead'] ) ) {
+			$parts   = explode( '|', sanitize_text_field( wp_unslash( $_COOKIE['wpci_lead'] ) ), 2 );
+			$form_id = (int) $parts[0];
+			$hash    = isset( $parts[1] ) ? strtolower( $parts[1] ) : '';
+			if ( preg_match( '/^([0-9a-f]{64})?$/', $hash ) ) {
+				foreach ( $config as $row ) {
+					if ( 'wpforms' === $row['p'] && $row['f'] === $form_id ) {
+						$pending         = $row;
+						$pending['hash'] = $hash;
+						break;
+					}
+				}
+			}
+		}
+
+		$payload = wp_json_encode(
+			array(
+				'forms'   => $config,
+				'pending' => $pending,
+			)
+		);
+		?>
+<script>
+(function(){
+	var cfg = <?php echo $payload; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_json_encode() of server-built scalars only. ?>;
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	function clearCookie(){ document.cookie = 'wpci_lead=; Max-Age=0; path=/'; }
+	function fire(t, hash){
+		if (hash) { gtag('set', 'user_data', {'sha256_email_address': hash}); }
+		var lead = {}, conv;
+		if (t.v > 0) { lead.value = t.v; lead.currency = t.c; }
+		gtag('event', 'generate_lead', lead);
+		if (t.s) {
+			conv = {'send_to': t.s};
+			if (t.v > 0) { conv.value = t.v; conv.currency = t.c; }
+			gtag('event', 'conversion', conv);
+		}
+	}
+	function hashThenFire(t, email){
+		if (!t.h || !email || !window.isSecureContext || !window.crypto || !crypto.subtle || !window.TextEncoder) { fire(t, ''); return; }
+		email = email.trim().toLowerCase();
+		var at = email.lastIndexOf('@'), local, domain;
+		if (at > 0) {
+			local = email.slice(0, at); domain = email.slice(at + 1);
+			if (domain === 'gmail.com' || domain === 'googlemail.com') { local = local.split('.').join(''); }
+			email = local + '@' + domain;
+		}
+		crypto.subtle.digest('SHA-256', new TextEncoder().encode(email)).then(function(buf){
+			var hex = Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+			fire(t, hex);
+		}).catch(function(){ fire(t, ''); });
+	}
+	function tracked(plugin, id){
+		for (var i = 0; i < cfg.forms.length; i++) {
+			if (cfg.forms[i].p === plugin && cfg.forms[i].f === id) { return cfg.forms[i]; }
+		}
+		return null;
+	}
+	document.addEventListener('wpcf7mailsent', function(ev){
+		var t = tracked('cf7', parseInt(ev.detail && ev.detail.contactFormId, 10));
+		if (!t) { return; }
+		var el = ev.target && ev.target.querySelector ? ev.target.querySelector('input[type=email]') : null;
+		hashThenFire(t, el ? el.value : '');
+	});
+	if (window.jQuery) {
+		jQuery(document).on('wpformsAjaxSubmitSuccess', function(ev){
+			clearCookie();
+			var form = ev.target, idInput = form && form.querySelector ? form.querySelector('input[name="wpforms[id]"]') : null;
+			var t = tracked('wpforms', idInput ? parseInt(idInput.value, 10) : 0);
+			if (!t) { return; }
+			var el = form.querySelector('input[type=email]');
+			hashThenFire(t, el ? el.value : '');
+		});
+	}
+	if (cfg.pending) { fire(cfg.pending, cfg.pending.hash || ''); clearCookie(); }
+})();
+</script>
+		<?php
 	}
 }

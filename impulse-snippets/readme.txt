@@ -76,6 +76,8 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 * New: WooCommerce purchase tracking — one field on the Google Ads card reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits via the order number).
 * New: enhanced conversions for purchases — optionally send the SHA-256 hashed billing email with the purchase conversion. Only the hash is ever printed, and gtag withholds it when Consent Mode says denied.
 * New: enhanced conversions for leads — page-based conversion actions can optionally send the hashed email of logged-in visitors.
+* New: form lead tracking — pick a Contact Form 7 or WPForms form and a lead is counted the moment it is successfully submitted (GA4 generate_lead event always, plus a Google Ads conversion if you add a label). Optional hashed-email enhanced conversions work even for logged-out visitors: the address is SHA-256 hashed in the visitor's own browser and never transmitted readable.
+* Improved: conversion configuration moved into a "Conversion tracking" panel below the integration cards, with independently collapsible sections; the currency field pre-fills from your WooCommerce store settings.
 
 = 1.16.0 =
 * New: Priority field — control the exact output order of snippets sharing a location (lowest number prints first). Sortable Priority column in the snippets list.

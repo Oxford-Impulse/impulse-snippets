@@ -165,5 +165,15 @@ check( 'hash: no at-sign rejected', '', wpci_hash_user_email( 'not-an-email' ) )
 check( 'hash: trailing at rejected', '', wpci_hash_user_email( 'user@' ) );
 
 // ---------------------------------------------------------------------------
+// wpci_sanitize_ads_label() — shared by the three Ads label handlers.
+// ---------------------------------------------------------------------------
+check( 'label: bare label accepted', 'AbCdEfGhIj-D2sNzQ', wpci_sanitize_ads_label( 'AbCdEfGhIj-D2sNzQ' ) );
+check( 'label: full AW paste stripped', 'AbCdEfGhIj', wpci_sanitize_ads_label( 'AW-123456789/AbCdEfGhIj' ) );
+check( 'label: whitespace trimmed', 'MyLabel_1', wpci_sanitize_ads_label( '  MyLabel_1  ' ) );
+check( 'label: invalid chars rejected', '', wpci_sanitize_ads_label( 'has spaces!' ) );
+check( 'label: empty rejected', '', wpci_sanitize_ads_label( '' ) );
+check( 'label: slash-only garbage rejected', '', wpci_sanitize_ads_label( 'AW-123/' ) );
+
+// ---------------------------------------------------------------------------
 echo "\n" . ( $fail ? "$fail FAILURE(S), $pass passed\n" : "ALL $pass TESTS PASSED\n" );
 exit( $fail ? 1 : 0 );

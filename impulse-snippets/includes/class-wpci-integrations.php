@@ -20,6 +20,8 @@ class Wpci_Integrations {
 		add_action( 'admin_post_wpci_remove_integration', array( $this, 'handle_remove' ) );
 		add_action( 'admin_post_wpci_add_ads_conversion', array( $this, 'handle_add_ads_conversion' ) );
 		add_action( 'admin_post_wpci_add_ads_purchase', array( $this, 'handle_add_ads_purchase' ) );
+		add_action( 'admin_post_wpci_add_form_conversion', array( $this, 'handle_add_form_conversion' ) );
+		add_action( 'admin_post_wpci_remove_form_conversion', array( $this, 'handle_remove_form_conversion' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_render_conversion_handoff_notice' ) );
 	}
@@ -201,29 +203,34 @@ class Wpci_Integrations {
 		?>
 		<p class="description" style="margin-top:10px;">
 			<span class="dashicons dashicons-arrow-down-alt" style="color:#2271b1;"></span>
-			<?php esc_html_e( 'Conversion actions and WooCommerce purchase tracking are managed in the panel below the cards.', 'impulse-snippets' ); ?>
+			<?php esc_html_e( 'Conversion, purchase, and form lead tracking are managed in the Conversion tracking panel below the cards.', 'impulse-snippets' ); ?>
 		</p>
 		<?php
 	}
 
 	/**
-	 * Panel under the card grid: Conversion actions and WooCommerce purchase
-	 * tracking as independently collapsible sections (closed by default, so
-	 * the panel stays one screen-line tall until the user opens a form).
-	 * Only rendered while Google Ads is connected — both depend on the base
-	 * tag. Expanding here only pushes down whatever is below the panel; the
-	 * card grid above never reflows.
+	 * Panel under the card grid: independently collapsible sections (closed
+	 * by default, so the panel stays a few one-line rows until the user opens
+	 * a form). The two Google Ads sections need the AW- base tag; form lead
+	 * tracking also works GA4-only, so the panel shows for either connection.
+	 * Expanding here only pushes down whatever is below the panel; the card
+	 * grid above never reflows.
 	 */
 	private function render_ads_advanced_panel() {
-		if ( ! wpci_get_integration_connected_id( 'google_ads' ) ) {
+		$has_ads = (bool) wpci_get_integration_connected_id( 'google_ads' );
+		$has_ga4 = (bool) wpci_get_integration_connected_id( 'ga4' );
+		if ( ! $has_ads && ! $has_ga4 ) {
 			return;
 		}
 		?>
 		<div class="postbox wpci-ads-panel">
-			<h2><?php esc_html_e( 'Google Ads — conversions', 'impulse-snippets' ); ?></h2>
+			<h2><?php esc_html_e( 'Conversion tracking', 'impulse-snippets' ); ?></h2>
 			<?php
-			$this->render_ads_conversions_section();
-			$this->render_woocommerce_purchase_section();
+			if ( $has_ads ) {
+				$this->render_ads_conversions_section();
+				$this->render_woocommerce_purchase_section();
+			}
+			$this->render_form_tracking_section( $has_ads );
 			?>
 		</div>
 		<?php
@@ -524,6 +531,155 @@ class Wpci_Integrations {
 	}
 
 	/**
+	 * The forms both supported plugins have on this site, as
+	 * array( 'cf7' => array( id => title ), 'wpforms' => ... ). Both plugins
+	 * store forms as (non-public) custom post types, so a get_posts() per
+	 * plugin is all the integration surface we need for the picker.
+	 */
+	private function get_site_forms() {
+		$forms = array();
+		foreach ( array(
+			'cf7'     => 'wpcf7_contact_form',
+			'wpforms' => 'wpforms',
+		) as $plugin => $post_type ) {
+			if ( ! post_type_exists( $post_type ) ) {
+				continue;
+			}
+			$posts = get_posts(
+				array(
+					'post_type'      => $post_type,
+					'post_status'    => 'publish',
+					'posts_per_page' => -1,
+					'orderby'        => 'title',
+					'order'          => 'ASC',
+				)
+			);
+			foreach ( $posts as $form_post ) {
+				$forms[ $plugin ][ $form_post->ID ] = $form_post->post_title;
+			}
+		}
+		return $forms;
+	}
+
+	/**
+	 * Form lead tracking: fires the moment a visitor successfully submits a
+	 * tracked Contact Form 7 / WPForms form — no thank-you page needed, and
+	 * failed validations never count. Each tracked form is its own snippet
+	 * (key form_conversion) whose conditions match nothing; the submit-event
+	 * listener printed by Wpci_Ads_Dynamic is its only outlet.
+	 */
+	private function render_form_tracking_section( $has_ads ) {
+		$tracked_ids  = wpci_find_integration_post_ids( 'form_conversion' );
+		$forms        = $this->get_site_forms();
+		$plugin_names = array(
+			'cf7'     => __( 'Contact Form 7', 'impulse-snippets' ),
+			'wpforms' => __( 'WPForms', 'impulse-snippets' ),
+		);
+		?>
+		<details class="wpci-panel-section">
+			<summary>
+				<strong><?php esc_html_e( 'Form lead tracking', 'impulse-snippets' ); ?></strong>
+				<span class="description">
+					<?php
+					if ( empty( $forms ) ) {
+						esc_html_e( '(requires Contact Form 7 or WPForms)', 'impulse-snippets' );
+					} else {
+						/* translators: %d: number of tracked forms. */
+						echo esc_html( sprintf( _n( '(%d form tracked)', '(%d forms tracked)', count( $tracked_ids ), 'impulse-snippets' ), count( $tracked_ids ) ) );
+					}
+					?>
+				</span>
+			</summary>
+			<div class="wpci-panel-section-body">
+		<p class="description"><?php esc_html_e( 'Counts a lead the moment a visitor successfully submits the form you choose — a free GA4 "generate_lead" event always, plus a Google Ads conversion if you add a label. No thank-you page needed; failed submissions never count.', 'impulse-snippets' ); ?></p>
+
+		<?php if ( empty( $forms ) ) : ?>
+			<p class="description"><?php esc_html_e( 'This section activates automatically when Contact Form 7 or WPForms is installed.', 'impulse-snippets' ); ?></p>
+			</div>
+		</details>
+			<?php
+			return;
+		endif;
+		?>
+
+		<?php if ( ! empty( $tracked_ids ) ) : ?>
+			<ul style="margin:8px 0;">
+				<?php foreach ( $tracked_ids as $tracked_id ) : ?>
+					<li style="display:flex;align-items:center;gap:8px;">
+						<a href="<?php echo esc_url( get_edit_post_link( $tracked_id ) ); ?>"><?php echo esc_html( get_the_title( $tracked_id ) ); ?></a>
+						<span class="description">
+							— <?php echo ( 'publish' === get_post_status( $tracked_id ) ) ? esc_html__( 'active', 'impulse-snippets' ) : esc_html__( 'switched off', 'impulse-snippets' ); ?>
+							<?php if ( ! get_post_meta( $tracked_id, '_wpci_integration_id', true ) ) : ?>
+								· <?php esc_html_e( 'GA4 only', 'impulse-snippets' ); ?>
+							<?php endif; ?>
+						</span>
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-left:auto;" onsubmit="return confirm('<?php echo esc_js( __( 'Stop tracking this form?', 'impulse-snippets' ) ); ?>');">
+							<?php wp_nonce_field( 'wpci_remove_form_conversion_action', 'wpci_form_conv_remove_nonce' ); ?>
+							<input type="hidden" name="action" value="wpci_remove_form_conversion">
+							<input type="hidden" name="wpci_form_conversion_id" value="<?php echo esc_attr( $tracked_id ); ?>">
+							<button type="submit" class="button-link-delete"><?php esc_html_e( 'Remove', 'impulse-snippets' ); ?></button>
+						</form>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'wpci_add_form_conversion_action', 'wpci_form_conversion_nonce' ); ?>
+			<input type="hidden" name="action" value="wpci_add_form_conversion">
+			<p>
+				<label for="wpci_form_conversion_form"><strong><?php esc_html_e( 'Form', 'impulse-snippets' ); ?></strong></label><br>
+				<select id="wpci_form_conversion_form" name="wpci_form_conversion_form" style="width:100%;max-width:400px;">
+					<?php foreach ( $forms as $plugin => $plugin_forms ) : ?>
+						<optgroup label="<?php echo esc_attr( $plugin_names[ $plugin ] ); ?>">
+							<?php foreach ( $plugin_forms as $form_id => $form_title ) : ?>
+								<option value="<?php echo esc_attr( $plugin . ':' . $form_id ); ?>"><?php echo esc_html( $form_title ); ?></option>
+							<?php endforeach; ?>
+						</optgroup>
+					<?php endforeach; ?>
+				</select>
+				<span class="description"><?php esc_html_e( 'Adding the same form again updates its tracking instead of duplicating it.', 'impulse-snippets' ); ?></span>
+			</p>
+			<p>
+				<label for="wpci_form_conversion_label"><?php esc_html_e( 'Google Ads conversion label (optional)', 'impulse-snippets' ); ?></label><br>
+				<input type="text" id="wpci_form_conversion_label" name="wpci_form_conversion_label" placeholder="AbCdEfGhIj-D2sNzQ" style="width:100%;" <?php disabled( ! $has_ads ); ?>>
+				<span class="description">
+					<?php
+					echo $has_ads
+						? esc_html__( 'Leave empty to track in Analytics only. With a label, the submission also counts as this Google Ads conversion.', 'impulse-snippets' )
+						: esc_html__( 'Connect your Google Ads ID above to also count submissions as Ads conversions. Without it, tracking is Analytics-only.', 'impulse-snippets' );
+					?>
+				</span>
+			</p>
+			<p style="display:flex;gap:8px;max-width:400px;">
+				<span style="flex:1;">
+					<label for="wpci_form_conversion_value"><?php esc_html_e( 'Value (optional)', 'impulse-snippets' ); ?></label><br>
+					<input type="number" id="wpci_form_conversion_value" name="wpci_form_conversion_value" min="0" step="any" placeholder="50" style="width:100%;">
+				</span>
+				<span style="flex:1;">
+					<label for="wpci_form_conversion_currency"><?php esc_html_e( 'Currency', 'impulse-snippets' ); ?></label><br>
+					<?php $store_currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : ''; ?>
+					<input type="text" id="wpci_form_conversion_currency" name="wpci_form_conversion_currency" maxlength="3" value="<?php echo esc_attr( $store_currency ); ?>" placeholder="EUR" style="width:100%;">
+				</span>
+			</p>
+			<div class="wpci-check-row">
+				<label>
+					<input type="checkbox" name="wpci_form_conversion_enhanced" value="1">
+					<?php esc_html_e( 'Send hashed email from the form', 'impulse-snippets' ); ?>
+				</label>
+				<details class="wpci-learn-more">
+					<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+					<p class="description"><?php esc_html_e( 'Enhanced conversions for leads, and it works for logged-out visitors: the email the visitor typed is scrambled (SHA-256) in their own browser before anything is sent — the actual address never goes to Google. Respects Consent Mode. Needs HTTPS; on plain HTTP the conversion still counts, just without the email.', 'impulse-snippets' ); ?></p>
+				</details>
+			</div>
+			<p><button type="submit" class="button"><?php esc_html_e( 'Track this form', 'impulse-snippets' ); ?></button></p>
+		</form>
+			</div>
+		</details>
+		<?php
+	}
+
+	/**
 	 * Consent Mode V2 card. Unlike the other cards there is no ID to paste —
 	 * the only choice is which visitors start as "denied". The generated
 	 * snippet is the consent SIGNAL Google requires; the banner that asks the
@@ -618,6 +774,7 @@ class Wpci_Integrations {
 				'nobase'   => __( 'Connect your Google Ads ID first — conversion actions need the base tag on every page.', 'impulse-snippets' ),
 				'label'    => __( "That conversion label doesn't look right — paste it exactly as Google Ads shows it (the part after the slash in AW-123456789/AbCdEfGhIj).", 'impulse-snippets' ),
 				'currency' => __( 'When you set a value, enter the currency as a 3-letter code too (for example EUR or USD).', 'impulse-snippets' ),
+				'form'     => __( "That form couldn't be found — it may have been deleted. Refresh this page and pick again.", 'impulse-snippets' ),
 			);
 			$code     = sanitize_key( wp_unslash( $_GET['wpci_ads_conv_error'] ) );
 			printf(
@@ -791,9 +948,8 @@ class Wpci_Integrations {
 		}
 
 		// Accept either the bare label or a pasted full "AW-…/label" string.
-		$label = isset( $_POST['wpci_ads_conversion_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_ads_conversion_label'] ) ) : '';
-		$label = trim( preg_replace( '/^AW-[A-Z0-9]+\//i', '', trim( $label ) ) );
-		if ( ! preg_match( '/^[A-Za-z0-9_-]+$/', $label ) ) {
+		$label = wpci_sanitize_ads_label( isset( $_POST['wpci_ads_conversion_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_ads_conversion_label'] ) ) : '' );
+		if ( '' === $label ) {
 			$redirect_args['wpci_ads_conv_error'] = 'label';
 			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
 			exit;
@@ -903,9 +1059,8 @@ class Wpci_Integrations {
 			exit;
 		}
 
-		$label = isset( $_POST['wpci_ads_purchase_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_ads_purchase_label'] ) ) : '';
-		$label = trim( preg_replace( '/^AW-[A-Z0-9]+\//i', '', trim( $label ) ) );
-		if ( ! preg_match( '/^[A-Za-z0-9_-]+$/', $label ) ) {
+		$label = wpci_sanitize_ads_label( isset( $_POST['wpci_ads_purchase_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_ads_purchase_label'] ) ) : '' );
+		if ( '' === $label ) {
 			$redirect_args['wpci_ads_conv_error'] = 'label';
 			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
 			exit;
@@ -967,6 +1122,157 @@ class Wpci_Integrations {
 
 		$redirect_args['wpci_success'] = 'google_ads_purchase';
 		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	/**
+	 * Creates/updates a form-lead-tracking snippet. Published immediately —
+	 * like the purchase tracker there is nothing left to configure: the form
+	 * plugin's submit event is the targeting, so a tracked form can only ever
+	 * fire on a real successful submission. Keyed by plugin+form so re-adding
+	 * the same form updates its entry instead of duplicating.
+	 */
+	public function handle_add_form_conversion() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
+		}
+		check_admin_referer( 'wpci_add_form_conversion_action', 'wpci_form_conversion_nonce' );
+
+		$redirect_args = array( 'page' => self::PAGE_SLUG );
+
+		// The picker value is "plugin:form_id"; both halves are re-verified —
+		// the form post must really exist and be that plugin's post type.
+		$post_types = array(
+			'cf7'     => 'wpcf7_contact_form',
+			'wpforms' => 'wpforms',
+		);
+		$picked     = isset( $_POST['wpci_form_conversion_form'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_form'] ) ) : '';
+		$parts      = explode( ':', $picked, 2 );
+		$plugin     = isset( $parts[0] ) ? $parts[0] : '';
+		$form_id    = isset( $parts[1] ) ? absint( $parts[1] ) : 0;
+		$form_post  = ( isset( $post_types[ $plugin ] ) && $form_id ) ? get_post( $form_id ) : null;
+		if ( ! $form_post || $form_post->post_type !== $post_types[ $plugin ] ) {
+			$redirect_args['wpci_ads_conv_error'] = 'form';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		// The Ads label is optional (empty = GA4-only tracking), but when
+		// given it needs the AW- base tag to mean anything.
+		$label_raw = isset( $_POST['wpci_form_conversion_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_label'] ) ) : '';
+		$send_to   = '';
+		if ( '' !== trim( $label_raw ) ) {
+			$label  = wpci_sanitize_ads_label( $label_raw );
+			$ads_id = wpci_get_integration_connected_id( 'google_ads' );
+			if ( '' === $label || ! $ads_id ) {
+				$redirect_args['wpci_ads_conv_error'] = ( '' === $label ) ? 'label' : 'nobase';
+				wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+				exit;
+			}
+			$send_to = $ads_id . '/' . $label;
+		}
+
+		$value_raw = isset( $_POST['wpci_form_conversion_value'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_value'] ) ) ) : '';
+		$currency  = isset( $_POST['wpci_form_conversion_currency'] ) ? strtoupper( trim( sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_currency'] ) ) ) ) : '';
+		$value     = ( '' !== $value_raw && is_numeric( $value_raw ) && (float) $value_raw > 0 ) ? (float) $value_raw : null;
+		if ( null !== $value && ! preg_match( '/^[A-Z]{3}$/', $currency ) ) {
+			$redirect_args['wpci_ads_conv_error'] = 'currency';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		$enhanced = ! empty( $_POST['wpci_form_conversion_enhanced'] );
+		/* translators: %s: the tracked form's title. */
+		$title = sprintf( __( 'Form lead tracking (%s)', 'impulse-snippets' ), $form_post->post_title );
+
+		$preview = '<!-- '
+			. __( 'Form lead tracking (managed by Impulse Snippets). A listener printed in the footer fires the lead events the moment this form is successfully submitted — this snippet only stores the configuration. Editing the code below has no effect; use the toggle to switch tracking off.', 'impulse-snippets' )
+			. " -->\n<script>\ngtag('event', 'generate_lead');"
+			. ( $send_to ? "\ngtag('event', 'conversion', {'send_to': '" . esc_js( $send_to ) . "'});" : '' )
+			. "\n</script>";
+
+		// Find-or-update by plugin+form: one tracking entry per form.
+		$post_id = 0;
+		foreach ( wpci_find_integration_post_ids( 'form_conversion' ) as $tracked_id ) {
+			if ( get_post_meta( $tracked_id, '_wpci_form_plugin', true ) === $plugin
+				&& (int) get_post_meta( $tracked_id, '_wpci_form_id', true ) === $form_id ) {
+				$post_id = $tracked_id;
+				break;
+			}
+		}
+
+		if ( $post_id ) {
+			wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_title'   => $title,
+					'post_content' => $preview,
+					'post_status'  => 'publish',
+				)
+			);
+		} else {
+			$post_id = wp_insert_post(
+				array(
+					'post_type'    => Wpci_Cpt::POST_TYPE,
+					'post_title'   => $title,
+					'post_content' => $preview,
+					'post_status'  => 'publish',
+					'menu_order'   => 10,
+				)
+			);
+		}
+
+		if ( $post_id && ! is_wp_error( $post_id ) ) {
+			update_post_meta( $post_id, '_wpci_location', 'footer' );
+			update_post_meta( $post_id, '_wpci_code_type', 'html' );
+			update_post_meta( $post_id, '_wpci_source', 'inline' );
+			// Matches nothing on purpose: the submit-event listener printed by
+			// Wpci_Ads_Dynamic is this snippet's only outlet.
+			update_post_meta(
+				$post_id,
+				'_wpci_conditions',
+				wp_json_encode(
+					array(
+						'type'     => 'specific',
+						'post_ids' => array(),
+					)
+				)
+			);
+			update_post_meta( $post_id, '_wpci_integration', 'form_conversion' );
+			update_post_meta( $post_id, '_wpci_integration_id', $send_to );
+			update_post_meta( $post_id, '_wpci_form_plugin', $plugin );
+			update_post_meta( $post_id, '_wpci_form_id', $form_id );
+			update_post_meta( $post_id, '_wpci_ads_enhanced', $enhanced ? 1 : '' );
+			update_post_meta( $post_id, '_wpci_ads_value', ( null !== $value ) ? $value : '' );
+			update_post_meta( $post_id, '_wpci_ads_currency', ( null !== $value ) ? $currency : '' );
+		}
+
+		$redirect_args['wpci_success'] = 'form_conversion';
+		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+		exit;
+	}
+
+	public function handle_remove_form_conversion() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
+		}
+		check_admin_referer( 'wpci_remove_form_conversion_action', 'wpci_form_conv_remove_nonce' );
+
+		$post_id = isset( $_POST['wpci_form_conversion_id'] ) ? absint( $_POST['wpci_form_conversion_id'] ) : 0;
+		// Only trash what this button is for — never an arbitrary posted ID.
+		if ( $post_id && 'form_conversion' === get_post_meta( $post_id, '_wpci_integration', true ) ) {
+			wp_trash_post( $post_id );
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'         => self::PAGE_SLUG,
+					'wpci_removed' => 'form_conversion',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
 		exit;
 	}
 
