@@ -8,13 +8,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * do because the values only exist at display time:
  *
  * 1. WooCommerce purchase conversions: printed on the order-received page
- *    via the woocommerce_thankyou hook (which simply never fires when
- *    WooCommerce isn't installed, so no detection is needed here), with the
- *    real order total, currency, and order number. The tagged
- *    google_ads_purchase snippet holds the configuration (send_to, enhanced
- *    flag) and gives the user list visibility and the on/off toggle; its
- *    conditions deliberately match nothing so the normal output loop never
- *    prints it — this hook IS its targeting.
+ *    (detected via is_order_received_page(), which covers both classic and
+ *    block checkout, and simply doesn't exist when WooCommerce isn't
+ *    installed), with the real order total, currency, and order number. The
+ *    tagged google_ads_purchase snippet holds the configuration (send_to,
+ *    enhanced flag) and gives the user list visibility and the on/off
+ *    toggle; its conditions deliberately match nothing so the normal output
+ *    loop never prints it — the endpoint detection IS its targeting.
  *
  * 2. Enhanced-conversion user_data for logged-in visitors: printed on
  *    wp_head at priority 0, one step before Wpci_Output's snippets (priority
@@ -25,7 +25,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Wpci_Ads_Dynamic {
 
 	public function __construct() {
-		add_action( 'woocommerce_thankyou', array( $this, 'output_purchase_conversion' ), 10, 1 );
+		// Deliberately NOT the woocommerce_thankyou hook: WooCommerce's
+		// block-based checkout (the default since Woo 8.3) renders the order
+		// confirmation without firing it. The order-received ENDPOINT is
+		// identical in both classic and block checkout, so detecting the
+		// page on wp_head covers both. Priority 5: after the base tag
+		// snippets (1), before nothing that matters — the event queues via
+		// its own stub either way.
+		add_action( 'wp_head', array( $this, 'maybe_output_purchase_conversion' ), 5 );
 		add_action( 'wp_head', array( $this, 'maybe_output_lead_user_data' ), 0 );
 	}
 
@@ -43,8 +50,14 @@ class Wpci_Ads_Dynamic {
 		return null;
 	}
 
-	public function output_purchase_conversion( $order_id ) {
+	public function maybe_output_purchase_conversion() {
 		if ( Wpci_Settings::is_globally_disabled() ) {
+			return;
+		}
+
+		// Only on WooCommerce's order-received page (classic or block
+		// checkout — both use the same endpoint).
+		if ( ! function_exists( 'is_order_received_page' ) || ! is_order_received_page() ) {
 			return;
 		}
 
@@ -53,9 +66,17 @@ class Wpci_Ads_Dynamic {
 			return;
 		}
 
-		$send_to = get_post_meta( $snippet_id, '_wpci_integration_id', true );
-		$order   = function_exists( 'wc_get_order' ) ? wc_get_order( $order_id ) : null;
-		if ( ! $send_to || ! $order ) {
+		$send_to  = get_post_meta( $snippet_id, '_wpci_integration_id', true );
+		$order_id = absint( get_query_var( 'order-received' ) );
+		$order    = ( $send_to && $order_id && function_exists( 'wc_get_order' ) ) ? wc_get_order( $order_id ) : null;
+		if ( ! $order ) {
+			return;
+		}
+
+		// Same key check the thank-you page itself performs — the order data
+		// (even non-personal) only prints for whoever holds the order link.
+		$key = isset( $_GET['key'] ) ? wc_clean( wp_unslash( $_GET['key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only comparison against the order key, exactly like WooCommerce's own thank-you template; no state changes.
+		if ( ! $key || ! hash_equals( $order->get_order_key(), $key ) ) {
 			return;
 		}
 
