@@ -21,7 +21,7 @@ Key user-facing features:
 - Paste code inline **or** link to an external file (URL, stored in its own meta field).
 - Auto-detect wrapping: bare JS/CSS gets `<script>`/`<style>` tags added at output time (code *starting* with a real tag is left alone — a `<` elsewhere is treated as a JS less-than).
 - Display conditions: all pages, specific pages/posts (type-to-search picker), post types, categories, or special pages (front page / 404 / search) — each optionally limited to logged-in or logged-out visitors.
-- One-click integrations: Google Analytics 4, Google Tag Manager, Meta Pixel — paste an ID, snippets are generated and tagged so re-running updates instead of duplicating.
+- One-click integrations: Google Analytics 4, Google Tag Manager, Meta Pixel, Google Ads (base tag + per-page conversion actions with optional fixed value/currency), unified Google tag (GT-), and Consent Mode V2 (EU/UK-scoped or global denied defaults, auto-priority −10 so it prints before every Google tag) — paste an ID, snippets are generated and tagged so re-running updates instead of duplicating.
 - Import/export snippets as JSON (imports always land as drafts) and one-click Duplicate on the list table.
 - Emergency kill switch: pause every snippet site-wide from Settings (warning banner on all plugin screens while active).
 - Deliberately **no PHP execution** (safety decision) and data is **kept on uninstall by default** (opt-in deletion; uninstall is multisite-aware).
@@ -48,7 +48,7 @@ Files in `includes/` (all classes prefixed `Wpci_`, constants prefixed `WPCI_`):
 | `class-wpci-save-handler.php` | The save path: nonce + capability re-checks, whitelist validation of every field, rebuilds conditions from scratch (never trusts posted JSON) |
 | `class-wpci-conditions.php` | Decodes + evaluates the JSON targeting rule per request; malformed data fails **closed** (snippet suppressed) |
 | `class-wpci-output.php` | Front-end printing on `wp_head` / `wp_body_open` / `wp_footer`; `wp_footer` doubles as body fallback for themes missing `wp_body_open` (guarded against double-print) |
-| `class-wpci-integrations.php` | GA4 / GTM / Meta Pixel wizard; generates ordinary tagged snippets, find-or-update on re-run; REST toggle route |
+| `class-wpci-integrations.php` | Integrations wizard (GA4, GTM, Meta Pixel, Google Ads incl. conversion actions, Google tag GT-, Consent Mode V2); generates ordinary tagged snippets, find-or-update on re-run; REST toggle route |
 | `class-wpci-rest-controller.php` | Two REST routes: `wpci/v1/snippets/{id}/toggle` (list-table on/off switch) and `wpci/v1/posts/search` (edit-screen picker); everything else is plain form posts on purpose |
 | `class-wpci-import-export.php` | Import/Export admin page (JSON export of publish+draft snippets; import always as drafts with full re-whitelisting) + Duplicate row action (integration tags deliberately not copied) |
 | `class-wpci-settings.php` | Settings page: kill switch (`wpci_disable_all` option, with `admin_notices` banner on plugin screens) + uninstall-data opt-in (`wpci_remove_data_on_uninstall`) |

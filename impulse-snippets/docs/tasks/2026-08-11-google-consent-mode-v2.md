@@ -1,6 +1,12 @@
 # Task: Add Google Consent Mode V2 support (Google Ads, GA4, GTM)
 
-Status: planned — not started. Run the brainstorming skill before any implementation.
+Status: DONE (2026-08-11) — brainstormed (all 4 open questions answered), spec'd
+(docs/specs/2026-08-11-consent-mode-v2-design.md), built, and verified live in
+Playground (including the print-before-Google-tags ordering via priority −10).
+Decisions: own card + nudges on Google cards; EU/UK-scoped or global denied
+presets; ads_data_redaction always on, url_passthrough omitted; Advanced mode
+only (Basic is the CMP's job, documented honestly). A no-Google-tag-connected
+notice covers the empty case. Meta Pixel consent remains a possible follow-up.
 
 Reference: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced
 
