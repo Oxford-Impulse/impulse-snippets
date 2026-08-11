@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Impulse Snippets
  * Description: Add unlimited named code snippets (scripts, styles, HTML) to your site's head, body, or footer — manually or with one-click integrations.
- * Version: 1.16.0
+ * Version: 1.17.0
  * Author: Oxford Impulse
  * Author URI: https://oxfordimpulse.com
  * License: GPL v2 or later
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPCI_VERSION', '1.16.0' );
+define( 'WPCI_VERSION', '1.17.0' );
 define( 'WPCI_PLUGIN_FILE', __FILE__ );
 define( 'WPCI_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPCI_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -36,6 +36,7 @@ require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-settings.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-import-export.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-rest-controller.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-output.php';
+require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-ads-dynamic.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-plugin.php';
 
 Wpci_Plugin::instance();

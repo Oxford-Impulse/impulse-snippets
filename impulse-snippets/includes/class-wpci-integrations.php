@@ -19,6 +19,7 @@ class Wpci_Integrations {
 		add_action( 'admin_post_wpci_save_integration', array( $this, 'handle_save' ) );
 		add_action( 'admin_post_wpci_remove_integration', array( $this, 'handle_remove' ) );
 		add_action( 'admin_post_wpci_add_ads_conversion', array( $this, 'handle_add_ads_conversion' ) );
+		add_action( 'admin_post_wpci_add_ads_purchase', array( $this, 'handle_add_ads_purchase' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 		add_action( 'admin_notices', array( $this, 'maybe_render_conversion_handoff_notice' ) );
 	}
@@ -372,10 +373,73 @@ class Wpci_Integrations {
 					<input type="text" id="wpci_ads_conversion_currency" name="wpci_ads_conversion_currency" maxlength="3" placeholder="EUR" style="width:100%;">
 				</span>
 			</p>
+			<p>
+				<label>
+					<input type="checkbox" name="wpci_ads_conversion_enhanced" value="1">
+					<?php esc_html_e( 'Also send the hashed email of logged-in visitors (enhanced conversions for leads)', 'impulse-snippets' ); ?>
+				</label><br>
+				<span class="description"><?php esc_html_e( 'Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode. Applies to logged-in visitors only — logged-out form submitters are a planned future integration.', 'impulse-snippets' ); ?></span>
+			</p>
 			<p><button type="submit" class="button"><?php esc_html_e( 'Add conversion action', 'impulse-snippets' ); ?></button></p>
 		</form>
 
-		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions for purchases and leads work with this tag automatically — just switch them on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
+		<?php $this->render_woocommerce_purchase_section(); ?>
+
+		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
+		<?php
+	}
+
+	/**
+	 * WooCommerce purchase tracking, inside the Google Ads card. The
+	 * woocommerce_thankyou hook does the page targeting (the order-received
+	 * page is a dynamic endpoint the page picker can't target), so setup is
+	 * one field: the Purchase conversion action's label. Published
+	 * immediately — it can only ever fire on a real completed order.
+	 */
+	private function render_woocommerce_purchase_section() {
+		?>
+		<hr>
+		<h3 style="margin-bottom:4px;"><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></h3>
+		<?php
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			?>
+			<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
+			<?php
+			return;
+		}
+
+		$purchase_ids = wpci_find_integration_post_ids( 'google_ads_purchase' );
+		$purchase_id  = ! empty( $purchase_ids ) ? $purchase_ids[0] : 0;
+		$enhanced_on  = $purchase_id ? (bool) get_post_meta( $purchase_id, '_wpci_ads_enhanced', true ) : false;
+		?>
+		<p class="description"><?php esc_html_e( 'Reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits automatically). Paste the conversion label of your "Purchase" conversion action from Google Ads.', 'impulse-snippets' ); ?></p>
+
+		<?php if ( $purchase_id ) : ?>
+			<p>
+				<span class="dashicons dashicons-yes-alt" style="color:#00a32a;"></span>
+				<a href="<?php echo esc_url( get_edit_post_link( $purchase_id ) ); ?>"><?php echo esc_html( get_the_title( $purchase_id ) ); ?></a>
+				<span class="description">
+					— <?php echo ( 'publish' === get_post_status( $purchase_id ) ) ? esc_html__( 'active', 'impulse-snippets' ) : esc_html__( 'switched off', 'impulse-snippets' ); ?>
+				</span>
+			</p>
+		<?php endif; ?>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'wpci_add_ads_purchase_action', 'wpci_ads_purchase_nonce' ); ?>
+			<input type="hidden" name="action" value="wpci_add_ads_purchase">
+			<p>
+				<label for="wpci_ads_purchase_label"><strong><?php esc_html_e( 'Purchase conversion label', 'impulse-snippets' ); ?></strong></label><br>
+				<input type="text" id="wpci_ads_purchase_label" name="wpci_ads_purchase_label" placeholder="AbCdEfGhIj-D2sNzQ" style="width:100%;">
+			</p>
+			<p>
+				<label>
+					<input type="checkbox" name="wpci_ads_purchase_enhanced" value="1" <?php checked( $enhanced_on ); ?>>
+					<?php esc_html_e( 'Enhanced conversions: also send the hashed billing email', 'impulse-snippets' ); ?>
+				</label><br>
+				<span class="description"><?php esc_html_e( 'Improves conversion matching. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode.', 'impulse-snippets' ); ?></span>
+			</p>
+			<p><button type="submit" class="button"><?php echo $purchase_id ? esc_html__( 'Update purchase tracking', 'impulse-snippets' ) : esc_html__( 'Set up purchase tracking', 'impulse-snippets' ); ?></button></p>
+		</form>
 		<?php
 	}
 
@@ -681,6 +745,8 @@ class Wpci_Integrations {
 			}
 		}
 
+		$enhanced = ! empty( $_POST['wpci_ads_conversion_enhanced'] );
+
 		if ( $existing_id ) {
 			wp_update_post(
 				array(
@@ -689,6 +755,7 @@ class Wpci_Integrations {
 					'post_content' => $code,
 				)
 			);
+			update_post_meta( $existing_id, '_wpci_ads_enhanced', $enhanced ? 1 : '' );
 			$post_id = $existing_id;
 		} else {
 			$post_id = wp_insert_post(
@@ -724,10 +791,102 @@ class Wpci_Integrations {
 			);
 			update_post_meta( $post_id, '_wpci_integration', 'google_ads_conversion' );
 			update_post_meta( $post_id, '_wpci_integration_id', $send_to );
+			if ( $enhanced ) {
+				update_post_meta( $post_id, '_wpci_ads_enhanced', 1 );
+			}
 		}
 
 		set_transient( 'wpci_ads_conversion_notice_' . get_current_user_id(), 1, 300 );
 		wp_safe_redirect( get_edit_post_link( $post_id, 'url' ) );
+		exit;
+	}
+
+	/**
+	 * Creates/updates the WooCommerce purchase-tracking snippet. Published
+	 * immediately: unlike page-based conversions there is nothing to pick —
+	 * the woocommerce_thankyou hook is the targeting, and it can only fire
+	 * on a real completed order. Wpci_Ads_Dynamic renders the actual event;
+	 * the snippet's content is an explanatory preview.
+	 */
+	public function handle_add_ads_purchase() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
+		}
+		check_admin_referer( 'wpci_add_ads_purchase_action', 'wpci_ads_purchase_nonce' );
+
+		$redirect_args = array( 'page' => self::PAGE_SLUG );
+
+		$ads_id = wpci_get_integration_connected_id( 'google_ads' );
+		if ( ! $ads_id ) {
+			$redirect_args['wpci_ads_conv_error'] = 'nobase';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		$label = isset( $_POST['wpci_ads_purchase_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_ads_purchase_label'] ) ) : '';
+		$label = trim( preg_replace( '/^AW-[A-Z0-9]+\//i', '', trim( $label ) ) );
+		if ( ! preg_match( '/^[A-Za-z0-9_-]+$/', $label ) ) {
+			$redirect_args['wpci_ads_conv_error'] = 'label';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		$enhanced = ! empty( $_POST['wpci_ads_purchase_enhanced'] );
+		$send_to  = $ads_id . '/' . $label;
+		/* translators: %s: Google Ads conversion label. */
+		$title = sprintf( __( 'Google Ads purchase conversion (%s)', 'impulse-snippets' ), $label );
+
+		$preview = '<!-- '
+			. __( 'WooCommerce purchase tracking (managed by Impulse Snippets). This snippet is printed automatically on the WooCommerce order-received page with the real order total, currency, and order number filled in. The code below is only a preview — editing it has no effect.', 'impulse-snippets' )
+			. " -->\n"
+			. "<script>\ngtag('event', 'conversion', {'send_to': '" . esc_js( $send_to ) . "', 'value': ORDER_TOTAL, 'currency': 'ORDER_CURRENCY', 'transaction_id': 'ORDER_NUMBER'});\n</script>";
+
+		$existing = wpci_find_integration_post_ids( 'google_ads_purchase' );
+		if ( ! empty( $existing ) ) {
+			$post_id = $existing[0];
+			wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_title'   => $title,
+					'post_content' => $preview,
+					'post_status'  => 'publish',
+				)
+			);
+		} else {
+			$post_id = wp_insert_post(
+				array(
+					'post_type'    => Wpci_Cpt::POST_TYPE,
+					'post_title'   => $title,
+					'post_content' => $preview,
+					'post_status'  => 'publish',
+					'menu_order'   => 10,
+				)
+			);
+		}
+
+		if ( $post_id && ! is_wp_error( $post_id ) ) {
+			update_post_meta( $post_id, '_wpci_location', 'head' );
+			update_post_meta( $post_id, '_wpci_code_type', 'html' );
+			update_post_meta( $post_id, '_wpci_source', 'inline' );
+			// Matches nothing on purpose: the normal output loop must never
+			// print this — the woocommerce_thankyou hook is its only outlet.
+			update_post_meta(
+				$post_id,
+				'_wpci_conditions',
+				wp_json_encode(
+					array(
+						'type'     => 'specific',
+						'post_ids' => array(),
+					)
+				)
+			);
+			update_post_meta( $post_id, '_wpci_integration', 'google_ads_purchase' );
+			update_post_meta( $post_id, '_wpci_integration_id', $send_to );
+			update_post_meta( $post_id, '_wpci_ads_enhanced', $enhanced ? 1 : '' );
+		}
+
+		$redirect_args['wpci_success'] = 'google_ads_purchase';
+		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
 		exit;
 	}
 
@@ -744,6 +903,7 @@ class Wpci_Integrations {
 		// Remove button already confirms with the user first.
 		if ( 'google_ads' === $integration ) {
 			$keys[] = 'google_ads_conversion';
+			$keys[] = 'google_ads_purchase';
 		}
 
 		foreach ( $keys as $key ) {

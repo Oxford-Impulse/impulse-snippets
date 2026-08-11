@@ -152,5 +152,18 @@ foreach ( $summary_cases as $c ) {
 }
 
 // ---------------------------------------------------------------------------
+// wpci_hash_user_email() — enhanced-conversions email normalization (1.17.0).
+// Google treats gmail/googlemail dots as the same inbox; everything else
+// keeps its dots. Only plausible addresses hash; junk returns ''.
+// ---------------------------------------------------------------------------
+check( 'hash: trims and lowercases', hash( 'sha256', 'user@example.com' ), wpci_hash_user_email( '  User@Example.COM  ' ) );
+check( 'hash: gmail dots stripped', hash( 'sha256', 'johndoe@gmail.com' ), wpci_hash_user_email( 'John.Doe@gmail.com' ) );
+check( 'hash: googlemail dots stripped', hash( 'sha256', 'johndoe@googlemail.com' ), wpci_hash_user_email( 'john.doe@googlemail.com' ) );
+check( 'hash: non-gmail dots kept', hash( 'sha256', 'john.doe@example.com' ), wpci_hash_user_email( 'john.doe@example.com' ) );
+check( 'hash: empty rejected', '', wpci_hash_user_email( '' ) );
+check( 'hash: no at-sign rejected', '', wpci_hash_user_email( 'not-an-email' ) );
+check( 'hash: trailing at rejected', '', wpci_hash_user_email( 'user@' ) );
+
+// ---------------------------------------------------------------------------
 echo "\n" . ( $fail ? "$fail FAILURE(S), $pass passed\n" : "ALL $pass TESTS PASSED\n" );
 exit( $fail ? 1 : 0 );

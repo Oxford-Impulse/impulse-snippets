@@ -33,6 +33,7 @@ class Wpci_Plugin {
 		new Wpci_Import_Export();
 		new Wpci_Rest_Controller();
 		new Wpci_Output();
+		new Wpci_Ads_Dynamic();
 	}
 
 	/**

@@ -139,6 +139,32 @@ function wpci_get_conditions_summary( $raw_conditions ) {
 }
 
 /**
+ * Normalizes an email the way Google's enhanced conversions expect, then
+ * SHA-256 hashes it: trim, lowercase, and for gmail.com/googlemail.com
+ * addresses strip the dots in the local part (Google treats them as the
+ * same inbox). Returns '' for anything that isn't a plausible address, so
+ * callers can simply skip emitting user_data. The raw address never leaves
+ * the server — only the hash is printed.
+ */
+function wpci_hash_user_email( $email ) {
+	$email = strtolower( trim( (string) $email ) );
+
+	$at = strrpos( $email, '@' );
+	if ( false === $at || 0 === $at || strlen( $email ) - 1 === $at ) {
+		return '';
+	}
+
+	$local  = substr( $email, 0, $at );
+	$domain = substr( $email, $at + 1 );
+
+	if ( 'gmail.com' === $domain || 'googlemail.com' === $domain ) {
+		$local = str_replace( '.', '', $local );
+	}
+
+	return hash( 'sha256', $local . '@' . $domain );
+}
+
+/**
  * Human-readable label for a wizard-managed snippet's _wpci_integration tag.
  */
 function wpci_get_integration_label( $integration ) {
@@ -151,6 +177,7 @@ function wpci_get_integration_label( $integration ) {
 		'google_ads_conversion' => __( 'Google Ads conversion action', 'impulse-snippets' ),
 		'google_tag'            => __( 'Google tag integration', 'impulse-snippets' ),
 		'consent_mode'          => __( 'Consent Mode V2 integration', 'impulse-snippets' ),
+		'google_ads_purchase'   => __( 'Google Ads purchase conversion (WooCommerce)', 'impulse-snippets' ),
 	);
 	return isset( $labels[ $integration ] ) ? $labels[ $integration ] : $integration;
 }
