@@ -158,6 +158,7 @@ class Wpci_Ads_Dynamic {
 			$config[] = array(
 				'p' => get_post_meta( $post_id, '_wpci_form_plugin', true ),
 				'f' => (int) get_post_meta( $post_id, '_wpci_form_id', true ),
+				'n' => (string) get_post_meta( $post_id, '_wpci_form_name', true ),
 				's' => (string) get_post_meta( $post_id, '_wpci_integration_id', true ),
 				'v' => ( '' !== $value ) ? (float) $value : 0,
 				'c' => (string) get_post_meta( $post_id, '_wpci_ads_currency', true ),
@@ -307,8 +308,18 @@ class Wpci_Ads_Dynamic {
 			var el = form.querySelector('input[type=email]');
 			hashThenFire(t, el ? el.value : '');
 		});
+		jQuery(document).on('submit_success', function(ev){
+			var form = ev.target, name = form && form.getAttribute ? form.getAttribute('name') : '', t = null;
+			for (var i = 0; i < cfg.forms.length; i++) {
+				if (cfg.forms[i].p === 'elementor' && cfg.forms[i].n === name) { t = cfg.forms[i]; break; }
+			}
+			if (!t) { return; }
+			var el = form.querySelector ? form.querySelector('input[type=email]') : null;
+			hashThenFire(t, el ? el.value : '');
+		});
 	}
 	if (cfg.pending) { fire(cfg.pending, cfg.pending.hash || ''); clearCookie(); }
+	window.wpciFormsTracked = cfg.forms.length;
 })();
 </script>
 		<?php

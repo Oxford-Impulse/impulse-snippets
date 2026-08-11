@@ -78,6 +78,8 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 * New: enhanced conversions for leads — page-based conversion actions can optionally send the hashed email of logged-in visitors.
 * New: form lead tracking — pick a Contact Form 7 or WPForms form and a lead is counted the moment it is successfully submitted (GA4 generate_lead event always, plus a Google Ads conversion if you add a label). Optional hashed-email enhanced conversions work even for logged-out visitors: the address is SHA-256 hashed in the visitor's own browser and never transmitted readable.
 * Improved: conversion configuration moved into a "Conversion tracking" panel below the integration cards, with independently collapsible sections; the currency field pre-fills from your WooCommerce store settings.
+* New: Elementor Pro form tracking — track any Elementor form by its Form Name, same lead events as Contact Form 7 / WPForms.
+* New: "Check my setup" — one click opens your site with an admin-only panel verifying every connected integration actually prints its code (visitors never see it), with an optional, clearly-warned test conversion.
 
 = 1.16.0 =
 * New: Priority field — control the exact output order of snippets sharing a location (lowest number prints first). Sortable Priority column in the snippets list.

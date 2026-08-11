@@ -34,6 +34,7 @@ class Wpci_Plugin {
 		new Wpci_Rest_Controller();
 		new Wpci_Output();
 		new Wpci_Ads_Dynamic();
+		new Wpci_Setup_Check();
 	}
 
 	/**

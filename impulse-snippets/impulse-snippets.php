@@ -37,6 +37,7 @@ require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-import-export.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-rest-controller.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-output.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-ads-dynamic.php';
+require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-setup-check.php';
 require_once WPCI_PLUGIN_DIR . 'includes/class-wpci-plugin.php';
 
 Wpci_Plugin::instance();

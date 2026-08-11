@@ -120,8 +120,12 @@ class Wpci_Integrations {
 	public function render_page() {
 		?>
 		<div class="wrap">
-			<h1><?php esc_html_e( 'Integrations', 'impulse-snippets' ); ?></h1>
+			<h1>
+				<?php esc_html_e( 'Integrations', 'impulse-snippets' ); ?>
+				<a href="<?php echo esc_url( Wpci_Setup_Check::get_check_url() ); ?>" target="_blank" class="page-title-action"><?php esc_html_e( 'Check my setup ↗', 'impulse-snippets' ); ?></a>
+			</h1>
 			<p><?php esc_html_e( 'Paste an ID below and the correct snippet(s) are created for you automatically. Re-entering a different ID later updates the same snippet(s) instead of creating duplicates.', 'impulse-snippets' ); ?></p>
+			<p class="description"><?php esc_html_e( '"Check my setup" opens your site with an admin-only panel verifying that each connected integration actually prints its code — only you see it, visitors never do.', 'impulse-snippets' ); ?></p>
 
 			<?php $this->maybe_render_status_notice(); ?>
 
@@ -569,9 +573,10 @@ class Wpci_Integrations {
 	 * listener printed by Wpci_Ads_Dynamic is its only outlet.
 	 */
 	private function render_form_tracking_section( $has_ads ) {
-		$tracked_ids  = wpci_find_integration_post_ids( 'form_conversion' );
-		$forms        = $this->get_site_forms();
-		$plugin_names = array(
+		$tracked_ids   = wpci_find_integration_post_ids( 'form_conversion' );
+		$forms         = $this->get_site_forms();
+		$has_elementor = class_exists( '\ElementorPro\Plugin' );
+		$plugin_names  = array(
 			'cf7'     => __( 'Contact Form 7', 'impulse-snippets' ),
 			'wpforms' => __( 'WPForms', 'impulse-snippets' ),
 		);
@@ -581,8 +586,8 @@ class Wpci_Integrations {
 				<strong><?php esc_html_e( 'Form lead tracking', 'impulse-snippets' ); ?></strong>
 				<span class="description">
 					<?php
-					if ( empty( $forms ) ) {
-						esc_html_e( '(requires Contact Form 7 or WPForms)', 'impulse-snippets' );
+					if ( empty( $forms ) && ! $has_elementor ) {
+						esc_html_e( '(requires Contact Form 7, WPForms, or Elementor Pro)', 'impulse-snippets' );
 					} else {
 						/* translators: %d: number of tracked forms. */
 						echo esc_html( sprintf( _n( '(%d form tracked)', '(%d forms tracked)', count( $tracked_ids ), 'impulse-snippets' ), count( $tracked_ids ) ) );
@@ -593,8 +598,8 @@ class Wpci_Integrations {
 			<div class="wpci-panel-section-body">
 		<p class="description"><?php esc_html_e( 'Counts a lead the moment a visitor successfully submits the form you choose — a free GA4 "generate_lead" event always, plus a Google Ads conversion if you add a label. No thank-you page needed; failed submissions never count.', 'impulse-snippets' ); ?></p>
 
-		<?php if ( empty( $forms ) ) : ?>
-			<p class="description"><?php esc_html_e( 'This section activates automatically when Contact Form 7 or WPForms is installed.', 'impulse-snippets' ); ?></p>
+		<?php if ( empty( $forms ) && ! $has_elementor ) : ?>
+			<p class="description"><?php esc_html_e( 'This section activates automatically when Contact Form 7, WPForms, or Elementor Pro is installed.', 'impulse-snippets' ); ?></p>
 			</div>
 		</details>
 			<?php
@@ -627,6 +632,7 @@ class Wpci_Integrations {
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php wp_nonce_field( 'wpci_add_form_conversion_action', 'wpci_form_conversion_nonce' ); ?>
 			<input type="hidden" name="action" value="wpci_add_form_conversion">
+			<?php if ( ! empty( $forms ) ) : ?>
 			<p>
 				<label for="wpci_form_conversion_form"><strong><?php esc_html_e( 'Form', 'impulse-snippets' ); ?></strong></label><br>
 				<select id="wpci_form_conversion_form" name="wpci_form_conversion_form" style="width:100%;max-width:400px;">
@@ -640,6 +646,14 @@ class Wpci_Integrations {
 				</select>
 				<span class="description"><?php esc_html_e( 'Adding the same form again updates its tracking instead of duplicating it.', 'impulse-snippets' ); ?></span>
 			</p>
+			<?php endif; ?>
+			<?php if ( $has_elementor ) : ?>
+			<p>
+				<label for="wpci_form_conversion_elementor_name"><?php echo empty( $forms ) ? '<strong>' . esc_html__( 'Elementor form name', 'impulse-snippets' ) . '</strong>' : esc_html__( 'Or an Elementor form — enter its Form Name', 'impulse-snippets' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- both branches are escaped above. ?></label><br>
+				<input type="text" id="wpci_form_conversion_elementor_name" name="wpci_form_conversion_elementor_name" placeholder="<?php esc_attr_e( 'New Form', 'impulse-snippets' ); ?>" style="width:100%;max-width:400px;">
+				<span class="description"><?php esc_html_e( 'Elementor forms are matched by the "Form Name" set in the form widget (Content tab, first field) — type it exactly. When filled, this is used instead of the dropdown.', 'impulse-snippets' ); ?></span>
+			</p>
+			<?php endif; ?>
 			<p>
 				<label for="wpci_form_conversion_label"><?php esc_html_e( 'Google Ads conversion label (optional)', 'impulse-snippets' ); ?></label><br>
 				<input type="text" id="wpci_form_conversion_label" name="wpci_form_conversion_label" placeholder="AbCdEfGhIj-D2sNzQ" style="width:100%;" <?php disabled( ! $has_ads ); ?>>
@@ -1140,21 +1154,33 @@ class Wpci_Integrations {
 
 		$redirect_args = array( 'page' => self::PAGE_SLUG );
 
-		// The picker value is "plugin:form_id"; both halves are re-verified —
+		// An Elementor form name takes precedence over the dropdown (Elementor
+		// forms are widgets, not posts, so they're matched by name). Otherwise
+		// the picker value is "plugin:form_id"; both halves are re-verified —
 		// the form post must really exist and be that plugin's post type.
-		$post_types = array(
-			'cf7'     => 'wpcf7_contact_form',
-			'wpforms' => 'wpforms',
-		);
-		$picked     = isset( $_POST['wpci_form_conversion_form'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_form'] ) ) : '';
-		$parts      = explode( ':', $picked, 2 );
-		$plugin     = isset( $parts[0] ) ? $parts[0] : '';
-		$form_id    = isset( $parts[1] ) ? absint( $parts[1] ) : 0;
-		$form_post  = ( isset( $post_types[ $plugin ] ) && $form_id ) ? get_post( $form_id ) : null;
-		if ( ! $form_post || $form_post->post_type !== $post_types[ $plugin ] ) {
-			$redirect_args['wpci_ads_conv_error'] = 'form';
-			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
-			exit;
+		$elementor_name = isset( $_POST['wpci_form_conversion_elementor_name'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_elementor_name'] ) ) ) : '';
+		$form_name      = '';
+		if ( '' !== $elementor_name && class_exists( '\ElementorPro\Plugin' ) ) {
+			$plugin    = 'elementor';
+			$form_id   = 0;
+			$form_name = $elementor_name;
+			$title_of  = $elementor_name;
+		} else {
+			$post_types = array(
+				'cf7'     => 'wpcf7_contact_form',
+				'wpforms' => 'wpforms',
+			);
+			$picked     = isset( $_POST['wpci_form_conversion_form'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_form_conversion_form'] ) ) : '';
+			$parts      = explode( ':', $picked, 2 );
+			$plugin     = isset( $parts[0] ) ? $parts[0] : '';
+			$form_id    = isset( $parts[1] ) ? absint( $parts[1] ) : 0;
+			$form_post  = ( isset( $post_types[ $plugin ] ) && $form_id ) ? get_post( $form_id ) : null;
+			if ( ! $form_post || $form_post->post_type !== $post_types[ $plugin ] ) {
+				$redirect_args['wpci_ads_conv_error'] = 'form';
+				wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+				exit;
+			}
+			$title_of = $form_post->post_title;
 		}
 
 		// The Ads label is optional (empty = GA4-only tracking), but when
@@ -1183,7 +1209,7 @@ class Wpci_Integrations {
 
 		$enhanced = ! empty( $_POST['wpci_form_conversion_enhanced'] );
 		/* translators: %s: the tracked form's title. */
-		$title = sprintf( __( 'Form lead tracking (%s)', 'impulse-snippets' ), $form_post->post_title );
+		$title = sprintf( __( 'Form lead tracking (%s)', 'impulse-snippets' ), $title_of );
 
 		$preview = '<!-- '
 			. __( 'Form lead tracking (managed by Impulse Snippets). A listener printed in the footer fires the lead events the moment this form is successfully submitted — this snippet only stores the configuration. Editing the code below has no effect; use the toggle to switch tracking off.', 'impulse-snippets' )
@@ -1191,11 +1217,17 @@ class Wpci_Integrations {
 			. ( $send_to ? "\ngtag('event', 'conversion', {'send_to': '" . esc_js( $send_to ) . "'});" : '' )
 			. "\n</script>";
 
-		// Find-or-update by plugin+form: one tracking entry per form.
+		// Find-or-update by plugin+form (Elementor entries match by form name
+		// instead of a post ID): one tracking entry per form.
 		$post_id = 0;
 		foreach ( wpci_find_integration_post_ids( 'form_conversion' ) as $tracked_id ) {
-			if ( get_post_meta( $tracked_id, '_wpci_form_plugin', true ) === $plugin
-				&& (int) get_post_meta( $tracked_id, '_wpci_form_id', true ) === $form_id ) {
+			if ( get_post_meta( $tracked_id, '_wpci_form_plugin', true ) !== $plugin ) {
+				continue;
+			}
+			$same = ( 'elementor' === $plugin )
+				? get_post_meta( $tracked_id, '_wpci_form_name', true ) === $form_name
+				: (int) get_post_meta( $tracked_id, '_wpci_form_id', true ) === $form_id;
+			if ( $same ) {
 				$post_id = $tracked_id;
 				break;
 			}
@@ -1242,6 +1274,7 @@ class Wpci_Integrations {
 			update_post_meta( $post_id, '_wpci_integration_id', $send_to );
 			update_post_meta( $post_id, '_wpci_form_plugin', $plugin );
 			update_post_meta( $post_id, '_wpci_form_id', $form_id );
+			update_post_meta( $post_id, '_wpci_form_name', $form_name );
 			update_post_meta( $post_id, '_wpci_ads_enhanced', $enhanced ? 1 : '' );
 			update_post_meta( $post_id, '_wpci_ads_value', ( null !== $value ) ? $value : '' );
 			update_post_meta( $post_id, '_wpci_ads_currency', ( null !== $value ) ? $currency : '' );
