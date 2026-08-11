@@ -26,6 +26,7 @@ Impulse Snippets lets you add JavaScript, CSS, or HTML snippets anywhere on your
 * **One-click integrations** — paste a Google Analytics 4, Google Tag Manager, Meta Pixel, or Google Ads ID and the correct snippet(s) are generated for you automatically, with instant pause/resume.
 * **Google Ads conversion tracking** — add conversion actions (with optional fixed value/currency) that fire only on the page you choose, like your thank-you page. Enhanced conversions work out of the box via Google's automatic mode.
 * **Consent Mode V2** — one click creates the consent signal Google requires for sites with EU/UK visitors, printed before every Google tag. Choose EU-only or global "denied by default"; pairs with any certified consent banner plugin (Complianz, Cookiebot, CookieYes …).
+* **Meta Pixel consent** — optional "wait for cookie consent" mode: the pixel stays silent until your consent banner grants tracking.
 * **Google tag (GT-) support** — if your Google account uses the newer unified GT- tag, connect it directly.
 * **Instant on/off toggle** — enable or disable any snippet with a single click, no page reload.
 * **Emergency kill switch** — pause every snippet site-wide from Settings if something ever goes wrong.
@@ -80,6 +81,7 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 * New: Google Ads integration — connect your AW- ID for the site-wide tag, then add conversion actions (optional fixed value/currency) that fire only on the page you pick, e.g. your thank-you page. Enhanced conversions supported via Google's automatic mode.
 * New: Consent Mode V2 integration — one click creates Google's required consent-default signal (EU/UK-scoped or global), auto-prioritized to print before every Google tag, with privacy-safe ads_data_redaction enabled.
 * New: Google tag (GT-) card for the unified Google tag used by newer Google accounts.
+* New: Meta Pixel "wait for cookie consent" option — the generated pixel starts revoked (fbq consent API) until a consent banner grants tracking; the noscript fallback is omitted in that mode so no-JS visitors aren't tracked unconditionally.
 * New: Duplicate row action on the snippets list.
 * Added a .pot translation template in languages/.
 * Clarified that the Categories condition applies to single blog posts, not category archive pages.

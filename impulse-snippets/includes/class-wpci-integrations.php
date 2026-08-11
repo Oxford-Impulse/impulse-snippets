@@ -155,6 +155,7 @@ class Wpci_Integrations {
 						'prefix'      => '',
 						'example'     => '1234567890123',
 						'field_name'  => 'wpci_meta_pixel_id',
+						'form_extra'  => array( $this, 'render_meta_consent_checkbox' ),
 					)
 				);
 				$this->render_card(
@@ -257,6 +258,13 @@ class Wpci_Integrations {
 						<input type="text" id="<?php echo esc_attr( $args['field_name'] ); ?>" name="<?php echo esc_attr( $args['field_name'] ); ?>" value="<?php echo esc_attr( $current_suffix ); ?>" placeholder="<?php echo esc_attr( $args['example'] ); ?>" style="width:100%;">
 					<?php endif; ?>
 				</p>
+				<?php
+				// Card-specific extra form fields (e.g. the Meta Pixel consent
+				// checkbox) — rendered inside the save form so they post with it.
+				if ( ! empty( $args['form_extra'] ) && is_callable( $args['form_extra'] ) ) {
+					call_user_func( $args['form_extra'] );
+				}
+				?>
 				<button type="submit" class="button button-primary">
 					<?php echo $current_id ? esc_html__( 'Update', 'impulse-snippets' ) : esc_html__( 'Connect', 'impulse-snippets' ); ?>
 				</button>
@@ -288,6 +296,35 @@ class Wpci_Integrations {
 			}
 			?>
 		</div>
+		<?php
+	}
+
+	/**
+	 * The Meta Pixel card's consent checkbox. Checked state is derived from
+	 * the existing snippet's content (does it carry the revoke call?) — no
+	 * separate stored flag to drift out of sync, and it survives
+	 * export/import since it lives in the snippet itself.
+	 *
+	 * Unlike Google's Consent Mode there is no region scoping and no data
+	 * modeling: revoked means the pixel collects nothing, worldwide, until a
+	 * consent banner calls fbq('consent','grant'). Hence default off and the
+	 * explicit warning.
+	 */
+	public function render_meta_consent_checkbox() {
+		$consent_on = false;
+		$existing   = wpci_find_integration_post_ids( 'meta_pixel' );
+		if ( ! empty( $existing ) ) {
+			$post       = get_post( $existing[0] );
+			$consent_on = $post && false !== strpos( $post->post_content, "fbq('consent', 'revoke')" );
+		}
+		?>
+		<p>
+			<label>
+				<input type="checkbox" name="wpci_meta_pixel_consent" value="1" <?php checked( $consent_on ); ?>>
+				<?php esc_html_e( 'Wait for cookie consent before tracking', 'impulse-snippets' ); ?>
+			</label><br>
+			<span class="description"><?php esc_html_e( 'Recommended if you have EU/UK visitors AND a consent banner plugin — the pixel stays silent until the banner grants consent. Warning: unlike Google\'s Consent Mode this cannot be limited to EU visitors and collects nothing at all while waiting, so without a consent banner the pixel would simply never track anyone.', 'impulse-snippets' ); ?></span>
+		</p>
 		<?php
 	}
 
@@ -495,7 +532,8 @@ class Wpci_Integrations {
 				$redirect_args['wpci_success'] = 'gtm';
 			}
 		} elseif ( 'meta_pixel' === $integration ) {
-			$id = isset( $_POST['wpci_meta_pixel_id'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_meta_pixel_id'] ) ) : '';
+			$id      = isset( $_POST['wpci_meta_pixel_id'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_meta_pixel_id'] ) ) : '';
+			$consent = ! empty( $_POST['wpci_meta_pixel_consent'] );
 			if ( ! preg_match( '/^\d+$/', $id ) ) {
 				$redirect_args['wpci_error'] = 'meta_pixel';
 			} else {
@@ -504,7 +542,7 @@ class Wpci_Integrations {
 					/* translators: %s: Meta Pixel ID. */
 					sprintf( __( 'Meta Pixel (%s)', 'impulse-snippets' ), $id ),
 					'head',
-					$this->meta_pixel_code( $id ),
+					$this->meta_pixel_code( $id, $consent ),
 					$id
 				);
 				$redirect_args['wpci_success'] = 'meta_pixel';
@@ -822,10 +860,23 @@ class Wpci_Integrations {
 		return "<noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id={$id}\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript>";
 	}
 
-	private function meta_pixel_code( $id ) {
-		$id_js  = esc_js( $id );
-		$id_url = rawurlencode( $id );
-		return "<script>\n!function(f,b,e,v,n,t,s)\n{if(f.fbq)return;n=f.fbq=function(){n.callMethod?\nn.callMethod.apply(n,arguments):n.queue.push(arguments)};\nif(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';\nn.queue=[];t=b.createElement(e);t.async=!0;\nt.src=v;s=b.getElementsByTagName(e)[0];\ns.parentNode.insertBefore(t,s)}(window, document,'script',\n'https://connect.facebook.net/en_US/fbevents.js');\nfbq('init', '{$id_js}');\nfbq('track', 'PageView');\n</script>\n"
-			. "<noscript><img height=\"1\" width=\"1\" style=\"display:none\" src=\"https://www.facebook.com/tr?id={$id_url}&ev=PageView&noscript=1\" /></noscript>";
+	/**
+	 * With $consent, fbq('consent','revoke') precedes init — the pixel queues
+	 * silently until a consent banner calls fbq('consent','grant'). The
+	 * <noscript> fallback image is omitted in that case: it would fire
+	 * unconditionally for no-JS visitors, defeating the consent gate.
+	 */
+	private function meta_pixel_code( $id, $consent = false ) {
+		$id_js        = esc_js( $id );
+		$id_url       = rawurlencode( $id );
+		$consent_line = $consent ? "fbq('consent', 'revoke');\n" : '';
+
+		$code = "<script>\n!function(f,b,e,v,n,t,s)\n{if(f.fbq)return;n=f.fbq=function(){n.callMethod?\nn.callMethod.apply(n,arguments):n.queue.push(arguments)};\nif(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';\nn.queue=[];t=b.createElement(e);t.async=!0;\nt.src=v;s=b.getElementsByTagName(e)[0];\ns.parentNode.insertBefore(t,s)}(window, document,'script',\n'https://connect.facebook.net/en_US/fbevents.js');\n{$consent_line}fbq('init', '{$id_js}');\nfbq('track', 'PageView');\n</script>";
+
+		if ( ! $consent ) {
+			$code .= "\n<noscript><img height=\"1\" width=\"1\" style=\"display:none\" src=\"https://www.facebook.com/tr?id={$id_url}&ev=PageView&noscript=1\" /></noscript>";
+		}
+
+		return $code;
 	}
 }
