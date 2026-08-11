@@ -15,6 +15,8 @@
 
 A WordPress plugin: **Impulse Snippets** (formerly "WP Code Injector", v1.16.0, GPL v2). It lets site owners add unlimited named code snippets (JavaScript, CSS, HTML) to their site's `<head>`, after the opening `<body>` tag, or in the footer — without editing theme files. Sold/published by Oxford Impulse (oxfordimpulse.com, contact: info@oxfordimpulse.com).
 
+**WordPress.org status (as of 2026-08-11):** v1.16.0 submitted to the Plugin Directory, slug `impulse-snippets`, **awaiting first review** (queue was ~463 plugins; expect weeks). WP.org username: `omersekinci`; review emails go to info@oxfordimpulse.com from plugins@wordpress.org — forward them to Claude before replying. While queued: never resubmit and never submit a second plugin. The submission zip is built by staging a clean copy (excludes `.claude/`, `.agents/`, `docs/`, `CLAUDE.md`, `AGENTS.md`, `skills-lock.json`) and zipping it as top-level `impulse-snippets/`; the zip itself is git-ignored. Directory screenshots live in `wporg-assets/` at the repo root (screenshot-1/2/3.png); an icon (256×256) and banner (772×250) still need designing before approval day.
+
 Key user-facing features:
 - Unlimited named snippets, each with its own on/off toggle (no page reload), plus a sortable Priority (output order) per snippet.
 - Three placements: head, body, footer.
@@ -22,7 +24,7 @@ Key user-facing features:
 - Auto-detect wrapping: bare JS/CSS gets `<script>`/`<style>` tags added at output time (code *starting* with a real tag is left alone — a `<` elsewhere is treated as a JS less-than).
 - Display conditions: all pages, specific pages/posts (type-to-search picker), post types, categories, or special pages (front page / 404 / search) — each optionally limited to logged-in or logged-out visitors.
 - One-click integrations: Google Analytics 4, Google Tag Manager, Meta Pixel, Google Ads (base tag + per-page conversion actions with optional fixed value/currency), unified Google tag (GT-), and Consent Mode V2 (EU/UK-scoped or global denied defaults, auto-priority −10 so it prints before every Google tag) — paste an ID, snippets are generated and tagged so re-running updates instead of duplicating.
-- Import/export snippets as JSON (imports always land as drafts) and one-click Duplicate on the list table.
+- Import/export snippets as JSON — selective export via a filterable pre-ticked picker on the Import/Export page or an Export bulk action on the list table (imports always land as drafts) — and one-click Duplicate on the list table.
 - Emergency kill switch: pause every snippet site-wide from Settings (warning banner on all plugin screens while active).
 - Deliberately **no PHP execution** (safety decision) and data is **kept on uninstall by default** (opt-in deletion; uninstall is multisite-aware).
 
@@ -50,14 +52,14 @@ Files in `includes/` (all classes prefixed `Wpci_`, constants prefixed `WPCI_`):
 | `class-wpci-output.php` | Front-end printing on `wp_head` / `wp_body_open` / `wp_footer`; `wp_footer` doubles as body fallback for themes missing `wp_body_open` (guarded against double-print) |
 | `class-wpci-integrations.php` | Integrations wizard (GA4, GTM, Meta Pixel, Google Ads incl. conversion actions, Google tag GT-, Consent Mode V2); generates ordinary tagged snippets, find-or-update on re-run; REST toggle route |
 | `class-wpci-rest-controller.php` | Two REST routes: `wpci/v1/snippets/{id}/toggle` (list-table on/off switch) and `wpci/v1/posts/search` (edit-screen picker); everything else is plain form posts on purpose |
-| `class-wpci-import-export.php` | Import/Export admin page (JSON export of publish+draft snippets; import always as drafts with full re-whitelisting) + Duplicate row action (integration tags deliberately not copied) |
+| `class-wpci-import-export.php` | Import/Export admin page (selective JSON export via filterable pre-ticked picker; import always as drafts with full re-whitelisting) + Export bulk action and Duplicate row action on the list (integration tags deliberately not copied on duplicate) |
 | `class-wpci-settings.php` | Settings page: kill switch (`wpci_disable_all` option, with `admin_notices` banner on plugin screens) + uninstall-data opt-in (`wpci_remove_data_on_uninstall`) |
 | `class-wpci-contact.php` | Contact page: plain `mailto:` links (deliberately not `wp_mail()` — unreliable on cheap hosting) |
 | `class-wpci-docs.php` | In-plugin documentation page (plain-language walkthrough) |
 | `class-wpci-plugin-links.php` | Settings/Docs links on the Plugins-screen row |
 | `functions-helpers.php` | Stateless helpers: location/type labels, code wrapping, external tag rendering, conditions summary, integration lookups |
 
-Other files: `assets/css/admin.css` + three small vanilla-JS files in `assets/js/` (edit screen incl. the search picker, list toggle, integrations toggle), `uninstall.php` (standalone, multisite-aware; only deletes data if opted in), `readme.txt` (WordPress.org format), `languages/impulse-snippets.pot` (generated with wp-cli i18n make-pot; text domain `impulse-snippets`), `index.php` guard files in every asset folder.
+Other files: `assets/css/admin.css` + four small vanilla-JS files in `assets/js/` (edit screen incl. the search picker, list toggle, integrations toggle, import/export picker), `uninstall.php` (standalone, multisite-aware; only deletes data if opted in), `readme.txt` (WordPress.org format), `languages/impulse-snippets.pot` (generated with wp-cli i18n make-pot; text domain `impulse-snippets`), `index.php` guard files in every asset folder.
 
 ## Conventions and gotchas
 
@@ -66,6 +68,8 @@ Other files: `assets/css/admin.css` + three small vanilla-JS files in `assets/js
 - **No build step, no Composer, no npm.** Plain PHP 7.4+, WordPress 5.9+. Follow WordPress coding standards (tabs, Yoda conditions, `esc_html__()` etc. for all UI strings).
 - **Plain form posts over AJAX/REST** everywhere except the two toggle switches and the post-search picker — deliberate simplicity, keep it that way unless a feature genuinely needs otherwise.
 - **Data safety is a product value**: deactivation never touches data; uninstall keeps data unless explicitly opted in. Preserve this in anything new.
+- **Snippet output order is a contract**: `wp_head`/`wp_footer` print snippets by `menu_order` ASC. The integrations wizard relies on it — Consent Mode V2 is created at priority **−10** (must print before every Google tag), base tags at **0**, Google Ads conversion events at **10** (gtag() must already exist). Wizard re-runs never overwrite `menu_order` — a user-customized priority must survive.
+- **WordPress.org gotchas (learned during submission)**: no `Update URI:` header (it blocks directory-hosted updates); the readme.txt title must exactly match the plugin header `Plugin Name:` (the automated scan flags any suffix); readme needs an "External services" section covering the Google/Meta scripts wizard snippets load; max 5 readme tags.
 - Comments in the code explain *why* decisions were made (e.g. the `wp_body_open` fallback, the capability self-heal) — read them before changing behavior, and keep that comment style.
 
 ## Dev tooling (repo root, one level up from the plugin)
