@@ -32,11 +32,9 @@ lead capture) is parked below.
   the endpoint detection IS its targeting.
 - `wpci_hash_user_email()` helper joined the standalone test suite (51 tests).
 
-## Phase 2 — parked (revisit when 1.17.0 ships)
+## Phase 2 — DONE same day (2026-08-11)
 
-Lead capture for **logged-out** visitors via form plugins (Contact Form 7,
-WPForms, Elementor Forms): hook their submit events, hash the entered email.
-Decided during brainstorming that this is its own project — each plugin has a
-different JS/PHP hook surface, and doing it badly (missed submissions, double
-counting) is worse than not doing it. The logged-in path above already covers
-membership/checkout-style sites.
+Form lead tracking for Contact Form 7 + WPForms shipped and was verified live
+in Playground — see docs/specs/2026-08-11-form-lead-tracking-design.md and
+docs/tasks/2026-08-11-form-lead-tracking.md. Elementor Forms / Gravity Forms /
+Fluent Forms remain possible follow-ups.
