@@ -160,7 +160,7 @@ class Wpci_Admin_Menu {
 			array(
 				'icon'  => 'dashicons-filter',
 				'title' => __( 'Display conditions', 'impulse-snippets' ),
-				'desc'  => __( 'Show a snippet on every page, or restrict it to specific pages/posts, post types, or categories — with a search box and a "paste a link" shortcut to find pages quickly.', 'impulse-snippets' ),
+				'desc'  => __( 'Show a snippet on every page, or restrict it to specific pages/posts (search or paste a link), post types, categories, or special pages like your front page — optionally for logged-in or logged-out visitors only.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-chart-line',

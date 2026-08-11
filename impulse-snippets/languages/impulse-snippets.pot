@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Impulse Snippets 1.15.0\n"
+"Project-Id-Version: Impulse Snippets 1.16.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/impulse-snippets\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-10T23:34:08+00:00\n"
+"POT-Creation-Date: 2026-08-11T09:42:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: impulse-snippets\n"
@@ -191,7 +191,7 @@ msgid "Display conditions"
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:163
-msgid "Show a snippet on every page, or restrict it to specific pages/posts, post types, or categories — with a search box and a \"paste a link\" shortcut to find pages quickly."
+msgid "Show a snippet on every page, or restrict it to specific pages/posts (search or paste a link), post types, categories, or special pages like your front page — optionally for logged-in or logged-out visitors only."
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:167
@@ -477,120 +477,156 @@ msgid "Special pages (front page, 404, search)"
 msgstr ""
 
 #: includes/class-wpci-edit-screen.php:172
-msgid "Select one or more pages/posts:"
+msgid "Search for the pages or posts this snippet should appear on:"
 msgstr ""
 
 #: includes/class-wpci-edit-screen.php:174
-#: includes/class-wpci-edit-screen.php:202
-msgid "Type to search…"
+msgid "Type at least 2 letters to search…"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:185
+#: includes/class-wpci-edit-screen.php:180
+#: includes/class-wpci-import-export.php:78
+#: includes/class-wpci-rest-controller.php:81
+msgid "(no title)"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:181
+#: includes/class-wpci-integrations.php:225
+msgid "Remove"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:187
 msgid "Or paste a page/post link to add it directly:"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:200
+#: includes/class-wpci-edit-screen.php:202
 msgid "Applies to single blog posts in these categories (not the category archive pages)."
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:217
+#: includes/class-wpci-edit-screen.php:204
+msgid "Type to search…"
+msgstr ""
+
+#: includes/class-wpci-edit-screen.php:219
 msgid "Front page (homepage)"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:221
+#: includes/class-wpci-edit-screen.php:223
 msgid "404 \"page not found\" page"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:225
+#: includes/class-wpci-edit-screen.php:227
 msgid "Search results page"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:231
+#: includes/class-wpci-edit-screen.php:233
 msgid "Show for"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:233
+#: includes/class-wpci-edit-screen.php:235
 msgid "Everyone"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:234
+#: includes/class-wpci-edit-screen.php:236
 msgid "Logged-in users only"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:235
+#: includes/class-wpci-edit-screen.php:237
 msgid "Logged-out visitors only"
 msgstr ""
 
-#: includes/class-wpci-edit-screen.php:238
-msgid "Applies on top of the page rule above. Handy for showing a snippet only to visitors (e.g. analytics) or only to logged-in users."
+#: includes/class-wpci-edit-screen.php:240
+msgid "Applies on top of the page rule above. Handy for showing a snippet only to visitors (e.g. analytics) or only to logged-in users. Note: full-page caching plugins can make per-visitor rules unreliable, because they serve the same cached page to everyone."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:31
-#: includes/class-wpci-import-export.php:32
-#: includes/class-wpci-import-export.php:51
+#: includes/class-wpci-import-export.php:34
+#: includes/class-wpci-import-export.php:35
+#: includes/class-wpci-import-export.php:55
 msgid "Import / Export"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:57
+#: includes/class-wpci-import-export.php:61
+#: includes/class-wpci-import-export.php:219
 msgid "Export"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:58
-msgid "Downloads every snippet (including disabled ones) as a single JSON file — use it as a backup, or to move snippets to another site."
+#: includes/class-wpci-import-export.php:62
+msgid "Downloads snippets (including disabled ones) as a single JSON file — use it as a backup, or to move snippets to another site. Untick any you want to leave out."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:62
+#: includes/class-wpci-import-export.php:65
+msgid "No snippets to export yet."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:71
+msgid "Select all"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:81
+msgid "active"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:81
+msgid "draft"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:87
 msgid "Download Export File"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:67
+#: includes/class-wpci-import-export.php:93
 msgid "Import"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:68
+#: includes/class-wpci-import-export.php:94
 msgid "Upload an export file to add its snippets to this site. Imported snippets always arrive switched OFF (draft), so nothing runs until you review and enable it."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:73
+#: includes/class-wpci-import-export.php:99
 msgid "Import Snippets"
 msgstr ""
 
 #. translators: %d: number of snippets imported.
-#: includes/class-wpci-import-export.php:87
+#: includes/class-wpci-import-export.php:114
 #, php-format
 msgid "%d snippet imported (as draft — enable it from the snippets list)."
 msgid_plural "%d snippets imported (as drafts — enable them from the snippets list)."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wpci-import-export.php:92
+#: includes/class-wpci-import-export.php:119
 msgid "That file couldn't be read as an Impulse Snippets export. Please upload an unmodified export file."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:99
-#: includes/class-wpci-import-export.php:146
-#: includes/class-wpci-import-export.php:255
-#: includes/class-wpci-integrations.php:245
-#: includes/class-wpci-integrations.php:340
+#: includes/class-wpci-import-export.php:124
+msgid "Select at least one snippet to export."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:132
+#: includes/class-wpci-import-export.php:235
+#: includes/class-wpci-import-export.php:248
+#: includes/class-wpci-import-export.php:369
+#: includes/class-wpci-integrations.php:247
+#: includes/class-wpci-integrations.php:342
 #: includes/class-wpci-settings.php:128
 msgid "You do not have permission to do this."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:208
+#: includes/class-wpci-import-export.php:322
 msgid "Imported snippet"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:247
+#: includes/class-wpci-import-export.php:361
 msgid "Duplicate"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:261
-#: includes/class-wpci-rest-controller.php:57
+#: includes/class-wpci-import-export.php:375
+#: includes/class-wpci-rest-controller.php:105
 msgid "Snippet not found."
 msgstr ""
 
 #. translators: %s: title of the snippet being duplicated.
-#: includes/class-wpci-import-export.php:268
+#: includes/class-wpci-import-export.php:382
 #, php-format
 msgid "%s (Copy)"
 msgstr ""
@@ -658,42 +694,38 @@ msgstr ""
 msgid "Remove this integration and its snippet(s)?"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:225
-msgid "Remove"
-msgstr ""
-
-#: includes/class-wpci-integrations.php:235
+#: includes/class-wpci-integrations.php:236
 msgid "Integration saved."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:237
+#: includes/class-wpci-integrations.php:238
 msgid "That ID doesn't look right for this integration — please check the format and try again."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:239
+#: includes/class-wpci-integrations.php:240
 msgid "Integration removed."
 msgstr ""
 
 #. translators: %s: GA4 Measurement ID.
-#: includes/class-wpci-integrations.php:260
+#: includes/class-wpci-integrations.php:262
 #, php-format
 msgid "Google Analytics 4 (%s)"
 msgstr ""
 
 #. translators: %s: GTM Container ID.
-#: includes/class-wpci-integrations.php:275
+#: includes/class-wpci-integrations.php:277
 #, php-format
 msgid "Google Tag Manager – Head (%s)"
 msgstr ""
 
 #. translators: %s: GTM Container ID.
-#: includes/class-wpci-integrations.php:283
+#: includes/class-wpci-integrations.php:285
 #, php-format
 msgid "Google Tag Manager – Body (%s)"
 msgstr ""
 
 #. translators: %s: Meta Pixel ID.
-#: includes/class-wpci-integrations.php:298
+#: includes/class-wpci-integrations.php:300
 #, php-format
 msgid "Meta Pixel (%s)"
 msgstr ""
@@ -717,7 +749,7 @@ msgid "View details"
 msgstr ""
 
 #. translators: %s: the URL the user pasted.
-#: includes/class-wpci-save-handler.php:134
+#: includes/class-wpci-save-handler.php:135
 #, php-format
 msgid "The link you pasted (%s) didn't match any page or post on this site, so it wasn't added."
 msgstr ""

@@ -6,11 +6,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Import/Export page plus a "Duplicate" row action on the snippets list.
  *
- * Export produces a JSON file of every snippet (all statuses). Import
- * re-creates them — always as drafts, so nothing a file brought in can start
- * outputting on the live site until someone reviews and enables it. Every
- * imported field passes the same whitelists as the normal save path; the
- * snippet code itself is imported raw, exactly like the editor saves it.
+ * Export produces a JSON file of chosen snippets (all statuses) — via a
+ * pre-ticked picker on the page, or a bulk action on the snippets list.
+ * Import re-creates them — always as drafts, so nothing a file brought in can
+ * start outputting on the live site until someone reviews and enables it.
+ * Every imported field passes the same whitelists as the normal save path;
+ * the snippet code itself is imported raw, exactly like the editor saves it.
  */
 class Wpci_Import_Export {
 
@@ -23,6 +24,8 @@ class Wpci_Import_Export {
 		add_action( 'admin_post_wpci_import_snippets', array( $this, 'handle_import' ) );
 		add_action( 'admin_post_wpci_duplicate_snippet', array( $this, 'handle_duplicate' ) );
 		add_filter( 'post_row_actions', array( $this, 'add_duplicate_row_action' ), 10, 2 );
+		add_filter( 'bulk_actions-edit-' . Wpci_Cpt::POST_TYPE, array( $this, 'add_bulk_export_action' ) );
+		add_filter( 'handle_bulk_actions-edit-' . Wpci_Cpt::POST_TYPE, array( $this, 'handle_bulk_export' ), 10, 3 );
 	}
 
 	public function register_menu() {
@@ -40,6 +43,7 @@ class Wpci_Import_Export {
 				'load-' . $hook,
 				function () {
 					wp_enqueue_style( 'wpci-admin', WPCI_PLUGIN_URL . 'assets/css/admin.css', array(), WPCI_VERSION );
+					wp_enqueue_script( 'wpci-admin-import-export', WPCI_PLUGIN_URL . 'assets/js/admin-import-export.js', array(), WPCI_VERSION, true );
 				}
 			);
 		}
@@ -55,12 +59,34 @@ class Wpci_Import_Export {
 			<div class="wpci-integration-cards">
 				<div class="postbox wpci-integration-card">
 					<h2><?php esc_html_e( 'Export', 'impulse-snippets' ); ?></h2>
-					<p><?php esc_html_e( 'Downloads every snippet (including disabled ones) as a single JSON file — use it as a backup, or to move snippets to another site.', 'impulse-snippets' ); ?></p>
-					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-						<?php wp_nonce_field( 'wpci_export_action', 'wpci_export_nonce' ); ?>
-						<input type="hidden" name="action" value="wpci_export_snippets">
-						<p><button type="submit" class="button button-primary"><?php esc_html_e( 'Download Export File', 'impulse-snippets' ); ?></button></p>
-					</form>
+					<p><?php esc_html_e( 'Downloads snippets (including disabled ones) as a single JSON file — use it as a backup, or to move snippets to another site. Untick any you want to leave out.', 'impulse-snippets' ); ?></p>
+					<?php $exportable = $this->get_exportable_snippets(); ?>
+					<?php if ( empty( $exportable ) ) : ?>
+						<p><em><?php esc_html_e( 'No snippets to export yet.', 'impulse-snippets' ); ?></em></p>
+					<?php else : ?>
+						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+							<?php wp_nonce_field( 'wpci_export_action', 'wpci_export_nonce' ); ?>
+							<input type="hidden" name="action" value="wpci_export_snippets">
+							<p>
+								<label><input type="checkbox" id="wpci-export-select-all" checked> <strong><?php esc_html_e( 'Select all', 'impulse-snippets' ); ?></strong></label>
+							</p>
+							<ul class="wpci-export-list">
+								<?php foreach ( $exportable as $snippet ) : ?>
+									<li>
+										<label>
+											<input type="checkbox" name="wpci_export_ids[]" value="<?php echo esc_attr( $snippet->ID ); ?>" checked>
+											<?php echo esc_html( '' !== $snippet->post_title ? $snippet->post_title : __( '(no title)', 'impulse-snippets' ) ); ?>
+											<span class="description">
+												— <?php echo esc_html( wpci_get_location_label( get_post_meta( $snippet->ID, '_wpci_location', true ) ) ); ?>,
+												<?php echo ( 'publish' === $snippet->post_status ) ? esc_html__( 'active', 'impulse-snippets' ) : esc_html__( 'draft', 'impulse-snippets' ); ?>
+											</span>
+										</label>
+									</li>
+								<?php endforeach; ?>
+							</ul>
+							<p><button type="submit" class="button button-primary"><?php esc_html_e( 'Download Export File', 'impulse-snippets' ); ?></button></p>
+						</form>
+					<?php endif; ?>
 				</div>
 
 				<div class="postbox wpci-integration-card">
@@ -92,6 +118,11 @@ class Wpci_Import_Export {
 				'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
 				esc_html__( "That file couldn't be read as an Impulse Snippets export. Please upload an unmodified export file.", 'impulse-snippets' )
 			);
+		} elseif ( isset( $_GET['wpci_export_error'] ) ) {
+			printf(
+				'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+				esc_html__( 'Select at least one snippet to export.', 'impulse-snippets' )
+			);
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
@@ -102,18 +133,57 @@ class Wpci_Import_Export {
 		}
 		check_admin_referer( 'wpci_export_action', 'wpci_export_nonce' );
 
-		$snippets = get_posts(
-			array(
-				'post_type'      => Wpci_Cpt::POST_TYPE,
-				'post_status'    => array( 'publish', 'draft' ),
-				'posts_per_page' => -1,
-				'orderby'        => 'menu_order',
-				'order'          => 'ASC',
-			)
+		// The page form lists every snippet pre-ticked, so an empty selection
+		// here means the user unticked everything — refuse with a notice
+		// instead of shipping an empty file.
+		$ids = ( isset( $_POST['wpci_export_ids'] ) && is_array( $_POST['wpci_export_ids'] ) )
+			? array_values( array_filter( array_map( 'absint', wp_unslash( $_POST['wpci_export_ids'] ) ) ) )
+			: array();
+
+		if ( empty( $ids ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'page'              => self::PAGE_SLUG,
+						'wpci_export_error' => 1,
+					),
+					admin_url( 'admin.php' )
+				)
+			);
+			exit;
+		}
+
+		$this->send_export_download( $this->build_export_payload( $ids ) );
+	}
+
+	/**
+	 * The snippets an export can contain, in output (priority) order. Shared
+	 * by the page picker (render) and the payload builder so both always
+	 * operate on the same set.
+	 */
+	private function get_exportable_snippets( $ids = null ) {
+		$args = array(
+			'post_type'      => Wpci_Cpt::POST_TYPE,
+			'post_status'    => array( 'publish', 'draft' ),
+			'posts_per_page' => -1,
+			'orderby'        => 'menu_order',
+			'order'          => 'ASC',
 		);
 
+		if ( is_array( $ids ) ) {
+			$args['post__in'] = $ids;
+		}
+
+		return get_posts( $args );
+	}
+
+	/**
+	 * Builds the export payload for the given snippet IDs. IDs that aren't
+	 * real snippets simply don't match the query — no error path needed.
+	 */
+	private function build_export_payload( $ids ) {
 		$items = array();
-		foreach ( $snippets as $snippet ) {
+		foreach ( $this->get_exportable_snippets( $ids ) as $snippet ) {
 			$items[] = array(
 				'title'          => $snippet->post_title,
 				'status'         => $snippet->post_status,
@@ -129,18 +199,48 @@ class Wpci_Import_Export {
 			);
 		}
 
-		$payload = array(
+		return array(
 			'plugin'   => 'impulse-snippets',
 			'version'  => self::EXPORT_VERSION,
 			'exported' => gmdate( 'c' ),
 			'snippets' => $items,
 		);
+	}
 
+	private function send_export_download( $payload ) {
 		nocache_headers();
 		header( 'Content-Type: application/json; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename=impulse-snippets-export-' . gmdate( 'Y-m-d' ) . '.json' );
 		echo wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON download, not HTML.
 		exit;
+	}
+
+	public function add_bulk_export_action( $actions ) {
+		$actions['wpci_export'] = __( 'Export', 'impulse-snippets' );
+		return $actions;
+	}
+
+	/**
+	 * Bulk "Export" on the snippets list: streams the download instead of
+	 * returning a redirect URL. Core has already verified the bulk-actions
+	 * nonce ('bulk-posts') before this filter fires, so only capability and
+	 * ID sanitizing are re-checked here.
+	 */
+	public function handle_bulk_export( $redirect_to, $action, $post_ids ) {
+		if ( 'wpci_export' !== $action ) {
+			return $redirect_to;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
+		}
+
+		$ids = array_values( array_filter( array_map( 'absint', (array) $post_ids ) ) );
+		if ( empty( $ids ) ) {
+			return $redirect_to;
+		}
+
+		$this->send_export_download( $this->build_export_payload( $ids ) );
 	}
 
 	public function handle_import() {

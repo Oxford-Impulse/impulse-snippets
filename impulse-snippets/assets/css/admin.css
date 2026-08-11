@@ -44,6 +44,30 @@
 	padding: 16px;
 	max-width: 360px;
 	flex: 1 1 300px;
+	/* Cards in a row stretch to equal height; pinning each card's last
+	   block to the bottom lines the action buttons up across cards even
+	   when the explanatory text above them runs longer in one card. */
+	display: flex;
+	flex-direction: column;
+}
+
+.wpci-integration-card > :last-child {
+	margin-top: auto;
+}
+
+/* Export picker on the Import/Export page. Scrolls past ~8 rows so a
+   snippet-heavy site doesn't stretch the card off the screen. */
+.wpci-export-list {
+	max-height: 16em;
+	overflow-y: auto;
+	margin: 0 0 12px;
+	padding: 8px 10px;
+	border: 1px solid #dcdcde;
+	background: #fff;
+}
+
+.wpci-export-list li {
+	margin-bottom: 6px;
 }
 
 .wpci-dashboard-stats {
