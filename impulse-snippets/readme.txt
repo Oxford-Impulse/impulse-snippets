@@ -63,7 +63,8 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 * New: Priority field — control the exact output order of snippets sharing a location (lowest number prints first). Sortable Priority column in the snippets list.
 * New: "Special pages" display condition — target the front page, the 404 page, and/or search results.
 * New: visitor filter — show any snippet to everyone, logged-in users only, or logged-out visitors only, on top of the page rule.
-* New: Import / Export page — download all snippets as JSON, import them on another site (imported snippets arrive as drafts so nothing runs unreviewed).
+* New: Import / Export page — download snippets as JSON, import them on another site (imported snippets arrive as drafts so nothing runs unreviewed).
+* New: choose exactly which snippets to export — a filterable pre-ticked picker on the Import / Export page, or tick rows on the snippets list and use the Export bulk action.
 * New: Duplicate row action on the snippets list.
 * Added a .pot translation template in languages/.
 * Clarified that the Categories condition applies to single blog posts, not category archive pages.
