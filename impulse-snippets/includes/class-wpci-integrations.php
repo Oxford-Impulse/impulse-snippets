@@ -319,13 +319,16 @@ class Wpci_Integrations {
 			$consent_on = $post && false !== strpos( $post->post_content, "fbq('consent', 'revoke')" );
 		}
 		?>
-		<p>
+		<p style="margin-bottom:4px;">
 			<label>
 				<input type="checkbox" name="wpci_meta_pixel_consent" value="1" <?php checked( $consent_on ); ?>>
 				<?php esc_html_e( 'Wait for cookie consent before tracking', 'impulse-snippets' ); ?>
-			</label><br>
-			<span class="description"><?php esc_html_e( 'Recommended if you have EU/UK visitors AND a consent banner plugin — the pixel stays silent until the banner grants consent. Warning: unlike Google\'s Consent Mode this cannot be limited to EU visitors and collects nothing at all while waiting, so without a consent banner the pixel would simply never track anyone.', 'impulse-snippets' ); ?></span>
+			</label>
 		</p>
+		<details class="wpci-learn-more">
+			<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+			<p class="description"><?php esc_html_e( 'Recommended if you have EU/UK visitors AND a consent banner plugin — the pixel stays silent until the banner grants consent. Warning: unlike Google\'s Consent Mode this cannot be limited to EU visitors and collects nothing at all while waiting, so without a consent banner the pixel would simply never track anyone.', 'impulse-snippets' ); ?></p>
+		</details>
 		<?php
 	}
 
@@ -381,13 +384,16 @@ class Wpci_Integrations {
 					<input type="text" id="wpci_ads_conversion_currency" name="wpci_ads_conversion_currency" maxlength="3" placeholder="EUR" style="width:100%;">
 				</span>
 			</p>
-			<p>
+			<p style="margin-bottom:4px;">
 				<label>
 					<input type="checkbox" name="wpci_ads_conversion_enhanced" value="1">
 					<?php esc_html_e( 'Also send the hashed email of logged-in visitors (enhanced conversions for leads)', 'impulse-snippets' ); ?>
-				</label><br>
-				<span class="description"><?php esc_html_e( 'Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode. Applies to logged-in visitors only — logged-out form submitters are a planned future integration.', 'impulse-snippets' ); ?></span>
+				</label>
 			</p>
+			<details class="wpci-learn-more">
+				<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+				<p class="description"><?php esc_html_e( 'Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode. Applies to logged-in visitors only — logged-out form submitters are a planned future integration.', 'impulse-snippets' ); ?></p>
+			</details>
 			<p><button type="submit" class="button"><?php esc_html_e( 'Add conversion action', 'impulse-snippets' ); ?></button></p>
 		</form>
 		</details>
@@ -445,13 +451,16 @@ class Wpci_Integrations {
 				<label for="wpci_ads_purchase_label"><strong><?php esc_html_e( 'Purchase conversion label', 'impulse-snippets' ); ?></strong></label><br>
 				<input type="text" id="wpci_ads_purchase_label" name="wpci_ads_purchase_label" placeholder="AbCdEfGhIj-D2sNzQ" style="width:100%;">
 			</p>
-			<p>
+			<p style="margin-bottom:4px;">
 				<label>
 					<input type="checkbox" name="wpci_ads_purchase_enhanced" value="1" <?php checked( $enhanced_on ); ?>>
 					<?php esc_html_e( 'Enhanced conversions: also send the hashed billing email', 'impulse-snippets' ); ?>
-				</label><br>
-				<span class="description"><?php esc_html_e( 'Improves conversion matching. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode.', 'impulse-snippets' ); ?></span>
+				</label>
 			</p>
+			<details class="wpci-learn-more">
+				<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+				<p class="description"><?php esc_html_e( 'Improves conversion matching. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode.', 'impulse-snippets' ); ?></p>
+			</details>
 			<p><button type="submit" class="button"><?php echo $purchase_id ? esc_html__( 'Update purchase tracking', 'impulse-snippets' ) : esc_html__( 'Set up purchase tracking', 'impulse-snippets' ); ?></button></p>
 		</form>
 		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>

@@ -98,6 +98,36 @@
 	margin-bottom: 8px;
 }
 
+/* Inline "Learn more" disclosure under a checkbox: renders as a small link;
+   opening it reveals the full explanation in a quiet boxed note. Native
+   <details>, same vocabulary as .wpci-card-section, no JS. */
+.wpci-learn-more {
+	margin: 0 0 8px 24px;
+}
+
+.wpci-learn-more summary {
+	cursor: pointer;
+	color: #2271b1;
+	font-size: 12px;
+	width: fit-content;
+}
+
+.wpci-learn-more[open] {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 2px;
+	padding: 6px 10px;
+	margin-top: 4px;
+}
+
+.wpci-learn-more[open] summary {
+	margin-bottom: 4px;
+}
+
+.wpci-learn-more p {
+	margin: 0;
+}
+
 .wpci-dashboard-stats {
 	display: flex;
 	gap: 16px;
