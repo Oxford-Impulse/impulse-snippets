@@ -1,4 +1,4 @@
-=== Impulse Snippets — Add Code to Header, Body & Footer ===
+=== Impulse Snippets ===
 Contributors: omersekinci
 Tags: code snippets, header footer, google analytics, google tag manager, meta pixel
 Requires at least: 5.9
