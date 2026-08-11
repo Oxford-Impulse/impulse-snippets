@@ -143,10 +143,12 @@ function wpci_get_conditions_summary( $raw_conditions ) {
  */
 function wpci_get_integration_label( $integration ) {
 	$labels = array(
-		'ga4'        => __( 'Google Analytics 4 integration', 'impulse-snippets' ),
-		'gtm_head'   => __( 'Google Tag Manager integration', 'impulse-snippets' ),
-		'gtm_body'   => __( 'Google Tag Manager integration', 'impulse-snippets' ),
-		'meta_pixel' => __( 'Meta Pixel integration', 'impulse-snippets' ),
+		'ga4'                   => __( 'Google Analytics 4 integration', 'impulse-snippets' ),
+		'gtm_head'              => __( 'Google Tag Manager integration', 'impulse-snippets' ),
+		'gtm_body'              => __( 'Google Tag Manager integration', 'impulse-snippets' ),
+		'meta_pixel'            => __( 'Meta Pixel integration', 'impulse-snippets' ),
+		'google_ads'            => __( 'Google Ads integration', 'impulse-snippets' ),
+		'google_ads_conversion' => __( 'Google Ads conversion action', 'impulse-snippets' ),
 	);
 	return isset( $labels[ $integration ] ) ? $labels[ $integration ] : $integration;
 }

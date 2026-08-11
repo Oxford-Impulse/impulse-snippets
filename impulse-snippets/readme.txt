@@ -23,7 +23,8 @@ Impulse Snippets lets you add JavaScript, CSS, or HTML snippets anywhere on your
 * **Display conditions** — target all pages, specific pages/posts, post types, categories, or special pages (front page, 404, search results), plus an optional logged-in/logged-out visitor filter.
 * **Priority control** — decide the exact order snippets print in when several share a location (e.g. a consent script before analytics).
 * **Import / Export & Duplicate** — back up all snippets to a JSON file, move them between sites (imports arrive switched off for safety), and duplicate any snippet with one click.
-* **One-click integrations** — paste a Google Analytics 4, Google Tag Manager, or Meta Pixel ID and the correct snippet(s) are generated for you automatically, with instant pause/resume.
+* **One-click integrations** — paste a Google Analytics 4, Google Tag Manager, Meta Pixel, or Google Ads ID and the correct snippet(s) are generated for you automatically, with instant pause/resume.
+* **Google Ads conversion tracking** — add conversion actions (with optional fixed value/currency) that fire only on the page you choose, like your thank-you page. Enhanced conversions work out of the box via Google's automatic mode.
 * **Instant on/off toggle** — enable or disable any snippet with a single click, no page reload.
 * **Emergency kill switch** — pause every snippet site-wide from Settings if something ever goes wrong.
 
@@ -55,7 +56,7 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 
 1. The Dashboard, showing snippet counts and quick links.
 2. Creating a new snippet with the code editor and display conditions.
-3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel setup.
+3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel / Google Ads setup.
 
 == Changelog ==
 
@@ -65,6 +66,7 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 * New: visitor filter — show any snippet to everyone, logged-in users only, or logged-out visitors only, on top of the page rule.
 * New: Import / Export page — download snippets as JSON, import them on another site (imported snippets arrive as drafts so nothing runs unreviewed).
 * New: choose exactly which snippets to export — a filterable pre-ticked picker on the Import / Export page, or tick rows on the snippets list and use the Export bulk action.
+* New: Google Ads integration — connect your AW- ID for the site-wide tag, then add conversion actions (optional fixed value/currency) that fire only on the page you pick, e.g. your thank-you page. Enhanced conversions supported via Google's automatic mode.
 * New: Duplicate row action on the snippets list.
 * Added a .pot translation template in languages/.
 * Clarified that the Categories condition applies to single blog posts, not category archive pages.

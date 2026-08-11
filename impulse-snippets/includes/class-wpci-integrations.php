@@ -18,13 +18,34 @@ class Wpci_Integrations {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_post_wpci_save_integration', array( $this, 'handle_save' ) );
 		add_action( 'admin_post_wpci_remove_integration', array( $this, 'handle_remove' ) );
+		add_action( 'admin_post_wpci_add_ads_conversion', array( $this, 'handle_add_ads_conversion' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_render_conversion_handoff_notice' ) );
+	}
+
+	/**
+	 * One-time notice shown on the snippet edit screen right after the wizard
+	 * creates a conversion snippet, so the user knows the two steps that make
+	 * it live: choose the page(s), then Publish. Transient-based because the
+	 * handoff is a redirect and query args wouldn't survive a re-save.
+	 */
+	public function maybe_render_conversion_handoff_notice() {
+		$notice = get_transient( 'wpci_ads_conversion_notice_' . get_current_user_id() );
+		if ( ! $notice ) {
+			return;
+		}
+		delete_transient( 'wpci_ads_conversion_notice_' . get_current_user_id() );
+		printf(
+			'<div class="notice notice-info"><p><strong>%s</strong> %s</p></div>',
+			esc_html__( 'Almost done:', 'impulse-snippets' ),
+			esc_html__( 'search for the page that counts as this conversion (for example your thank-you page), add it under Display Conditions, then click Publish. Until then the snippet stays a draft and fires nowhere.', 'impulse-snippets' )
+		);
 	}
 
 	public function register_rest_routes() {
 		register_rest_route(
 			'wpci/v1',
-			'/integrations/(?P<key>ga4|gtm|meta_pixel)/toggle',
+			'/integrations/(?P<key>ga4|gtm|meta_pixel|google_ads)/toggle',
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'rest_toggle' ),
@@ -136,6 +157,18 @@ class Wpci_Integrations {
 						'field_name'  => 'wpci_meta_pixel_id',
 					)
 				);
+				$this->render_card(
+					array(
+						'key'         => 'google_ads',
+						'title'       => __( 'Google Ads', 'impulse-snippets' ),
+						'description' => __( 'Measures which ad clicks lead to sales or sign-ups (conversions), and powers remarketing audiences for your campaigns.', 'impulse-snippets' ),
+						'help'        => __( 'Find it in Google Ads: your Google Ads ID (starts with AW-) is shown when you create a conversion action under Goals → Conversions.', 'impulse-snippets' ),
+						'prefix'      => 'AW-',
+						'example'     => '123456789',
+						'field_name'  => 'wpci_google_ads_id',
+						'extra'       => array( $this, 'render_ads_conversions_section' ),
+					)
+				);
 				?>
 			</div>
 		</div>
@@ -226,7 +259,67 @@ class Wpci_Integrations {
 					</form>
 				</p>
 			<?php endif; ?>
+
+			<?php
+			// Card-specific extra content (e.g. Google Ads conversion actions),
+			// rendered only once the integration is connected — the extras all
+			// depend on the base snippet existing.
+			if ( $current_id && ! empty( $args['extra'] ) && is_callable( $args['extra'] ) ) {
+				call_user_func( $args['extra'], $current_id );
+			}
+			?>
 		</div>
+		<?php
+	}
+
+	/**
+	 * The "Conversion actions" section of the Google Ads card: lists existing
+	 * conversion snippets and offers the add form. Each conversion action is
+	 * an ordinary draft snippet handed off to the edit screen, where the user
+	 * picks which page counts as the conversion (thank-you page etc.).
+	 */
+	public function render_ads_conversions_section() {
+		$conversion_ids = wpci_find_integration_post_ids( 'google_ads_conversion' );
+		?>
+		<hr>
+		<h3 style="margin-bottom:4px;"><?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?></h3>
+		<p class="description"><?php esc_html_e( 'A conversion action fires on the page you choose — usually the thank-you page a visitor lands on after buying or submitting a form. You pick that page on the next screen.', 'impulse-snippets' ); ?></p>
+
+		<?php if ( ! empty( $conversion_ids ) ) : ?>
+			<ul style="margin:8px 0;">
+				<?php foreach ( $conversion_ids as $conversion_id ) : ?>
+					<li>
+						<a href="<?php echo esc_url( get_edit_post_link( $conversion_id ) ); ?>"><?php echo esc_html( get_the_title( $conversion_id ) ); ?></a>
+						<span class="description">
+							— <?php echo ( 'publish' === get_post_status( $conversion_id ) ) ? esc_html__( 'active', 'impulse-snippets' ) : esc_html__( 'draft (no page chosen yet, or switched off)', 'impulse-snippets' ); ?>
+						</span>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'wpci_add_ads_conversion_action', 'wpci_ads_conversion_nonce' ); ?>
+			<input type="hidden" name="action" value="wpci_add_ads_conversion">
+			<p>
+				<label for="wpci_ads_conversion_label"><strong><?php esc_html_e( 'Conversion label', 'impulse-snippets' ); ?></strong></label><br>
+				<input type="text" id="wpci_ads_conversion_label" name="wpci_ads_conversion_label" placeholder="AbCdEfGhIj-D2sNzQ" style="width:100%;">
+				<span class="description"><?php esc_html_e( 'Google Ads shows this when you create a conversion action — it\'s the part after the slash in AW-123456789/AbCdEfGhIj.', 'impulse-snippets' ); ?></span>
+			</p>
+			<p style="display:flex;gap:8px;">
+				<span style="flex:1;">
+					<label for="wpci_ads_conversion_value"><?php esc_html_e( 'Value (optional)', 'impulse-snippets' ); ?></label><br>
+					<input type="number" id="wpci_ads_conversion_value" name="wpci_ads_conversion_value" min="0" step="any" placeholder="50" style="width:100%;">
+				</span>
+				<span style="flex:1;">
+					<label for="wpci_ads_conversion_currency"><?php esc_html_e( 'Currency', 'impulse-snippets' ); ?></label><br>
+					<input type="text" id="wpci_ads_conversion_currency" name="wpci_ads_conversion_currency" maxlength="3" placeholder="EUR" style="width:100%;">
+				</span>
+			</p>
+			<p><button type="submit" class="button"><?php esc_html_e( 'Add conversion action', 'impulse-snippets' ); ?></button></p>
+		</form>
+
+		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions for purchases and leads work with this tag automatically — just switch them on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
 		<?php
 	}
 
@@ -238,6 +331,17 @@ class Wpci_Integrations {
 			printf( '<div class="notice notice-error is-dismissible"><p>%s</p></div>', esc_html__( "That ID doesn't look right for this integration — please check the format and try again.", 'impulse-snippets' ) );
 		} elseif ( isset( $_GET['wpci_removed'] ) ) {
 			printf( '<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html__( 'Integration removed.', 'impulse-snippets' ) );
+		} elseif ( isset( $_GET['wpci_ads_conv_error'] ) ) {
+			$messages = array(
+				'nobase'   => __( 'Connect your Google Ads ID first — conversion actions need the base tag on every page.', 'impulse-snippets' ),
+				'label'    => __( "That conversion label doesn't look right — paste it exactly as Google Ads shows it (the part after the slash in AW-123456789/AbCdEfGhIj).", 'impulse-snippets' ),
+				'currency' => __( 'When you set a value, enter the currency as a 3-letter code too (for example EUR or USD).', 'impulse-snippets' ),
+			);
+			$code     = sanitize_key( wp_unslash( $_GET['wpci_ads_conv_error'] ) );
+			printf(
+				'<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+				esc_html( isset( $messages[ $code ] ) ? $messages[ $code ] : $messages['label'] )
+			);
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
@@ -304,6 +408,21 @@ class Wpci_Integrations {
 				);
 				$redirect_args['wpci_success'] = 'meta_pixel';
 			}
+		} elseif ( 'google_ads' === $integration ) {
+			$id = $this->build_id_from_suffix( 'wpci_google_ads_id', 'AW-' );
+			if ( ! preg_match( '/^AW-[A-Z0-9]+$/i', $id ) ) {
+				$redirect_args['wpci_error'] = 'google_ads';
+			} else {
+				$this->upsert_snippet(
+					'google_ads',
+					/* translators: %s: Google Ads ID (AW-…). */
+					sprintf( __( 'Google Ads (%s)', 'impulse-snippets' ), $id ),
+					'head',
+					$this->google_ads_code( $id ),
+					$id
+				);
+				$redirect_args['wpci_success'] = 'google_ads';
+			}
 		}
 
 		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
@@ -337,6 +456,112 @@ class Wpci_Integrations {
 		return $post && in_array( $post->post_status, array( 'publish', 'future' ), true );
 	}
 
+	/**
+	 * Creates (or updates) a conversion-event snippet from the Google Ads
+	 * card, then hands the user to the edit screen to pick the conversion
+	 * page and publish. New conversions arrive as drafts targeting nothing,
+	 * so a half-configured conversion can never fire.
+	 */
+	public function handle_add_ads_conversion() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
+		}
+		check_admin_referer( 'wpci_add_ads_conversion_action', 'wpci_ads_conversion_nonce' );
+
+		$redirect_args = array( 'page' => self::PAGE_SLUG );
+
+		$ads_id = wpci_get_integration_connected_id( 'google_ads' );
+		if ( ! $ads_id ) {
+			$redirect_args['wpci_ads_conv_error'] = 'nobase';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		// Accept either the bare label or a pasted full "AW-…/label" string.
+		$label = isset( $_POST['wpci_ads_conversion_label'] ) ? sanitize_text_field( wp_unslash( $_POST['wpci_ads_conversion_label'] ) ) : '';
+		$label = trim( preg_replace( '/^AW-[A-Z0-9]+\//i', '', trim( $label ) ) );
+		if ( ! preg_match( '/^[A-Za-z0-9_-]+$/', $label ) ) {
+			$redirect_args['wpci_ads_conv_error'] = 'label';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		// Optional fixed value. Google requires a currency whenever a value
+		// is sent, so value-without-currency is refused rather than guessed.
+		$value_raw = isset( $_POST['wpci_ads_conversion_value'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['wpci_ads_conversion_value'] ) ) ) : '';
+		$currency  = isset( $_POST['wpci_ads_conversion_currency'] ) ? strtoupper( trim( sanitize_text_field( wp_unslash( $_POST['wpci_ads_conversion_currency'] ) ) ) ) : '';
+		$value     = ( '' !== $value_raw && is_numeric( $value_raw ) && (float) $value_raw > 0 ) ? (float) $value_raw : null;
+		if ( null !== $value && ! preg_match( '/^[A-Z]{3}$/', $currency ) ) {
+			$redirect_args['wpci_ads_conv_error'] = 'currency';
+			wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+			exit;
+		}
+
+		$send_to = $ads_id . '/' . $label;
+		$code    = $this->ads_conversion_code( $send_to, $value, ( null !== $value ) ? $currency : '' );
+		/* translators: %s: Google Ads conversion label. */
+		$title = sprintf( __( 'Google Ads conversion (%s)', 'impulse-snippets' ), $label );
+
+		// Same-label re-add updates the code only — the user's chosen page,
+		// status, and priority on the existing snippet must survive.
+		$existing_id = 0;
+		foreach ( wpci_find_integration_post_ids( 'google_ads_conversion' ) as $conversion_id ) {
+			if ( get_post_meta( $conversion_id, '_wpci_integration_id', true ) === $send_to ) {
+				$existing_id = $conversion_id;
+				break;
+			}
+		}
+
+		if ( $existing_id ) {
+			wp_update_post(
+				array(
+					'ID'           => $existing_id,
+					'post_title'   => $title,
+					'post_content' => $code,
+				)
+			);
+			$post_id = $existing_id;
+		} else {
+			$post_id = wp_insert_post(
+				array(
+					'post_type'    => Wpci_Cpt::POST_TYPE,
+					'post_title'   => $title,
+					'post_content' => $code,
+					'post_status'  => 'draft',
+					// Priority 10 guarantees the event prints after the base
+					// tag (priority 0) — gtag() must already exist on the page.
+					'menu_order'   => 10,
+				)
+			);
+			if ( ! $post_id || is_wp_error( $post_id ) ) {
+				$redirect_args['wpci_ads_conv_error'] = 'label';
+				wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'admin.php' ) ) );
+				exit;
+			}
+			update_post_meta( $post_id, '_wpci_location', 'head' );
+			update_post_meta( $post_id, '_wpci_code_type', 'html' );
+			update_post_meta( $post_id, '_wpci_source', 'inline' );
+			// 'specific' with no pages matches nowhere — fails safe until the
+			// user picks the conversion page on the edit screen.
+			update_post_meta(
+				$post_id,
+				'_wpci_conditions',
+				wp_json_encode(
+					array(
+						'type'     => 'specific',
+						'post_ids' => array(),
+					)
+				)
+			);
+			update_post_meta( $post_id, '_wpci_integration', 'google_ads_conversion' );
+			update_post_meta( $post_id, '_wpci_integration_id', $send_to );
+		}
+
+		set_transient( 'wpci_ads_conversion_notice_' . get_current_user_id(), 1, 300 );
+		wp_safe_redirect( get_edit_post_link( $post_id, 'url' ) );
+		exit;
+	}
+
 	public function handle_remove() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to do this.', 'impulse-snippets' ) );
@@ -345,6 +570,12 @@ class Wpci_Integrations {
 
 		$integration = isset( $_POST['wpci_integration'] ) ? sanitize_key( wp_unslash( $_POST['wpci_integration'] ) ) : '';
 		$keys        = ( 'gtm' === $integration ) ? array( 'gtm_head', 'gtm_body' ) : array( $integration );
+
+		// Conversion events are dead weight without the base tag, and the
+		// Remove button already confirms with the user first.
+		if ( 'google_ads' === $integration ) {
+			$keys[] = 'google_ads_conversion';
+		}
 
 		foreach ( $keys as $key ) {
 			foreach ( wpci_find_integration_post_ids( $key ) as $post_id ) {
@@ -401,6 +632,25 @@ class Wpci_Integrations {
 		update_post_meta( $post_id, '_wpci_integration_id', $integration_id );
 
 		return $post_id;
+	}
+
+	private function google_ads_code( $id ) {
+		$id = esc_js( $id );
+		return "<script async src=\"https://www.googletagmanager.com/gtag/js?id={$id}\"></script>\n" // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- this string becomes the user's front-end snippet; it is not an admin asset.
+			. "<script>\nwindow.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', '{$id}');\n</script>";
+	}
+
+	/**
+	 * The conversion-event snippet. Value/currency are the optional fixed
+	 * "same value for each conversion" amounts; dynamic per-order values need
+	 * shop data this plugin can't see (parked as a future WooCommerce task).
+	 */
+	private function ads_conversion_code( $send_to, $value, $currency ) {
+		$params = "'send_to': '" . esc_js( $send_to ) . "'";
+		if ( null !== $value ) {
+			$params .= ", 'value': " . wp_json_encode( (float) $value ) . ", 'currency': '" . esc_js( $currency ) . "'";
+		}
+		return "<script>\ngtag('event', 'conversion', {" . $params . "});\n</script>";
 	}
 
 	private function ga4_code( $id ) {

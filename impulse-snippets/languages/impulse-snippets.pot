@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-11T10:02:36+00:00\n"
+"POT-Creation-Date: 2026-08-11T10:27:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: impulse-snippets\n"
@@ -18,7 +18,7 @@ msgstr ""
 #: impulse-snippets.php
 #: includes/class-wpci-admin-menu.php:21
 #: includes/class-wpci-admin-menu.php:22
-#: includes/class-wpci-admin-menu.php:76
+#: includes/class-wpci-admin-menu.php:77
 msgid "Impulse Snippets"
 msgstr ""
 
@@ -49,7 +49,7 @@ msgid "All Snippets"
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:53
-#: includes/class-wpci-admin-menu.php:95
+#: includes/class-wpci-admin-menu.php:96
 #: includes/class-wpci-cpt.php:49
 msgid "Add New Snippet"
 msgstr ""
@@ -60,46 +60,51 @@ msgid "Add New"
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:70
-#: includes/class-wpci-integrations.php:109
+#: includes/class-wpci-integrations.php:130
 msgid "Google Analytics 4"
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:71
-#: includes/class-wpci-integrations.php:120
+#: includes/class-wpci-integrations.php:141
 msgid "Google Tag Manager"
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:72
-#: includes/class-wpci-integrations.php:131
+#: includes/class-wpci-integrations.php:152
 msgid "Meta Pixel"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:77
+#: includes/class-wpci-admin-menu.php:73
+#: includes/class-wpci-integrations.php:163
+msgid "Google Ads"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:78
 msgid "Add code snippets to your site's head, body, or footer — manually, or with one-click integrations."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:82
+#: includes/class-wpci-admin-menu.php:83
 msgid "Active snippets"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:86
+#: includes/class-wpci-admin-menu.php:87
 msgid "Inactive (draft) snippets"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:92
+#: includes/class-wpci-admin-menu.php:93
 #: includes/class-wpci-cpt.php:46
 msgid "Snippets"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:93
+#: includes/class-wpci-admin-menu.php:94
 msgid "Create and manage individual code snippets for your head, body, or footer, each with its own on/off switch and targeting rules."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:96
+#: includes/class-wpci-admin-menu.php:97
 msgid "View All Snippets"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:97
+#: includes/class-wpci-admin-menu.php:98
 #: includes/class-wpci-plugin-links.php:21
 #: includes/class-wpci-settings.php:55
 #: includes/class-wpci-settings.php:56
@@ -107,110 +112,110 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:102
-#: includes/class-wpci-integrations.php:65
-#: includes/class-wpci-integrations.php:66
-#: includes/class-wpci-integrations.php:99
+#: includes/class-wpci-admin-menu.php:103
+#: includes/class-wpci-integrations.php:86
+#: includes/class-wpci-integrations.php:87
+#: includes/class-wpci-integrations.php:120
 msgid "Integrations"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:103
+#: includes/class-wpci-admin-menu.php:104
 msgid "One-click setup for common analytics and tracking tools."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:110
+#: includes/class-wpci-admin-menu.php:111
 msgid "Connected"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:112
+#: includes/class-wpci-admin-menu.php:113
 msgid "Not connected"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:118
+#: includes/class-wpci-admin-menu.php:119
 msgid "Manage Integrations"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:123
+#: includes/class-wpci-admin-menu.php:124
 msgid "Need help?"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:124
+#: includes/class-wpci-admin-menu.php:125
 msgid "Found a bug, or have an idea for a feature? We would like to hear about it."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:126
+#: includes/class-wpci-admin-menu.php:127
 #: includes/class-wpci-contact.php:48
 msgid "Report a Bug"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:127
+#: includes/class-wpci-admin-menu.php:128
 #: includes/class-wpci-contact.php:54
 msgid "Suggest a Feature"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:128
+#: includes/class-wpci-admin-menu.php:129
 #: includes/class-wpci-docs.php:22
 #: includes/class-wpci-docs.php:23
 msgid "Documentation"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:142
+#: includes/class-wpci-admin-menu.php:143
 msgid "Unlimited snippets"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:143
+#: includes/class-wpci-admin-menu.php:144
 msgid "Create as many named snippets as you need (e.g. \"Live Chat Widget\", \"Google Analytics\"). Each one has its own on/off switch, so turning one off never affects the others."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:147
+#: includes/class-wpci-admin-menu.php:148
 msgid "Three placements: Head, Body, Footer"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:148
+#: includes/class-wpci-admin-menu.php:149
 msgid "Choose exactly where each snippet loads: in the page <head> (before the page renders), right after the opening <body> tag, or down in the footer."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:152
+#: includes/class-wpci-admin-menu.php:153
 msgid "Paste code, or link to a file"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:153
+#: includes/class-wpci-admin-menu.php:154
 msgid "Paste JavaScript, CSS, or HTML directly into a snippet, or point it at an externally-hosted file (like a library .js or .css file) instead."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:157
+#: includes/class-wpci-admin-menu.php:158
 msgid "Auto-detect formatting"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:158
+#: includes/class-wpci-admin-menu.php:159
 msgid "If you paste bare code without <script> or <style> tags, the plugin adds the right tags for you automatically — you don't have to remember the syntax."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:162
+#: includes/class-wpci-admin-menu.php:163
 msgid "Display conditions"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:163
+#: includes/class-wpci-admin-menu.php:164
 msgid "Show a snippet on every page, or restrict it to specific pages/posts (search or paste a link), post types, categories, or special pages like your front page — optionally for logged-in or logged-out visitors only."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:167
+#: includes/class-wpci-admin-menu.php:168
 msgid "One-click integrations"
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:168
-msgid "Paste a Measurement/Container/Pixel ID and Google Analytics 4, Google Tag Manager, or Meta Pixel get set up correctly, automatically — no code required."
-msgstr ""
-
-#: includes/class-wpci-admin-menu.php:172
-msgid "Instant on/off"
+#: includes/class-wpci-admin-menu.php:169
+msgid "Paste an ID and Google Analytics 4, Google Tag Manager, Meta Pixel, or Google Ads (incl. per-page conversion tracking) get set up correctly, automatically — no code required."
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:173
+msgid "Instant on/off"
+msgstr ""
+
+#: includes/class-wpci-admin-menu.php:174
 msgid "Every snippet can be switched to Draft to disable it immediately without deleting it, then switched back to Published to bring it back."
 msgstr ""
 
-#: includes/class-wpci-admin-menu.php:177
+#: includes/class-wpci-admin-menu.php:178
 msgid "What you can do"
 msgstr ""
 
@@ -387,22 +392,30 @@ msgid "6. One-click Integrations"
 msgstr ""
 
 #: includes/class-wpci-docs.php:79
-msgid "Under Impulse Snippets → Integrations, paste your Google Analytics 4 Measurement ID, Google Tag Manager Container ID, or Meta Pixel ID and the correct snippet(s) are created for you automatically — no code needed. If you ever change the ID and reconnect, it updates the same snippet instead of creating a duplicate."
+msgid "Under Impulse Snippets → Integrations, paste your Google Analytics 4 Measurement ID, Google Tag Manager Container ID, Meta Pixel ID, or Google Ads ID and the correct snippet(s) are created for you automatically — no code needed. If you ever change the ID and reconnect, it updates the same snippet instead of creating a duplicate."
 msgstr ""
 
-#: includes/class-wpci-docs.php:83
+#: includes/class-wpci-docs.php:80
+msgid "Google Ads conversion tracking: after connecting your AW- ID, add a conversion action by pasting its conversion label (Google Ads shows it when you create the conversion action). You can optionally set a fixed value and currency. The plugin creates a ready-made snippet and takes you to its edit screen — search for the page that counts as the conversion (usually your thank-you page), add it, and Publish. Until you do, the snippet stays a harmless draft."
+msgstr ""
+
+#: includes/class-wpci-docs.php:81
+msgid "Enhanced conversions (for purchases and leads): these work with the tag this plugin installs — no extra code. Just switch them on inside Google Ads under Goals → Conversions → Settings → Enhanced conversions."
+msgstr ""
+
+#: includes/class-wpci-docs.php:85
 msgid "7. Turning a snippet on or off"
 msgstr ""
 
-#: includes/class-wpci-docs.php:84
+#: includes/class-wpci-docs.php:86
 msgid "Every snippet is just a Published (active) or Draft (inactive) item, exactly like a WordPress post. Switch it to Draft to disable it instantly without losing the code, and switch it back to Published to bring it back."
 msgstr ""
 
-#: includes/class-wpci-docs.php:88
+#: includes/class-wpci-docs.php:90
 msgid "A word of caution:"
 msgstr ""
 
-#: includes/class-wpci-docs.php:88
+#: includes/class-wpci-docs.php:90
 msgid "code you add here runs exactly as written on your live site, with no safety checks. Only paste code from sources you trust, and double-check a snippet on a staging site first if you're unsure."
 msgstr ""
 
@@ -491,7 +504,7 @@ msgid "(no title)"
 msgstr ""
 
 #: includes/class-wpci-edit-screen.php:181
-#: includes/class-wpci-integrations.php:225
+#: includes/class-wpci-integrations.php:258
 msgid "Remove"
 msgstr ""
 
@@ -578,6 +591,7 @@ msgid "Select all"
 msgstr ""
 
 #: includes/class-wpci-import-export.php:97
+#: includes/class-wpci-integrations.php:294
 msgid "active"
 msgstr ""
 
@@ -625,8 +639,9 @@ msgstr ""
 #: includes/class-wpci-import-export.php:252
 #: includes/class-wpci-import-export.php:265
 #: includes/class-wpci-import-export.php:386
-#: includes/class-wpci-integrations.php:247
-#: includes/class-wpci-integrations.php:342
+#: includes/class-wpci-integrations.php:351
+#: includes/class-wpci-integrations.php:467
+#: includes/class-wpci-integrations.php:567
 #: includes/class-wpci-settings.php:128
 msgid "You do not have permission to do this."
 msgstr ""
@@ -650,103 +665,179 @@ msgstr ""
 msgid "%s (Copy)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:100
-msgid "Paste an ID below and the correct snippet(s) are created for you automatically. Re-entering a different ID later updates the same snippet(s) instead of creating duplicates."
+#: includes/class-wpci-integrations.php:40
+msgid "Almost done:"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:110
-msgid "Tracks visitor behavior on your site — pageviews, events, and conversions — inside Google Analytics."
-msgstr ""
-
-#: includes/class-wpci-integrations.php:111
-msgid "Find it in Google Analytics: Admin (gear icon) → Data Streams → select your web stream. The Measurement ID is shown at the top right."
+#: includes/class-wpci-integrations.php:41
+msgid "search for the page that counts as this conversion (for example your thank-you page), add it under Display Conditions, then click Publish. Until then the snippet stays a draft and fires nowhere."
 msgstr ""
 
 #: includes/class-wpci-integrations.php:121
-msgid "Lets you manage multiple tracking scripts (Analytics, Ads, other pixels) from one place, without editing code every time."
+msgid "Paste an ID below and the correct snippet(s) are created for you automatically. Re-entering a different ID later updates the same snippet(s) instead of creating duplicates."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:122
-msgid "Find it in Google Tag Manager: your Container ID is shown next to your container name in the top-left of the workspace."
+#: includes/class-wpci-integrations.php:131
+msgid "Tracks visitor behavior on your site — pageviews, events, and conversions — inside Google Analytics."
 msgstr ""
 
 #: includes/class-wpci-integrations.php:132
+msgid "Find it in Google Analytics: Admin (gear icon) → Data Streams → select your web stream. The Measurement ID is shown at the top right."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:142
+msgid "Lets you manage multiple tracking scripts (Analytics, Ads, other pixels) from one place, without editing code every time."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:143
+msgid "Find it in Google Tag Manager: your Container ID is shown next to your container name in the top-left of the workspace."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:153
 msgid "Tracks visitor actions for Facebook/Instagram ad targeting and reporting."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:133
+#: includes/class-wpci-integrations.php:154
 msgid "Find it in Meta Events Manager: Data Sources → select your pixel → Settings tab."
 msgstr ""
 
+#: includes/class-wpci-integrations.php:164
+msgid "Measures which ad clicks lead to sales or sign-ups (conversions), and powers remarketing audiences for your campaigns."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:165
+msgid "Find it in Google Ads: your Google Ads ID (starts with AW-) is shown when you create a conversion action under Goals → Conversions."
+msgstr ""
+
 #. translators: %s: the connected ID.
-#: includes/class-wpci-integrations.php:167
+#: includes/class-wpci-integrations.php:200
 #, php-format
 msgid "Connected: %s"
 msgstr ""
 
 #. translators: %s: the connected ID.
-#: includes/class-wpci-integrations.php:178
+#: includes/class-wpci-integrations.php:211
 #, php-format
 msgid "Paused: %s"
 msgstr ""
 
 #. translators: %s: example ID suffix, e.g. "ABC1234XY".
-#: includes/class-wpci-integrations.php:194
+#: includes/class-wpci-integrations.php:227
 #, php-format
 msgid "Example: %s"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:209
+#: includes/class-wpci-integrations.php:242
 msgid "Update"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:209
+#: includes/class-wpci-integrations.php:242
 msgid "Connect"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:219
+#: includes/class-wpci-integrations.php:252
 #: includes/class-wpci-list-table.php:34
 msgid "Active"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:221
+#: includes/class-wpci-integrations.php:254
 msgid "Remove this integration and its snippet(s)?"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:236
+#: includes/class-wpci-integrations.php:285
+msgid "Conversion actions"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:286
+msgid "A conversion action fires on the page you choose — usually the thank-you page a visitor lands on after buying or submitting a form. You pick that page on the next screen."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:294
+msgid "draft (no page chosen yet, or switched off)"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:305
+msgid "Conversion label"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:307
+msgid "Google Ads shows this when you create a conversion action — it's the part after the slash in AW-123456789/AbCdEfGhIj."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:311
+msgid "Value (optional)"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:315
+msgid "Currency"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:319
+msgid "Add conversion action"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:322
+msgid "Tip: enhanced conversions for purchases and leads work with this tag automatically — just switch them on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:329
 msgid "Integration saved."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:238
+#: includes/class-wpci-integrations.php:331
 msgid "That ID doesn't look right for this integration — please check the format and try again."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:240
+#: includes/class-wpci-integrations.php:333
 msgid "Integration removed."
 msgstr ""
 
+#: includes/class-wpci-integrations.php:336
+msgid "Connect your Google Ads ID first — conversion actions need the base tag on every page."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:337
+msgid "That conversion label doesn't look right — paste it exactly as Google Ads shows it (the part after the slash in AW-123456789/AbCdEfGhIj)."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:338
+msgid "When you set a value, enter the currency as a 3-letter code too (for example EUR or USD)."
+msgstr ""
+
 #. translators: %s: GA4 Measurement ID.
-#: includes/class-wpci-integrations.php:262
+#: includes/class-wpci-integrations.php:366
 #, php-format
 msgid "Google Analytics 4 (%s)"
 msgstr ""
 
 #. translators: %s: GTM Container ID.
-#: includes/class-wpci-integrations.php:277
+#: includes/class-wpci-integrations.php:381
 #, php-format
 msgid "Google Tag Manager – Head (%s)"
 msgstr ""
 
 #. translators: %s: GTM Container ID.
-#: includes/class-wpci-integrations.php:285
+#: includes/class-wpci-integrations.php:389
 #, php-format
 msgid "Google Tag Manager – Body (%s)"
 msgstr ""
 
 #. translators: %s: Meta Pixel ID.
-#: includes/class-wpci-integrations.php:300
+#: includes/class-wpci-integrations.php:404
 #, php-format
 msgid "Meta Pixel (%s)"
+msgstr ""
+
+#. translators: %s: Google Ads ID (AW-…).
+#: includes/class-wpci-integrations.php:419
+#, php-format
+msgid "Google Ads (%s)"
+msgstr ""
+
+#. translators: %s: Google Ads conversion label.
+#: includes/class-wpci-integrations.php:503
+#, php-format
+msgid "Google Ads conversion (%s)"
 msgstr ""
 
 #: includes/class-wpci-list-table.php:31
@@ -896,4 +987,12 @@ msgstr ""
 
 #: includes/functions-helpers.php:149
 msgid "Meta Pixel integration"
+msgstr ""
+
+#: includes/functions-helpers.php:150
+msgid "Google Ads integration"
+msgstr ""
+
+#: includes/functions-helpers.php:151
+msgid "Google Ads conversion action"
 msgstr ""

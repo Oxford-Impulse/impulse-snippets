@@ -76,7 +76,9 @@ class Wpci_Docs {
 
 			<div class="postbox wpci-integration-card" style="max-width:800px;">
 				<h2><?php esc_html_e( '6. One-click Integrations', 'impulse-snippets' ); ?></h2>
-				<p><?php esc_html_e( 'Under Impulse Snippets → Integrations, paste your Google Analytics 4 Measurement ID, Google Tag Manager Container ID, or Meta Pixel ID and the correct snippet(s) are created for you automatically — no code needed. If you ever change the ID and reconnect, it updates the same snippet instead of creating a duplicate.', 'impulse-snippets' ); ?></p>
+				<p><?php esc_html_e( 'Under Impulse Snippets → Integrations, paste your Google Analytics 4 Measurement ID, Google Tag Manager Container ID, Meta Pixel ID, or Google Ads ID and the correct snippet(s) are created for you automatically — no code needed. If you ever change the ID and reconnect, it updates the same snippet instead of creating a duplicate.', 'impulse-snippets' ); ?></p>
+				<p><?php esc_html_e( 'Google Ads conversion tracking: after connecting your AW- ID, add a conversion action by pasting its conversion label (Google Ads shows it when you create the conversion action). You can optionally set a fixed value and currency. The plugin creates a ready-made snippet and takes you to its edit screen — search for the page that counts as the conversion (usually your thank-you page), add it, and Publish. Until you do, the snippet stays a harmless draft.', 'impulse-snippets' ); ?></p>
+				<p><?php esc_html_e( 'Enhanced conversions (for purchases and leads): these work with the tag this plugin installs — no extra code. Just switch them on inside Google Ads under Goals → Conversions → Settings → Enhanced conversions.', 'impulse-snippets' ); ?></p>
 			</div>
 
 			<div class="postbox wpci-integration-card" style="max-width:800px;">

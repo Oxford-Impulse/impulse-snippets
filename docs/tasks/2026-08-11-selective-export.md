@@ -1,6 +1,6 @@
 # Selective export — choose which snippets to download
 
-**Status:** idea, parked — needs a brainstorming session before any build (project rule 3).
+**Status:** DONE (2026-08-11) — brainstormed, spec'd (docs/specs/2026-08-11-selective-export-design.md), built as both a list bulk action and a filterable pre-ticked page picker, verified live in Playground.
 **Source:** Omer, 2026-08-11, during the 1.16.0 Playground walkthrough.
 
 ## The idea

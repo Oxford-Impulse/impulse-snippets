@@ -70,6 +70,7 @@ class Wpci_Admin_Menu {
 			__( 'Google Analytics 4', 'impulse-snippets' ) => wpci_get_integration_connected_id( 'ga4' ),
 			__( 'Google Tag Manager', 'impulse-snippets' ) => wpci_get_integration_connected_id( 'gtm_head' ),
 			__( 'Meta Pixel', 'impulse-snippets' )         => wpci_get_integration_connected_id( 'meta_pixel' ),
+			__( 'Google Ads', 'impulse-snippets' )         => wpci_get_integration_connected_id( 'google_ads' ),
 		);
 		?>
 		<div class="wrap">
@@ -165,7 +166,7 @@ class Wpci_Admin_Menu {
 			array(
 				'icon'  => 'dashicons-chart-line',
 				'title' => __( 'One-click integrations', 'impulse-snippets' ),
-				'desc'  => __( 'Paste a Measurement/Container/Pixel ID and Google Analytics 4, Google Tag Manager, or Meta Pixel get set up correctly, automatically — no code required.', 'impulse-snippets' ),
+				'desc'  => __( 'Paste an ID and Google Analytics 4, Google Tag Manager, Meta Pixel, or Google Ads (incl. per-page conversion tracking) get set up correctly, automatically — no code required.', 'impulse-snippets' ),
 			),
 			array(
 				'icon'  => 'dashicons-controls-play',
