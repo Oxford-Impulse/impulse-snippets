@@ -351,11 +351,26 @@ class Wpci_Integrations {
 	private function render_consent_mode_card() {
 		$preset    = wpci_get_integration_connected_id( 'consent_mode' );
 		$is_active = $this->is_integration_active( 'consent_mode' );
+
+		// The consent signal only has an effect once some Google tag is on
+		// the site. It still governs manually pasted Google snippets, so this
+		// informs rather than blocks — consent-first is the ideal order anyway.
+		$has_google_tag = wpci_get_integration_connected_id( 'ga4' )
+			|| wpci_get_integration_connected_id( 'gtm_head' )
+			|| wpci_get_integration_connected_id( 'google_ads' )
+			|| wpci_get_integration_connected_id( 'google_tag' );
 		?>
 		<div class="postbox wpci-integration-card">
 			<h2><?php esc_html_e( 'Consent Mode V2', 'impulse-snippets' ); ?></h2>
 			<p><?php esc_html_e( "Tells Google's tags what a visitor has consented to, before any tag runs. Google requires this for sites with EU/UK visitors — without it, remarketing audiences and conversion accuracy degrade.", 'impulse-snippets' ); ?></p>
 			<p class="description"><?php esc_html_e( 'This is the consent signal, not a cookie banner. Pair it with a consent banner plugin (e.g. Complianz, Cookiebot, CookieYes) — certified banners flip the signal to "granted" automatically when the visitor accepts. Without a banner, denied visitors simply stay denied.', 'impulse-snippets' ); ?></p>
+
+			<?php if ( ! $has_google_tag ) : ?>
+				<p class="description">
+					<span class="dashicons dashicons-info-outline" style="color:#dba617;"></span>
+					<?php esc_html_e( "Heads up: no Google integration is connected yet, so this signal has nothing to govern for now. It's still safe to set up — it will automatically apply to any Google tag you connect above or paste as a snippet later.", 'impulse-snippets' ); ?>
+				</p>
+			<?php endif; ?>
 
 			<?php if ( $preset && $is_active ) : ?>
 				<p>
