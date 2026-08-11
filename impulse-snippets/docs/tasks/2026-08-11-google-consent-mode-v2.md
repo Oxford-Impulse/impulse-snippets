@@ -6,7 +6,9 @@ Playground (including the print-before-Google-tags ordering via priority −10).
 Decisions: own card + nudges on Google cards; EU/UK-scoped or global denied
 presets; ads_data_redaction always on, url_passthrough omitted; Advanced mode
 only (Basic is the CMP's job, documented honestly). A no-Google-tag-connected
-notice covers the empty case. Meta Pixel consent remains a possible follow-up.
+notice covers the empty case. The Meta Pixel consent follow-up is ALSO DONE
+(same day — see docs/specs/2026-08-11-meta-pixel-consent-design.md: revoke-
+before-init checkbox on the pixel card, verified live).
 
 Reference: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced
 
