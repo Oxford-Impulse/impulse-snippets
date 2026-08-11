@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <rect width="256" height="256" fill="#0a0a0a"/>
+  <!-- left bracket -->
+  <path d="M 72 86 L 38 128 L 72 170" fill="none" stroke="#ffffff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- right bracket -->
+  <path d="M 184 86 L 218 128 L 184 170" fill="none" stroke="#ffffff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- impulse line -->
+  <path d="M 86 128 L 103 128 L 115 94 L 137 164 L 149 116 L 157 128 L 170 128" fill="none" stroke="#ffffff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
