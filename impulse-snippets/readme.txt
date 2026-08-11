@@ -32,6 +32,15 @@ Impulse Snippets lets you add JavaScript, CSS, or HTML snippets anywhere on your
 
 Code you add is output exactly as written, with no modification. Only administrators can create or edit snippets, and you should only ever paste code from sources you trust.
 
+= External services =
+
+The plugin itself never contacts any external service and collects no data. However, snippets you create — including the ones the one-click Integrations wizard generates at your request — run on your site's public pages and may load third-party scripts there:
+
+* Google Analytics 4 / Google Tag Manager / Google Ads snippets load scripts from googletagmanager.com (Google's [terms](https://marketingplatform.google.com/about/analytics/terms/us/) and [privacy policy](https://policies.google.com/privacy)).
+* Meta Pixel snippets load scripts from connect.facebook.net ([Meta's terms](https://www.facebook.com/legal/terms) and [privacy policy](https://www.facebook.com/privacy/policy)).
+
+These snippets are only created when you explicitly connect an integration (or paste such code yourself), and you can pause or delete them at any time. Depending on your visitors' location, using these services may require a consent banner / cookie notice on your site.
+
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/impulse-snippets` directory, or install the plugin through the Plugins screen in WordPress directly.

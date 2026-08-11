@@ -9,7 +9,6 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: impulse-snippets
  * Domain Path: /languages
- * Update URI: https://oxfordimpulse.com/impulse-snippets
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
