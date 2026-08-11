@@ -118,23 +118,36 @@
 	margin-top: auto;
 }
 
-/* Full-width Google Ads panel below the card grid: configuration forms get
-   real width instead of towering inside a 360px card (which also reflowed
-   the whole grid when sections expanded). */
+/* Google Ads panel below the card grid: configuration forms get real width
+   instead of towering inside a 360px card. Half-width, not full — the forms
+   only need ~700px, and a full-bleed panel looked oversized. Expanding a
+   section pushes down only what's below the panel; the card grid above
+   never reflows. */
 .wpci-ads-panel {
 	padding: 16px;
 	margin-top: 4px;
+	max-width: 760px;
 }
 
-.wpci-ads-panel-columns {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 28px;
+/* Independently collapsible sections inside the panel (native <details>,
+   no JS) — closed by default so the panel reads as two one-line tabs. */
+.wpci-panel-section {
+	border-top: 1px solid #dcdcde;
 }
 
-.wpci-ads-panel-columns > div {
-	flex: 1 1 380px;
-	max-width: 560px;
+.wpci-panel-section summary {
+	cursor: pointer;
+	padding: 10px 0;
+	font-size: 14px;
+}
+
+.wpci-panel-section summary:hover strong {
+	color: #2271b1;
+}
+
+.wpci-panel-section-body {
+	padding: 2px 0 12px;
+	max-width: 640px;
 }
 
 .wpci-dashboard-stats {

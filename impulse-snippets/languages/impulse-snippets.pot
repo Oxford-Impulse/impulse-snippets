@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-11T13:23:01+00:00\n"
+"POT-Creation-Date: 2026-08-11T13:41:41+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: impulse-snippets\n"
@@ -85,7 +85,7 @@ msgid "Google tag (GT-)"
 msgstr ""
 
 #: includes/class-wpci-admin-menu.php:75
-#: includes/class-wpci-integrations.php:519
+#: includes/class-wpci-integrations.php:545
 msgid "Consent Mode V2"
 msgstr ""
 
@@ -526,8 +526,8 @@ msgid "(no title)"
 msgstr ""
 
 #: includes/class-wpci-edit-screen.php:181
-#: includes/class-wpci-integrations.php:323
-#: includes/class-wpci-integrations.php:574
+#: includes/class-wpci-integrations.php:326
+#: includes/class-wpci-integrations.php:600
 msgid "Remove"
 msgstr ""
 
@@ -614,8 +614,8 @@ msgid "Select all"
 msgstr ""
 
 #: includes/class-wpci-import-export.php:97
-#: includes/class-wpci-integrations.php:398
-#: includes/class-wpci-integrations.php:472
+#: includes/class-wpci-integrations.php:403
+#: includes/class-wpci-integrations.php:496
 msgid "active"
 msgstr ""
 
@@ -663,10 +663,10 @@ msgstr ""
 #: includes/class-wpci-import-export.php:252
 #: includes/class-wpci-import-export.php:265
 #: includes/class-wpci-import-export.php:386
-#: includes/class-wpci-integrations.php:607
-#: includes/class-wpci-integrations.php:754
-#: includes/class-wpci-integrations.php:867
-#: includes/class-wpci-integrations.php:949
+#: includes/class-wpci-integrations.php:633
+#: includes/class-wpci-integrations.php:780
+#: includes/class-wpci-integrations.php:893
+#: includes/class-wpci-integrations.php:975
 #: includes/class-wpci-settings.php:128
 msgid "You do not have permission to do this."
 msgstr ""
@@ -746,284 +746,292 @@ msgstr ""
 msgid "Conversion actions and WooCommerce purchase tracking are managed in the panel below the cards."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:220
+#: includes/class-wpci-integrations.php:223
 msgid "Google Ads — conversions"
 msgstr ""
 
 #. translators: %s: the connected ID.
-#: includes/class-wpci-integrations.php:251
+#: includes/class-wpci-integrations.php:254
 #, php-format
 msgid "Connected: %s"
 msgstr ""
 
 #. translators: %s: the connected ID.
-#: includes/class-wpci-integrations.php:262
+#: includes/class-wpci-integrations.php:265
 #, php-format
 msgid "Paused: %s"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:272
+#: includes/class-wpci-integrations.php:275
 msgid "Recommended for EU visitors: set up Consent Mode V2 (card below) so this tag respects cookie consent."
 msgstr ""
 
 #. translators: %s: example ID suffix, e.g. "ABC1234XY".
-#: includes/class-wpci-integrations.php:285
+#: includes/class-wpci-integrations.php:288
 #, php-format
 msgid "Example: %s"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:307
-#: includes/class-wpci-integrations.php:558
+#: includes/class-wpci-integrations.php:310
+#: includes/class-wpci-integrations.php:584
 msgid "Update"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:307
+#: includes/class-wpci-integrations.php:310
 msgid "Connect"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:317
-#: includes/class-wpci-integrations.php:568
+#: includes/class-wpci-integrations.php:320
+#: includes/class-wpci-integrations.php:594
 #: includes/class-wpci-list-table.php:34
 msgid "Active"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:319
-#: includes/class-wpci-integrations.php:570
+#: includes/class-wpci-integrations.php:322
+#: includes/class-wpci-integrations.php:596
 msgid "Remove this integration and its snippet(s)?"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:362
+#: includes/class-wpci-integrations.php:365
 msgid "Wait for cookie consent before tracking"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:365
-#: includes/class-wpci-integrations.php:429
-#: includes/class-wpci-integrations.php:490
+#: includes/class-wpci-integrations.php:368
+#: includes/class-wpci-integrations.php:442
+#: includes/class-wpci-integrations.php:514
 msgid "Learn more"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:366
+#: includes/class-wpci-integrations.php:369
 msgid "Recommended if you have EU/UK visitors AND a consent banner plugin — the pixel stays silent until the banner grants consent. Warning: unlike Google's Consent Mode this cannot be limited to EU visitors and collects nothing at all while waiting, so without a consent banner the pixel would simply never track anyone."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:382
+#: includes/class-wpci-integrations.php:386
 msgid "Conversion actions"
 msgstr ""
 
 #. translators: %d: number of conversion actions set up.
-#: includes/class-wpci-integrations.php:386
+#: includes/class-wpci-integrations.php:390
 #, php-format
 msgid "(%d set up)"
 msgid_plural "(%d set up)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wpci-integrations.php:390
+#: includes/class-wpci-integrations.php:395
 msgid "A conversion action fires on the page you choose — usually the thank-you page a visitor lands on after buying or submitting a form. You pick that page on the next screen."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:398
+#: includes/class-wpci-integrations.php:403
 msgid "draft (no page chosen yet, or switched off)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:409
+#: includes/class-wpci-integrations.php:414
 msgid "Conversion label"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:411
+#: includes/class-wpci-integrations.php:416
 msgid "Google Ads shows this when you create a conversion action — it's the part after the slash in AW-123456789/AbCdEfGhIj."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:415
+#: includes/class-wpci-integrations.php:420
 msgid "Value (optional)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:419
+#: includes/class-wpci-integrations.php:424
 msgid "Currency"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:426
+#: includes/class-wpci-integrations.php:432
+msgid "Detected from your store settings."
+msgstr ""
+
+#: includes/class-wpci-integrations.php:439
 msgid "Send hashed email of logged-in visitors"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:430
+#: includes/class-wpci-integrations.php:443
 msgid "Enhanced conversions for leads. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode. Applies to logged-in visitors only — logged-out form submitters are a planned future integration."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:433
+#: includes/class-wpci-integrations.php:446
 msgid "Add conversion action"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:448
-#: includes/class-wpci-integrations.php:460
+#: includes/class-wpci-integrations.php:465
+#: includes/class-wpci-integrations.php:483
 msgid "WooCommerce purchase tracking"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:449
+#: includes/class-wpci-integrations.php:466
+msgid "(requires WooCommerce)"
+msgstr ""
+
+#: includes/class-wpci-integrations.php:469
 msgid "Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:462
+#: includes/class-wpci-integrations.php:485
 msgid "(active)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:462
+#: includes/class-wpci-integrations.php:485
 msgid "(not set up)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:465
+#: includes/class-wpci-integrations.php:489
 msgid "Reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits automatically). Paste the conversion label of your \"Purchase\" conversion action from Google Ads."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:472
+#: includes/class-wpci-integrations.php:496
 msgid "switched off"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:481
+#: includes/class-wpci-integrations.php:505
 msgid "Purchase conversion label"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:487
+#: includes/class-wpci-integrations.php:511
 msgid "Send hashed billing email"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:491
+#: includes/class-wpci-integrations.php:515
 msgid "Enhanced conversions: improves how many purchases Google can match to ad clicks. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:494
+#: includes/class-wpci-integrations.php:518
 msgid "Update purchase tracking"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:494
+#: includes/class-wpci-integrations.php:518
 msgid "Set up purchase tracking"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:496
+#: includes/class-wpci-integrations.php:520
 msgid "Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:520
+#: includes/class-wpci-integrations.php:546
 msgid "Tells Google's tags what a visitor has consented to, before any tag runs. Google requires this for sites with EU/UK visitors — without it, remarketing audiences and conversion accuracy degrade."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:521
+#: includes/class-wpci-integrations.php:547
 msgid "This is the consent signal, not a cookie banner. Pair it with a consent banner plugin (e.g. Complianz, Cookiebot, CookieYes) — certified banners flip the signal to \"granted\" automatically when the visitor accepts. Without a banner, denied visitors simply stay denied."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:526
+#: includes/class-wpci-integrations.php:552
 msgid "Heads up: no Google integration is connected yet, so this signal has nothing to govern for now. It's still safe to set up — it will automatically apply to any Google tag you connect above or paste as a snippet later."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:533
+#: includes/class-wpci-integrations.php:559
 msgid "Active: denied by default for everyone"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:533
+#: includes/class-wpci-integrations.php:559
 msgid "Active: denied by default for EU/UK visitors"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:538
+#: includes/class-wpci-integrations.php:564
 msgid "Paused"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:547
+#: includes/class-wpci-integrations.php:573
 msgid "Deny tracking by default for:"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:550
+#: includes/class-wpci-integrations.php:576
 msgid "EU/UK visitors only (recommended — visitors elsewhere keep full tracking)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:554
+#: includes/class-wpci-integrations.php:580
 msgid "Everyone (strictest — one global rule)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:558
+#: includes/class-wpci-integrations.php:584
 msgid "Set up Consent Mode"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:585
+#: includes/class-wpci-integrations.php:611
 msgid "Integration saved."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:587
+#: includes/class-wpci-integrations.php:613
 msgid "That ID doesn't look right for this integration — please check the format and try again."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:589
+#: includes/class-wpci-integrations.php:615
 msgid "Integration removed."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:592
+#: includes/class-wpci-integrations.php:618
 msgid "Connect your Google Ads ID first — conversion actions need the base tag on every page."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:593
+#: includes/class-wpci-integrations.php:619
 msgid "That conversion label doesn't look right — paste it exactly as Google Ads shows it (the part after the slash in AW-123456789/AbCdEfGhIj)."
 msgstr ""
 
-#: includes/class-wpci-integrations.php:594
+#: includes/class-wpci-integrations.php:620
 msgid "When you set a value, enter the currency as a 3-letter code too (for example EUR or USD)."
 msgstr ""
 
 #. translators: %s: GA4 Measurement ID.
-#: includes/class-wpci-integrations.php:622
+#: includes/class-wpci-integrations.php:648
 #, php-format
 msgid "Google Analytics 4 (%s)"
 msgstr ""
 
 #. translators: %s: GTM Container ID.
-#: includes/class-wpci-integrations.php:637
+#: includes/class-wpci-integrations.php:663
 #, php-format
 msgid "Google Tag Manager – Head (%s)"
 msgstr ""
 
 #. translators: %s: GTM Container ID.
-#: includes/class-wpci-integrations.php:645
+#: includes/class-wpci-integrations.php:671
 #, php-format
 msgid "Google Tag Manager – Body (%s)"
 msgstr ""
 
 #. translators: %s: Meta Pixel ID.
-#: includes/class-wpci-integrations.php:661
+#: includes/class-wpci-integrations.php:687
 #, php-format
 msgid "Meta Pixel (%s)"
 msgstr ""
 
 #. translators: %s: Google Ads ID (AW-…).
-#: includes/class-wpci-integrations.php:676
+#: includes/class-wpci-integrations.php:702
 #, php-format
 msgid "Google Ads (%s)"
 msgstr ""
 
 #. translators: %s: unified Google tag ID (GT-…).
-#: includes/class-wpci-integrations.php:691
+#: includes/class-wpci-integrations.php:717
 #, php-format
 msgid "Google tag (%s)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:704
+#: includes/class-wpci-integrations.php:730
 msgid "Consent Mode V2 (denied by default, everyone)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:705
+#: includes/class-wpci-integrations.php:731
 msgid "Consent Mode V2 (denied by default, EU/UK)"
 msgstr ""
 
 #. translators: %s: Google Ads conversion label.
-#: includes/class-wpci-integrations.php:790
+#: includes/class-wpci-integrations.php:816
 #, php-format
 msgid "Google Ads conversion (%s)"
 msgstr ""
 
 #. translators: %s: Google Ads conversion label.
-#: includes/class-wpci-integrations.php:891
+#: includes/class-wpci-integrations.php:917
 #, php-format
 msgid "Google Ads purchase conversion (%s)"
 msgstr ""
 
-#: includes/class-wpci-integrations.php:894
+#: includes/class-wpci-integrations.php:920
 msgid "WooCommerce purchase tracking (managed by Impulse Snippets). This snippet is printed automatically on the WooCommerce order-received page with the real order total, currency, and order number filled in. The code below is only a preview — editing it has no effect."
 msgstr ""
 

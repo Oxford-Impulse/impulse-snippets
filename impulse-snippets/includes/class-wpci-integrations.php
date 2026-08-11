@@ -207,9 +207,12 @@ class Wpci_Integrations {
 	}
 
 	/**
-	 * Full-width panel under the card grid: Conversion actions and
-	 * WooCommerce purchase tracking side by side. Only rendered while
-	 * Google Ads is connected — both depend on the base tag.
+	 * Panel under the card grid: Conversion actions and WooCommerce purchase
+	 * tracking as independently collapsible sections (closed by default, so
+	 * the panel stays one screen-line tall until the user opens a form).
+	 * Only rendered while Google Ads is connected — both depend on the base
+	 * tag. Expanding here only pushes down whatever is below the panel; the
+	 * card grid above never reflows.
 	 */
 	private function render_ads_advanced_panel() {
 		if ( ! wpci_get_integration_connected_id( 'google_ads' ) ) {
@@ -218,10 +221,10 @@ class Wpci_Integrations {
 		?>
 		<div class="postbox wpci-ads-panel">
 			<h2><?php esc_html_e( 'Google Ads — conversions', 'impulse-snippets' ); ?></h2>
-			<div class="wpci-ads-panel-columns">
-				<div><?php $this->render_ads_conversions_section(); ?></div>
-				<div><?php $this->render_woocommerce_purchase_section(); ?></div>
-			</div>
+			<?php
+			$this->render_ads_conversions_section();
+			$this->render_woocommerce_purchase_section();
+			?>
 		</div>
 		<?php
 	}
@@ -378,15 +381,17 @@ class Wpci_Integrations {
 	public function render_ads_conversions_section() {
 		$conversion_ids = wpci_find_integration_post_ids( 'google_ads_conversion' );
 		?>
-		<h3 style="margin:0 0 4px;">
-			<?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?>
-			<span class="description" style="font-weight:400;">
-				<?php
-				/* translators: %d: number of conversion actions set up. */
-				echo esc_html( sprintf( _n( '(%d set up)', '(%d set up)', count( $conversion_ids ), 'impulse-snippets' ), count( $conversion_ids ) ) );
-				?>
-			</span>
-		</h3>
+		<details class="wpci-panel-section">
+			<summary>
+				<strong><?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?></strong>
+				<span class="description">
+					<?php
+					/* translators: %d: number of conversion actions set up. */
+					echo esc_html( sprintf( _n( '(%d set up)', '(%d set up)', count( $conversion_ids ), 'impulse-snippets' ), count( $conversion_ids ) ) );
+					?>
+				</span>
+			</summary>
+			<div class="wpci-panel-section-body">
 		<p class="description"><?php esc_html_e( 'A conversion action fires on the page you choose — usually the thank-you page a visitor lands on after buying or submitting a form. You pick that page on the next screen.', 'impulse-snippets' ); ?></p>
 
 		<?php if ( ! empty( $conversion_ids ) ) : ?>
@@ -417,7 +422,15 @@ class Wpci_Integrations {
 				</span>
 				<span style="flex:1;">
 					<label for="wpci_ads_conversion_currency"><?php esc_html_e( 'Currency', 'impulse-snippets' ); ?></label><br>
-					<input type="text" id="wpci_ads_conversion_currency" name="wpci_ads_conversion_currency" maxlength="3" placeholder="EUR" style="width:100%;">
+					<?php
+					// Pre-fill with the store currency when WooCommerce is
+					// around — one less thing to look up. Still editable.
+					$store_currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
+					?>
+					<input type="text" id="wpci_ads_conversion_currency" name="wpci_ads_conversion_currency" maxlength="3" value="<?php echo esc_attr( $store_currency ); ?>" placeholder="EUR" style="width:100%;">
+					<?php if ( $store_currency ) : ?>
+						<span class="description"><?php esc_html_e( 'Detected from your store settings.', 'impulse-snippets' ); ?></span>
+					<?php endif; ?>
 				</span>
 			</p>
 			<div class="wpci-check-row">
@@ -432,6 +445,8 @@ class Wpci_Integrations {
 			</div>
 			<p><button type="submit" class="button"><?php esc_html_e( 'Add conversion action', 'impulse-snippets' ); ?></button></p>
 		</form>
+			</div>
+		</details>
 		<?php
 	}
 
@@ -445,8 +460,15 @@ class Wpci_Integrations {
 	private function render_woocommerce_purchase_section() {
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			?>
-			<h3 style="margin:0 0 4px;"><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></h3>
-			<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
+			<details class="wpci-panel-section">
+				<summary>
+					<strong><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></strong>
+					<span class="description"><?php esc_html_e( '(requires WooCommerce)', 'impulse-snippets' ); ?></span>
+				</summary>
+				<div class="wpci-panel-section-body">
+					<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
+				</div>
+			</details>
 			<?php
 			return;
 		}
@@ -456,12 +478,14 @@ class Wpci_Integrations {
 		$enhanced_on  = $purchase_id ? (bool) get_post_meta( $purchase_id, '_wpci_ads_enhanced', true ) : false;
 		$is_active    = $purchase_id && 'publish' === get_post_status( $purchase_id );
 		?>
-		<h3 style="margin:0 0 4px;">
-			<?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?>
-			<span class="description" style="font-weight:400;">
-				<?php echo $is_active ? esc_html__( '(active)', 'impulse-snippets' ) : esc_html__( '(not set up)', 'impulse-snippets' ); ?>
-			</span>
-		</h3>
+		<details class="wpci-panel-section">
+			<summary>
+				<strong><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></strong>
+				<span class="description">
+					<?php echo $is_active ? esc_html__( '(active)', 'impulse-snippets' ) : esc_html__( '(not set up)', 'impulse-snippets' ); ?>
+				</span>
+			</summary>
+			<div class="wpci-panel-section-body">
 		<p class="description"><?php esc_html_e( 'Reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits automatically). Paste the conversion label of your "Purchase" conversion action from Google Ads.', 'impulse-snippets' ); ?></p>
 
 		<?php if ( $purchase_id ) : ?>
@@ -494,6 +518,8 @@ class Wpci_Integrations {
 			<p><button type="submit" class="button"><?php echo $purchase_id ? esc_html__( 'Update purchase tracking', 'impulse-snippets' ) : esc_html__( 'Set up purchase tracking', 'impulse-snippets' ); ?></button></p>
 		</form>
 		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
+			</div>
+		</details>
 		<?php
 	}
 
