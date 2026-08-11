@@ -13,17 +13,18 @@
 
 ## What this project is
 
-A WordPress plugin: **Impulse Snippets** (formerly "WP Code Injector", v1.14.0, GPL v2). It lets site owners add unlimited named code snippets (JavaScript, CSS, HTML) to their site's `<head>`, after the opening `<body>` tag, or in the footer — without editing theme files. Sold/published by Oxford Impulse (oxfordimpulse.com, contact: info@oxfordimpulse.com).
+A WordPress plugin: **Impulse Snippets** (formerly "WP Code Injector", v1.16.0, GPL v2). It lets site owners add unlimited named code snippets (JavaScript, CSS, HTML) to their site's `<head>`, after the opening `<body>` tag, or in the footer — without editing theme files. Sold/published by Oxford Impulse (oxfordimpulse.com, contact: info@oxfordimpulse.com).
 
 Key user-facing features:
-- Unlimited named snippets, each with its own on/off toggle (no page reload).
+- Unlimited named snippets, each with its own on/off toggle (no page reload), plus a sortable Priority (output order) per snippet.
 - Three placements: head, body, footer.
-- Paste code inline **or** link to an external file (URL).
-- Auto-detect wrapping: bare JS/CSS gets `<script>`/`<style>` tags added at output time.
-- Display conditions: all pages, specific pages/posts (incl. paste-a-URL), post types, or categories.
+- Paste code inline **or** link to an external file (URL, stored in its own meta field).
+- Auto-detect wrapping: bare JS/CSS gets `<script>`/`<style>` tags added at output time (code *starting* with a real tag is left alone — a `<` elsewhere is treated as a JS less-than).
+- Display conditions: all pages, specific pages/posts (type-to-search picker), post types, categories, or special pages (front page / 404 / search) — each optionally limited to logged-in or logged-out visitors.
 - One-click integrations: Google Analytics 4, Google Tag Manager, Meta Pixel — paste an ID, snippets are generated and tagged so re-running updates instead of duplicating.
-- Emergency kill switch: pause every snippet site-wide from Settings.
-- Deliberately **no PHP execution** (safety decision) and data is **kept on uninstall by default** (opt-in deletion).
+- Import/export snippets as JSON (imports always land as drafts) and one-click Duplicate on the list table.
+- Emergency kill switch: pause every snippet site-wide from Settings (warning banner on all plugin screens while active).
+- Deliberately **no PHP execution** (safety decision) and data is **kept on uninstall by default** (opt-in deletion; uninstall is multisite-aware).
 
 ## Architecture (how the code is organized)
 
@@ -31,9 +32,9 @@ Everything lives in a single plugin folder. `impulse-snippets.php` is the entry 
 
 Core storage idea: **each snippet is a WordPress post** of custom type `wpci_snippet`.
 - `post_status` publish/draft **is** the on/off toggle.
-- `menu_order` **is** the display order.
-- `post_content` holds the raw code (or the external URL).
-- Post meta holds the rest: `_wpci_location` (head/body/footer), `_wpci_code_type` (auto/script/style/html), `_wpci_source` (inline/external), `_wpci_conditions` (one JSON blob — a tagged union `{type: all|specific|post_types|categories, ...}`), `_wpci_integration` + `_wpci_integration_id` (wizard-managed tagging).
+- `menu_order` **is** the display order (the "Priority" field).
+- `post_content` holds the raw code (legacy installs may still hold the external URL here — output has a guarded fallback for that).
+- Post meta holds the rest: `_wpci_location` (head/body/footer), `_wpci_code_type` (auto/script/style/html), `_wpci_source` (inline/external), `_wpci_external_url` (the external file URL since 1.15.0), `_wpci_conditions` (one JSON blob — a tagged union `{type: all|specific|post_types|categories|special, ...}` plus an optional `visitor` key: logged_in/logged_out), `_wpci_integration` + `_wpci_integration_id` (wizard-managed tagging).
 
 Files in `includes/` (all classes prefixed `Wpci_`, constants prefixed `WPCI_`):
 
@@ -42,33 +43,34 @@ Files in `includes/` (all classes prefixed `Wpci_`, constants prefixed `WPCI_`):
 | `class-wpci-plugin.php` | Singleton bootstrapper; instantiates everything |
 | `class-wpci-cpt.php` | Registers the `wpci_snippet` post type + meta; dedicated capabilities granted to administrator only (self-healing on `admin_init`) |
 | `class-wpci-admin-menu.php` | Top-level "Impulse Snippets" admin menu (Dashboard + submenus); enqueues admin assets only on plugin screens |
-| `class-wpci-list-table.php` | Adds Location/Type/Conditions columns to the native CPT list table |
-| `class-wpci-edit-screen.php` | Custom meta boxes on the snippet edit screen (code textarea, location, type, source, conditions) |
+| `class-wpci-list-table.php` | Adds Location/Type/Conditions/Priority columns to the native CPT list table (Priority sortable via `menu_order`) |
+| `class-wpci-edit-screen.php` | Custom meta boxes on the snippet edit screen (code textarea, location + priority, type, source, conditions incl. the AJAX post-search picker) |
 | `class-wpci-save-handler.php` | The save path: nonce + capability re-checks, whitelist validation of every field, rebuilds conditions from scratch (never trusts posted JSON) |
 | `class-wpci-conditions.php` | Decodes + evaluates the JSON targeting rule per request; malformed data fails **closed** (snippet suppressed) |
 | `class-wpci-output.php` | Front-end printing on `wp_head` / `wp_body_open` / `wp_footer`; `wp_footer` doubles as body fallback for themes missing `wp_body_open` (guarded against double-print) |
 | `class-wpci-integrations.php` | GA4 / GTM / Meta Pixel wizard; generates ordinary tagged snippets, find-or-update on re-run; REST toggle route |
-| `class-wpci-rest-controller.php` | One REST route (`wpci/v1/snippets/{id}/toggle`) powering the list-table on/off switch; everything else is plain form posts on purpose |
-| `class-wpci-settings.php` | Settings page: kill switch (`wpci_disable_all` option) + uninstall-data opt-in (`wpci_remove_data_on_uninstall`) |
+| `class-wpci-rest-controller.php` | Two REST routes: `wpci/v1/snippets/{id}/toggle` (list-table on/off switch) and `wpci/v1/posts/search` (edit-screen picker); everything else is plain form posts on purpose |
+| `class-wpci-import-export.php` | Import/Export admin page (JSON export of publish+draft snippets; import always as drafts with full re-whitelisting) + Duplicate row action (integration tags deliberately not copied) |
+| `class-wpci-settings.php` | Settings page: kill switch (`wpci_disable_all` option, with `admin_notices` banner on plugin screens) + uninstall-data opt-in (`wpci_remove_data_on_uninstall`) |
 | `class-wpci-contact.php` | Contact page: plain `mailto:` links (deliberately not `wp_mail()` — unreliable on cheap hosting) |
 | `class-wpci-docs.php` | In-plugin documentation page (plain-language walkthrough) |
 | `class-wpci-plugin-links.php` | Settings/Docs links on the Plugins-screen row |
 | `functions-helpers.php` | Stateless helpers: location/type labels, code wrapping, external tag rendering, conditions summary, integration lookups |
 
-Other files: `assets/css/admin.css` + three small vanilla-JS files in `assets/js/` (edit screen, list toggle, integrations toggle), `uninstall.php` (standalone; only deletes data if opted in), `readme.txt` (WordPress.org format), `languages/` (empty, text domain `impulse-snippets`).
+Other files: `assets/css/admin.css` + three small vanilla-JS files in `assets/js/` (edit screen incl. the search picker, list toggle, integrations toggle), `uninstall.php` (standalone, multisite-aware; only deletes data if opted in), `readme.txt` (WordPress.org format), `languages/impulse-snippets.pot` (generated with wp-cli i18n make-pot; text domain `impulse-snippets`), `index.php` guard files in every asset folder.
 
 ## Conventions and gotchas
 
 - **Naming**: the code prefix is still `wpci`/`WPCI_`/`Wpci_` from the old "WP Code Injector" name, even though the plugin is now "Impulse Snippets". Text domain is `impulse-snippets`. Keep the prefix — renaming it would break existing installs' stored data.
 - **Security model**: snippet code is intentionally output raw, unescaped — that's the product. The safeguard is *access control*, not escaping: only administrators (dedicated `wpci_snippet` capabilities / `manage_options`) can create or edit snippets. Every save path re-verifies nonce + capability. Never "fix" the unescaped output; do keep every input that *isn't* the code itself strictly whitelisted/sanitized (the save handler is the reference example).
 - **No build step, no Composer, no npm.** Plain PHP 7.4+, WordPress 5.9+. Follow WordPress coding standards (tabs, Yoda conditions, `esc_html__()` etc. for all UI strings).
-- **Plain form posts over AJAX/REST** everywhere except the two toggle switches — deliberate simplicity, keep it that way unless a feature genuinely needs otherwise.
+- **Plain form posts over AJAX/REST** everywhere except the two toggle switches and the post-search picker — deliberate simplicity, keep it that way unless a feature genuinely needs otherwise.
 - **Data safety is a product value**: deactivation never touches data; uninstall keeps data unless explicitly opted in. Preserve this in anything new.
 - Comments in the code explain *why* decisions were made (e.g. the `wp_body_open` fallback, the capability self-heal) — read them before changing behavior, and keep that comment style.
 
 ## Dev tooling (repo root, one level up from the plugin)
 
-- **Tests**: `tests/run-tests.php` — standalone logic tests, no WordPress needed. Run with any PHP 7.4+ CLI: `php tests/run-tests.php` (exit 0 = pass). Note: no PHP is installed system-wide on this machine — download a portable PHP zip from windows.php.net when needed.
+- **Tests**: `tests/run-tests.php` — 44 standalone logic tests (code wrapping, conditions decode/matching, summaries), no WordPress needed (WP functions are stubbed). Run with any PHP 7.4+ CLI: `php tests/run-tests.php` (exit 0 = pass). Note: no PHP is installed system-wide on this machine — download a portable PHP zip from windows.php.net when needed.
 - **PHPCS**: `composer.json` + `phpcs.xml.dist` at repo root configure PHP_CodeSniffer with the WordPress-Extra standard (deliberately not full "WordPress" — the Docs docblock sniffs are omitted, this codebase documents *why* in targeted comments instead). Install with `php composer.phar install`, run with `php vendor/squizlabs/php_codesniffer/bin/phpcs`. Keep the scan at zero findings; when a rule is knowingly overridden, use `phpcs:ignore` with a written justification, never a bare ignore.
 - `vendor/` is git-ignored; `composer.lock` is committed.
 
