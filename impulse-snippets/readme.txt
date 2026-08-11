@@ -1,5 +1,5 @@
 === Impulse Snippets — Add Code to Header, Body & Footer ===
-Contributors: (add your WordPress.org username here)
+Contributors: omersekinci
 Tags: code snippets, header footer, google analytics, google tag manager, meta pixel
 Requires at least: 5.9
 Tested up to: 7.0
