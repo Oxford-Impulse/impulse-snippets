@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-11T09:42:20+00:00\n"
+"POT-Creation-Date: 2026-08-11T10:02:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: impulse-snippets\n"
@@ -485,7 +485,7 @@ msgid "Type at least 2 letters to search…"
 msgstr ""
 
 #: includes/class-wpci-edit-screen.php:180
-#: includes/class-wpci-import-export.php:78
+#: includes/class-wpci-import-export.php:94
 #: includes/class-wpci-rest-controller.php:81
 msgid "(no title)"
 msgstr ""
@@ -541,92 +541,111 @@ msgstr ""
 
 #: includes/class-wpci-import-export.php:34
 #: includes/class-wpci-import-export.php:35
-#: includes/class-wpci-import-export.php:55
+#: includes/class-wpci-import-export.php:63
 msgid "Import / Export"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:61
-#: includes/class-wpci-import-export.php:219
+#. translators: 1: number of snippets selected, 2: total number of snippets.
+#: includes/class-wpci-import-export.php:52
+#: includes/class-wpci-import-export.php:86
+#, php-format
+msgid "%1$s of %2$s selected"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:69
+#: includes/class-wpci-import-export.php:236
 msgid "Export"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:62
+#: includes/class-wpci-import-export.php:70
 msgid "Downloads snippets (including disabled ones) as a single JSON file — use it as a backup, or to move snippets to another site. Untick any you want to leave out."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:65
+#: includes/class-wpci-import-export.php:73
 msgid "No snippets to export yet."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:71
+#: includes/class-wpci-import-export.php:79
+msgid "Filter the snippet list"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:80
+msgid "Type to filter snippets…"
+msgstr ""
+
+#: includes/class-wpci-import-export.php:82
 msgid "Select all"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:81
+#: includes/class-wpci-import-export.php:97
 msgid "active"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:81
+#: includes/class-wpci-import-export.php:97
 msgid "draft"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:87
+#: includes/class-wpci-import-export.php:101
+msgid "No snippets match your filter."
+msgstr ""
+
+#: includes/class-wpci-import-export.php:104
 msgid "Download Export File"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:93
+#: includes/class-wpci-import-export.php:110
 msgid "Import"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:94
+#: includes/class-wpci-import-export.php:111
 msgid "Upload an export file to add its snippets to this site. Imported snippets always arrive switched OFF (draft), so nothing runs until you review and enable it."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:99
+#: includes/class-wpci-import-export.php:116
 msgid "Import Snippets"
 msgstr ""
 
 #. translators: %d: number of snippets imported.
-#: includes/class-wpci-import-export.php:114
+#: includes/class-wpci-import-export.php:131
 #, php-format
 msgid "%d snippet imported (as draft — enable it from the snippets list)."
 msgid_plural "%d snippets imported (as drafts — enable them from the snippets list)."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wpci-import-export.php:119
+#: includes/class-wpci-import-export.php:136
 msgid "That file couldn't be read as an Impulse Snippets export. Please upload an unmodified export file."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:124
+#: includes/class-wpci-import-export.php:141
 msgid "Select at least one snippet to export."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:132
-#: includes/class-wpci-import-export.php:235
-#: includes/class-wpci-import-export.php:248
-#: includes/class-wpci-import-export.php:369
+#: includes/class-wpci-import-export.php:149
+#: includes/class-wpci-import-export.php:252
+#: includes/class-wpci-import-export.php:265
+#: includes/class-wpci-import-export.php:386
 #: includes/class-wpci-integrations.php:247
 #: includes/class-wpci-integrations.php:342
 #: includes/class-wpci-settings.php:128
 msgid "You do not have permission to do this."
 msgstr ""
 
-#: includes/class-wpci-import-export.php:322
+#: includes/class-wpci-import-export.php:339
 msgid "Imported snippet"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:361
+#: includes/class-wpci-import-export.php:378
 msgid "Duplicate"
 msgstr ""
 
-#: includes/class-wpci-import-export.php:375
+#: includes/class-wpci-import-export.php:392
 #: includes/class-wpci-rest-controller.php:105
 msgid "Snippet not found."
 msgstr ""
 
 #. translators: %s: title of the snippet being duplicated.
-#: includes/class-wpci-import-export.php:382
+#: includes/class-wpci-import-export.php:399
 #, php-format
 msgid "%s (Copy)"
 msgstr ""

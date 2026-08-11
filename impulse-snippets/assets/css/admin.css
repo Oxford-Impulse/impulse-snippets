@@ -55,19 +55,24 @@
 	margin-top: auto;
 }
 
-/* Export picker on the Import/Export page. Scrolls past ~8 rows so a
-   snippet-heavy site doesn't stretch the card off the screen. */
+/* Export picker on the Import/Export page: shares the .wpci-checkbox-list
+   base (border, background, scroll past ~220px) with the edit screen's
+   category picker so both filterable lists look and behave the same. */
 .wpci-export-list {
-	max-height: 16em;
-	overflow-y: auto;
-	margin: 0 0 12px;
-	padding: 8px 10px;
-	border: 1px solid #dcdcde;
-	background: #fff;
+	margin: 0 0 4px;
 }
 
-.wpci-export-list li {
-	margin-bottom: 6px;
+.wpci-export-list label {
+	display: block;
+	padding: 2px 0;
+}
+
+.wpci-export-controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin: 2px 0 6px;
 }
 
 .wpci-dashboard-stats {

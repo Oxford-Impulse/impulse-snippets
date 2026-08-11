@@ -44,6 +44,14 @@ class Wpci_Import_Export {
 				function () {
 					wp_enqueue_style( 'wpci-admin', WPCI_PLUGIN_URL . 'assets/css/admin.css', array(), WPCI_VERSION );
 					wp_enqueue_script( 'wpci-admin-import-export', WPCI_PLUGIN_URL . 'assets/js/admin-import-export.js', array(), WPCI_VERSION, true );
+					wp_localize_script(
+						'wpci-admin-import-export',
+						'wpciImportExportL10n',
+						array(
+							/* translators: 1: number of snippets selected, 2: total number of snippets. */
+							'countTemplate' => __( '%1$s of %2$s selected', 'impulse-snippets' ),
+						)
+					);
 				}
 			);
 		}
@@ -67,12 +75,20 @@ class Wpci_Import_Export {
 						<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 							<?php wp_nonce_field( 'wpci_export_action', 'wpci_export_nonce' ); ?>
 							<input type="hidden" name="action" value="wpci_export_snippets">
-							<p>
-								<label><input type="checkbox" id="wpci-export-select-all" checked> <strong><?php esc_html_e( 'Select all', 'impulse-snippets' ); ?></strong></label>
-							</p>
-							<ul class="wpci-export-list">
-								<?php foreach ( $exportable as $snippet ) : ?>
-									<li>
+							<div class="wpci-searchable-list">
+								<label class="screen-reader-text" for="wpci-export-filter"><?php esc_html_e( 'Filter the snippet list', 'impulse-snippets' ); ?></label>
+								<input type="search" id="wpci-export-filter" class="wpci-checkbox-filter" placeholder="<?php esc_attr_e( 'Type to filter snippets…', 'impulse-snippets' ); ?>">
+								<p class="wpci-export-controls">
+									<label><input type="checkbox" id="wpci-export-select-all" checked> <strong><?php esc_html_e( 'Select all', 'impulse-snippets' ); ?></strong></label>
+									<span class="description" id="wpci-export-count" aria-live="polite">
+										<?php
+										/* translators: 1: number of snippets selected, 2: total number of snippets. */
+										echo esc_html( sprintf( __( '%1$s of %2$s selected', 'impulse-snippets' ), count( $exportable ), count( $exportable ) ) );
+										?>
+									</span>
+								</p>
+								<div class="wpci-checkbox-list wpci-export-list">
+									<?php foreach ( $exportable as $snippet ) : ?>
 										<label>
 											<input type="checkbox" name="wpci_export_ids[]" value="<?php echo esc_attr( $snippet->ID ); ?>" checked>
 											<?php echo esc_html( '' !== $snippet->post_title ? $snippet->post_title : __( '(no title)', 'impulse-snippets' ) ); ?>
@@ -81,10 +97,11 @@ class Wpci_Import_Export {
 												<?php echo ( 'publish' === $snippet->post_status ) ? esc_html__( 'active', 'impulse-snippets' ) : esc_html__( 'draft', 'impulse-snippets' ); ?>
 											</span>
 										</label>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-							<p><button type="submit" class="button button-primary"><?php esc_html_e( 'Download Export File', 'impulse-snippets' ); ?></button></p>
+									<?php endforeach; ?>
+									<p class="wpci-export-no-match description" hidden><?php esc_html_e( 'No snippets match your filter.', 'impulse-snippets' ); ?></p>
+								</div>
+							</div>
+							<p><button type="submit" class="button button-primary" id="wpci-export-submit"><?php esc_html_e( 'Download Export File', 'impulse-snippets' ); ?></button></p>
 						</form>
 					<?php endif; ?>
 				</div>
