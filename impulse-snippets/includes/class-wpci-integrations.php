@@ -168,7 +168,7 @@ class Wpci_Integrations {
 						'prefix'      => 'AW-',
 						'example'     => '123456789',
 						'field_name'  => 'wpci_google_ads_id',
-						'extra'       => array( $this, 'render_ads_conversions_section' ),
+						'extra'       => array( $this, 'render_ads_panel_pointer' ),
 					)
 				);
 				$this->render_card(
@@ -184,6 +184,43 @@ class Wpci_Integrations {
 				);
 				$this->render_consent_mode_card();
 				?>
+			</div>
+
+			<?php $this->render_ads_advanced_panel(); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * One-line pointer on the Google Ads card to the full-width panel below.
+	 * The panel content used to live inside the card, which made it tower
+	 * over its neighbors and reflow the whole grid — configuration forms
+	 * need real width, so they get their own full-width box instead.
+	 */
+	public function render_ads_panel_pointer() {
+		?>
+		<p class="description" style="margin-top:10px;">
+			<span class="dashicons dashicons-arrow-down-alt" style="color:#2271b1;"></span>
+			<?php esc_html_e( 'Conversion actions and WooCommerce purchase tracking are managed in the panel below the cards.', 'impulse-snippets' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Full-width panel under the card grid: Conversion actions and
+	 * WooCommerce purchase tracking side by side. Only rendered while
+	 * Google Ads is connected — both depend on the base tag.
+	 */
+	private function render_ads_advanced_panel() {
+		if ( ! wpci_get_integration_connected_id( 'google_ads' ) ) {
+			return;
+		}
+		?>
+		<div class="postbox wpci-ads-panel">
+			<h2><?php esc_html_e( 'Google Ads — conversions', 'impulse-snippets' ); ?></h2>
+			<div class="wpci-ads-panel-columns">
+				<div><?php $this->render_ads_conversions_section(); ?></div>
+				<div><?php $this->render_woocommerce_purchase_section(); ?></div>
 			</div>
 		</div>
 		<?php
@@ -319,16 +356,16 @@ class Wpci_Integrations {
 			$consent_on = $post && false !== strpos( $post->post_content, "fbq('consent', 'revoke')" );
 		}
 		?>
-		<p style="margin-bottom:4px;">
+		<div class="wpci-check-row">
 			<label>
 				<input type="checkbox" name="wpci_meta_pixel_consent" value="1" <?php checked( $consent_on ); ?>>
 				<?php esc_html_e( 'Wait for cookie consent before tracking', 'impulse-snippets' ); ?>
 			</label>
-		</p>
-		<details class="wpci-learn-more">
-			<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
-			<p class="description"><?php esc_html_e( 'Recommended if you have EU/UK visitors AND a consent banner plugin — the pixel stays silent until the banner grants consent. Warning: unlike Google\'s Consent Mode this cannot be limited to EU visitors and collects nothing at all while waiting, so without a consent banner the pixel would simply never track anyone.', 'impulse-snippets' ); ?></p>
-		</details>
+			<details class="wpci-learn-more">
+				<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+				<p class="description"><?php esc_html_e( 'Recommended if you have EU/UK visitors AND a consent banner plugin — the pixel stays silent until the banner grants consent. Warning: unlike Google\'s Consent Mode this cannot be limited to EU visitors and collects nothing at all while waiting, so without a consent banner the pixel would simply never track anyone.', 'impulse-snippets' ); ?></p>
+			</details>
+		</div>
 		<?php
 	}
 
@@ -341,16 +378,15 @@ class Wpci_Integrations {
 	public function render_ads_conversions_section() {
 		$conversion_ids = wpci_find_integration_post_ids( 'google_ads_conversion' );
 		?>
-		<details class="wpci-card-section">
-			<summary>
-				<?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?>
-				<span class="description">
-					<?php
-					/* translators: %d: number of conversion actions set up. */
-					echo esc_html( sprintf( _n( '(%d set up)', '(%d set up)', count( $conversion_ids ), 'impulse-snippets' ), count( $conversion_ids ) ) );
-					?>
-				</span>
-			</summary>
+		<h3 style="margin:0 0 4px;">
+			<?php esc_html_e( 'Conversion actions', 'impulse-snippets' ); ?>
+			<span class="description" style="font-weight:400;">
+				<?php
+				/* translators: %d: number of conversion actions set up. */
+				echo esc_html( sprintf( _n( '(%d set up)', '(%d set up)', count( $conversion_ids ), 'impulse-snippets' ), count( $conversion_ids ) ) );
+				?>
+			</span>
+		</h3>
 		<p class="description"><?php esc_html_e( 'A conversion action fires on the page you choose — usually the thank-you page a visitor lands on after buying or submitting a form. You pick that page on the next screen.', 'impulse-snippets' ); ?></p>
 
 		<?php if ( ! empty( $conversion_ids ) ) : ?>
@@ -384,21 +420,18 @@ class Wpci_Integrations {
 					<input type="text" id="wpci_ads_conversion_currency" name="wpci_ads_conversion_currency" maxlength="3" placeholder="EUR" style="width:100%;">
 				</span>
 			</p>
-			<p style="margin-bottom:4px;">
+			<div class="wpci-check-row">
 				<label>
 					<input type="checkbox" name="wpci_ads_conversion_enhanced" value="1">
-					<?php esc_html_e( 'Also send the hashed email of logged-in visitors (enhanced conversions for leads)', 'impulse-snippets' ); ?>
+					<?php esc_html_e( 'Send hashed email of logged-in visitors', 'impulse-snippets' ); ?>
 				</label>
-			</p>
-			<details class="wpci-learn-more">
-				<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
-				<p class="description"><?php esc_html_e( 'Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode. Applies to logged-in visitors only — logged-out form submitters are a planned future integration.', 'impulse-snippets' ); ?></p>
-			</details>
+				<details class="wpci-learn-more">
+					<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+					<p class="description"><?php esc_html_e( 'Enhanced conversions for leads. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode. Applies to logged-in visitors only — logged-out form submitters are a planned future integration.', 'impulse-snippets' ); ?></p>
+				</details>
+			</div>
 			<p><button type="submit" class="button"><?php esc_html_e( 'Add conversion action', 'impulse-snippets' ); ?></button></p>
 		</form>
-		</details>
-
-		<?php $this->render_woocommerce_purchase_section(); ?>
 		<?php
 	}
 
@@ -412,10 +445,8 @@ class Wpci_Integrations {
 	private function render_woocommerce_purchase_section() {
 		if ( ! class_exists( 'WooCommerce' ) ) {
 			?>
-			<details class="wpci-card-section">
-				<summary><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></summary>
-				<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
-			</details>
+			<h3 style="margin:0 0 4px;"><?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?></h3>
+			<p class="description"><?php esc_html_e( 'Activates automatically here when WooCommerce is installed: purchases get reported with the real order total, currency, and order number.', 'impulse-snippets' ); ?></p>
 			<?php
 			return;
 		}
@@ -425,13 +456,12 @@ class Wpci_Integrations {
 		$enhanced_on  = $purchase_id ? (bool) get_post_meta( $purchase_id, '_wpci_ads_enhanced', true ) : false;
 		$is_active    = $purchase_id && 'publish' === get_post_status( $purchase_id );
 		?>
-		<details class="wpci-card-section">
-			<summary>
-				<?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?>
-				<span class="description">
-					<?php echo $is_active ? esc_html__( '(active)', 'impulse-snippets' ) : esc_html__( '(not set up)', 'impulse-snippets' ); ?>
-				</span>
-			</summary>
+		<h3 style="margin:0 0 4px;">
+			<?php esc_html_e( 'WooCommerce purchase tracking', 'impulse-snippets' ); ?>
+			<span class="description" style="font-weight:400;">
+				<?php echo $is_active ? esc_html__( '(active)', 'impulse-snippets' ) : esc_html__( '(not set up)', 'impulse-snippets' ); ?>
+			</span>
+		</h3>
 		<p class="description"><?php esc_html_e( 'Reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits automatically). Paste the conversion label of your "Purchase" conversion action from Google Ads.', 'impulse-snippets' ); ?></p>
 
 		<?php if ( $purchase_id ) : ?>
@@ -451,20 +481,19 @@ class Wpci_Integrations {
 				<label for="wpci_ads_purchase_label"><strong><?php esc_html_e( 'Purchase conversion label', 'impulse-snippets' ); ?></strong></label><br>
 				<input type="text" id="wpci_ads_purchase_label" name="wpci_ads_purchase_label" placeholder="AbCdEfGhIj-D2sNzQ" style="width:100%;">
 			</p>
-			<p style="margin-bottom:4px;">
+			<div class="wpci-check-row">
 				<label>
 					<input type="checkbox" name="wpci_ads_purchase_enhanced" value="1" <?php checked( $enhanced_on ); ?>>
-					<?php esc_html_e( 'Enhanced conversions: also send the hashed billing email', 'impulse-snippets' ); ?>
+					<?php esc_html_e( 'Send hashed billing email', 'impulse-snippets' ); ?>
 				</label>
-			</p>
-			<details class="wpci-learn-more">
-				<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
-				<p class="description"><?php esc_html_e( 'Improves conversion matching. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode.', 'impulse-snippets' ); ?></p>
-			</details>
+				<details class="wpci-learn-more">
+					<summary><?php esc_html_e( 'Learn more', 'impulse-snippets' ); ?></summary>
+					<p class="description"><?php esc_html_e( 'Enhanced conversions: improves how many purchases Google can match to ad clicks. Only a one-way SHA-256 hash is sent, never the address, and it respects Consent Mode.', 'impulse-snippets' ); ?></p>
+				</details>
+			</div>
 			<p><button type="submit" class="button"><?php echo $purchase_id ? esc_html__( 'Update purchase tracking', 'impulse-snippets' ) : esc_html__( 'Set up purchase tracking', 'impulse-snippets' ); ?></button></p>
 		</form>
 		<p class="description"><?php esc_html_e( 'Tip: enhanced conversions also have an automatic mode you can simply switch on inside Google Ads (Goals → Conversions → Settings → Enhanced conversions). No extra code needed.', 'impulse-snippets' ); ?></p>
-		</details>
 		<?php
 	}
 

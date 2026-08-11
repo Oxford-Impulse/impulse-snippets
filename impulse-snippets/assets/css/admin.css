@@ -51,9 +51,6 @@
 	flex-direction: column;
 }
 
-.wpci-integration-card > :last-child {
-	margin-top: auto;
-}
 
 /* Export picker on the Import/Export page: shares the .wpci-checkbox-list
    base (border, background, scroll past ~220px) with the edit screen's
@@ -75,57 +72,69 @@
 	margin: 2px 0 6px;
 }
 
-/* Collapsible sub-sections inside integration cards (native <details> — no
-   JS). Keeps busy cards (Google Ads) short by default: each advanced job
-   collapses to one summary line with its status until opened. */
-.wpci-card-section {
-	border-top: 1px solid #dcdcde;
-	margin-top: 14px;
-	padding-top: 10px;
+/* Checkbox row with an inline "Learn more" next to the label. */
+.wpci-check-row {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0 0 10px;
 }
 
-.wpci-card-section summary {
-	cursor: pointer;
-	font-size: 14px;
-	font-weight: 600;
-}
-
-.wpci-card-section summary .description {
-	font-weight: 400;
-}
-
-.wpci-card-section[open] summary {
-	margin-bottom: 8px;
-}
-
-/* Inline "Learn more" disclosure under a checkbox: renders as a small link;
-   opening it reveals the full explanation in a quiet boxed note. Native
-   <details>, same vocabulary as .wpci-card-section, no JS. */
+/* "Learn more" disclosure (native <details>, no JS): a small link whose
+   explanation opens as a floating popover — absolutely positioned so the
+   page never reflows when it opens. */
 .wpci-learn-more {
-	margin: 0 0 8px 24px;
+	position: relative;
+	display: inline-block;
 }
 
 .wpci-learn-more summary {
 	cursor: pointer;
 	color: #2271b1;
 	font-size: 12px;
-	width: fit-content;
-}
-
-.wpci-learn-more[open] {
-	background: #f6f7f7;
-	border: 1px solid #dcdcde;
-	border-radius: 2px;
-	padding: 6px 10px;
-	margin-top: 4px;
-}
-
-.wpci-learn-more[open] summary {
-	margin-bottom: 4px;
+	white-space: nowrap;
 }
 
 .wpci-learn-more p {
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	z-index: 100;
+	width: 320px;
 	margin: 0;
+	padding: 10px 12px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 2px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Integration cards: pin the main form (and everything after it) to the
+   card bottom so Connect/Update buttons sit level across a row of cards
+   whose descriptions run different lengths. Direct child only — the small
+   Remove form inside the toggle row must not be affected. */
+.wpci-integration-card > form {
+	margin-top: auto;
+}
+
+/* Full-width Google Ads panel below the card grid: configuration forms get
+   real width instead of towering inside a 360px card (which also reflowed
+   the whole grid when sections expanded). */
+.wpci-ads-panel {
+	padding: 16px;
+	margin-top: 4px;
+}
+
+.wpci-ads-panel-columns {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 28px;
+}
+
+.wpci-ads-panel-columns > div {
+	flex: 1 1 380px;
+	max-width: 560px;
 }
 
 .wpci-dashboard-stats {
