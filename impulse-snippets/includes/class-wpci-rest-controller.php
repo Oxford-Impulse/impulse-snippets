@@ -61,29 +61,63 @@ class Wpci_Rest_Controller {
 			return array();
 		}
 
+		// A pasted link resolves straight to its page/post — the picker's
+		// replacement for the old dedicated "paste a URL" field.
+		if ( 0 === stripos( $term, 'http://' ) || 0 === stripos( $term, 'https://' ) ) {
+			$post_id = url_to_postid( $term );
+			$post    = $post_id ? get_post( $post_id ) : null;
+
+			if ( ! $post || 'publish' !== $post->post_status ) {
+				return array();
+			}
+
+			return array( $this->format_result( $post ) );
+		}
+
 		// Public content only — attachments are excluded because targeting a
 		// media page is almost never what a snippet author means.
 		$post_types = array_values( array_diff( array_keys( get_post_types( array( 'public' => true ) ) ), array( 'attachment' ) ) );
 
-		$posts = get_posts(
-			array(
-				's'              => $term,
-				'post_type'      => $post_types,
-				'post_status'    => 'publish',
-				'posts_per_page' => 20,
-			)
+		// Pages are queried separately from everything else so a large blog
+		// can't flood them out of the shared result cap, and search_columns
+		// (WP 6.2+; older versions ignore it) restricts matching to titles —
+		// body text matches made brand-name searches return dozens of posts
+		// that merely mention the term.
+		$results = array();
+		$type_groups = array(
+			array( 'page' ),
+			array_values( array_diff( $post_types, array( 'page' ) ) ),
 		);
 
-		$results = array();
-		foreach ( $posts as $post ) {
-			$results[] = array(
-				'id'    => $post->ID,
-				'title' => '' !== $post->post_title ? $post->post_title : __( '(no title)', 'impulse-snippets' ),
-				'type'  => $post->post_type,
+		foreach ( $type_groups as $group ) {
+			if ( empty( $group ) ) {
+				continue;
+			}
+
+			$posts = get_posts(
+				array(
+					's'              => $term,
+					'search_columns' => array( 'post_title' ),
+					'post_type'      => $group,
+					'post_status'    => 'publish',
+					'posts_per_page' => 10,
+				)
 			);
+
+			foreach ( $posts as $post ) {
+				$results[] = $this->format_result( $post );
+			}
 		}
 
 		return $results;
+	}
+
+	private function format_result( $post ) {
+		return array(
+			'id'    => $post->ID,
+			'title' => '' !== $post->post_title ? $post->post_title : __( '(no title)', 'impulse-snippets' ),
+			'type'  => $post->post_type,
+		);
 	}
 
 	public function permission_check( $request ) {

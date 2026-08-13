@@ -4,7 +4,7 @@ Tags: code snippets, header footer, google analytics, google tag manager, meta p
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.17.0
+Stable tag: 1.17.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,10 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel / Google Ads setup.
 
 == Changelog ==
+
+= 1.17.1 =
+* Fixed: the "Specific pages or posts" search now matches titles only and lists pages alongside posts — previously, on sites with many blog posts, pages were pushed out of the results by posts that merely mentioned the search term in their body text.
+* New: paste a page or post link straight into the same search box — it resolves to that page so you can select it directly.
 
 = 1.17.0 =
 * New: WooCommerce purchase tracking — one field on the Google Ads card reports each order on the thank-you page with its real total, currency, and order number (Google deduplicates repeat visits via the order number).

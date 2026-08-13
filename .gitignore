@@ -2,6 +2,9 @@
 impulse-snippets.zip
 impulse-snippets-*.zip
 
+# Extracted release copies used for inspection/staging
+impulse-snippets-*/
+
 # Old pre-rewrite prototype, kept locally for reference only
 master-code-injector.php
 master-code-injector.zip
