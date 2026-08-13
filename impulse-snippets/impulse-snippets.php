@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Impulse Snippets
  * Description: Add unlimited named code snippets (scripts, styles, HTML) to your site's head, body, or footer — manually or with one-click integrations.
- * Version: 1.17.1
+ * Version: 1.17.2
  * Author: Oxford Impulse
  * Author URI: https://oxfordimpulse.com
  * License: GPL v2 or later
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPCI_VERSION', '1.17.1' );
+define( 'WPCI_VERSION', '1.17.2' );
 define( 'WPCI_PLUGIN_FILE', __FILE__ );
 define( 'WPCI_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPCI_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

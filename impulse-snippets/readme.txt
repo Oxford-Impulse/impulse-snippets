@@ -4,7 +4,7 @@ Tags: code snippets, header footer, google analytics, google tag manager, meta p
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.17.1
+Stable tag: 1.17.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,6 +71,11 @@ No. This is a deliberate safety decision — only HTML, CSS, and JavaScript are 
 3. One-click Google Analytics 4 / Google Tag Manager / Meta Pixel / Google Ads setup.
 
 == Changelog ==
+
+= 1.17.2 =
+* New: clicking into the empty "Specific pages or posts" search box now lists all your pages immediately (alphabetical), so you can browse instead of guessing what a page title contains. Typing still searches pages and posts by title.
+* New: an Add button next to the paste-a-link field adds the linked page instantly, with a clear success or "not found" message — previously the link was only processed when saving, and silently dropped if it could not be matched.
+* Improved: link matching now also recognizes the site's front page, links with non-English characters, and subdirectory installs.
 
 = 1.17.1 =
 * Fixed: the "Specific pages or posts" search now matches titles only and lists pages alongside posts — previously, on sites with many blog posts, pages were pushed out of the results by posts that merely mentioned the search term in their body text.

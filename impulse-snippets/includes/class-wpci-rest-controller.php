@@ -57,14 +57,33 @@ class Wpci_Rest_Controller {
 
 	public function search_posts( $request ) {
 		$term = trim( (string) $request['term'] );
+
+		// An empty (or too-short) box lists every page, so site owners can
+		// browse instead of guessing what a page title contains — brand-name
+		// searches were only finding pages that had the brand in the title.
 		if ( strlen( $term ) < 2 ) {
-			return array();
+			$pages   = get_posts(
+				array(
+					'post_type'      => 'page',
+					'post_status'    => 'publish',
+					'posts_per_page' => 100,
+					'orderby'        => 'title',
+					'order'          => 'ASC',
+				)
+			);
+			$results = array();
+
+			foreach ( $pages as $post ) {
+				$results[] = $this->format_result( $post );
+			}
+
+			return $results;
 		}
 
-		// A pasted link resolves straight to its page/post — the picker's
-		// replacement for the old dedicated "paste a URL" field.
+		// A pasted link resolves straight to its page/post, with the same
+		// fallback-laden resolver the save handler uses.
 		if ( 0 === stripos( $term, 'http://' ) || 0 === stripos( $term, 'https://' ) ) {
-			$post_id = url_to_postid( $term );
+			$post_id = wpci_resolve_url_to_post_id( $term );
 			$post    = $post_id ? get_post( $post_id ) : null;
 
 			if ( ! $post || 'publish' !== $post->post_status ) {

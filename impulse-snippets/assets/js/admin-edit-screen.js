@@ -123,17 +123,25 @@
 				resultsBox.style.display = '';
 			};
 
+			var fetchResults = function( term ) {
+				wp.apiFetch( { path: 'wpci/v1/posts/search?term=' + encodeURIComponent( term ) } )
+					.then( showResults )
+					.catch( hideResults );
+			};
+
+			// An empty box browses all pages (the REST route returns the full
+			// page list for short terms) — typing narrows to a real search.
+			searchInput.addEventListener( 'focus', function() {
+				if ( searchInput.value.trim().length < 2 ) {
+					fetchResults( '' );
+				}
+			} );
+
 			searchInput.addEventListener( 'input', function() {
 				var term = searchInput.value.trim();
 				clearTimeout( debounceTimer );
-				if ( term.length < 2 ) {
-					hideResults();
-					return;
-				}
 				debounceTimer = setTimeout( function() {
-					wp.apiFetch( { path: 'wpci/v1/posts/search?term=' + encodeURIComponent( term ) } )
-						.then( showResults )
-						.catch( hideResults );
+					fetchResults( term.length < 2 ? '' : term );
 				}, 300 );
 			} );
 
@@ -161,6 +169,57 @@
 					hideResults();
 				}
 			} );
+
+			// Explicit Add button for the paste-a-link field: resolves the
+			// link immediately via the same REST route and reports success
+			// or failure inline — a silent save-time failure taught us that
+			// "nothing happened" reads as a broken feature.
+			var urlInput    = document.getElementById( 'wpci_condition_post_url' );
+			var urlButton   = document.getElementById( 'wpci-add-url' );
+			var urlFeedback = document.getElementById( 'wpci-add-url-feedback' );
+
+			if ( urlInput && urlButton && urlFeedback ) {
+				var setUrlFeedback = function( message, isError ) {
+					urlFeedback.textContent = message;
+					urlFeedback.style.color = isError ? '#b32d2e' : '#008a20';
+					urlFeedback.style.display = '';
+				};
+
+				var addFromUrl = function() {
+					var url = urlInput.value.trim();
+					if ( '' === url ) {
+						return;
+					}
+					if ( 0 !== url.toLowerCase().indexOf( 'http://' ) && 0 !== url.toLowerCase().indexOf( 'https://' ) ) {
+						setUrlFeedback( 'Paste the full link, starting with http:// or https://.', true );
+						return;
+					}
+					wp.apiFetch( { path: 'wpci/v1/posts/search?term=' + encodeURIComponent( url ) } )
+						.then( function( items ) {
+							if ( items.length ) {
+								addSelected( items[ 0 ].id, items[ 0 ].title + ' (' + items[ 0 ].type + ')' );
+								urlInput.value = '';
+								setUrlFeedback( 'Added: ' + items[ 0 ].title, false );
+							} else {
+								setUrlFeedback( 'No published page or post was found at that link. Check the link, or use the search box above.', true );
+							}
+						} )
+						.catch( function() {
+							setUrlFeedback( 'The link could not be checked right now — it will still be tried when you save.', true );
+						} );
+				};
+
+				urlButton.addEventListener( 'click', addFromUrl );
+
+				// Enter in this field should add the link, not submit
+				// the whole snippet form.
+				urlInput.addEventListener( 'keydown', function( e ) {
+					if ( 'Enter' === e.key ) {
+						e.preventDefault();
+						addFromUrl();
+					}
+				} );
+			}
 		}
 
 		// Live search filter above the categories checkbox

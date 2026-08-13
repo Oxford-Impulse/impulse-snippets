@@ -171,7 +171,7 @@ class Wpci_Edit_Screen {
 		<div class="wpci-condition-panel" data-condition="specific" style="<?php echo 'specific' === $type ? '' : 'display:none;'; ?>">
 			<p class="description"><?php esc_html_e( 'Search for the pages or posts this snippet should appear on:', 'impulse-snippets' ); ?></p>
 			<div class="wpci-post-picker">
-				<input type="text" id="wpci-post-search" placeholder="<?php esc_attr_e( 'Type at least 2 letters to search…', 'impulse-snippets' ); ?>" autocomplete="off" style="width:100%;">
+				<input type="text" id="wpci-post-search" placeholder="<?php esc_attr_e( 'Click to browse your pages, or type to search…', 'impulse-snippets' ); ?>" autocomplete="off" style="width:100%;">
 				<div id="wpci-post-search-results" class="wpci-picker-results" style="display:none;"></div>
 			</div>
 			<ul id="wpci-selected-posts" class="wpci-selected-list">
@@ -183,10 +183,14 @@ class Wpci_Edit_Screen {
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<p style="margin-top:10px;">
-				<label for="wpci_condition_post_url"><?php esc_html_e( 'Or paste a page/post link to add it directly:', 'impulse-snippets' ); ?></label><br>
-				<input type="url" id="wpci_condition_post_url" name="wpci_condition_post_url" placeholder="https://yoursite.com/some-page/" style="width:100%;">
+			<p style="margin-top:10px;margin-bottom:0;">
+				<label for="wpci_condition_post_url"><?php esc_html_e( 'Or paste a page/post link and press Add:', 'impulse-snippets' ); ?></label>
 			</p>
+			<div style="display:flex;gap:6px;margin-top:4px;">
+				<input type="url" id="wpci_condition_post_url" name="wpci_condition_post_url" placeholder="https://yoursite.com/some-page/" style="flex:1;">
+				<button type="button" class="button" id="wpci-add-url"><?php esc_html_e( 'Add', 'impulse-snippets' ); ?></button>
+			</div>
+			<p id="wpci-add-url-feedback" class="description" style="display:none;margin-top:4px;"></p>
 		</div>
 
 		<div class="wpci-condition-panel" data-condition="post_types" style="<?php echo 'post_types' === $type ? '' : 'display:none;'; ?>">

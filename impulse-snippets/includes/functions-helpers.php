@@ -35,6 +35,62 @@ function wpci_get_code_type_label( $type ) {
 }
 
 /**
+ * Resolve a pasted front-end URL to a post/page ID, or 0.
+ *
+ * url_to_postid() alone misses the static front page, percent-encoded
+ * (non-ASCII) slugs, and some permalink setups — real users paste exactly
+ * those links, so this layers fallbacks on top of it. Used by both the
+ * REST search route and the save handler's pasted-URL field.
+ */
+function wpci_resolve_url_to_post_id( $url ) {
+	$url = trim( (string) $url );
+	if ( '' === $url ) {
+		return 0;
+	}
+
+	// A #fragment never changes the target page; encoded slugs (Turkish
+	// characters etc.) must be decoded before WP can match them.
+	$url = (string) strtok( $url, '#' );
+	$url = rawurldecode( $url );
+
+	$post_id = url_to_postid( $url );
+	if ( $post_id ) {
+		return (int) $post_id;
+	}
+
+	$path      = trim( (string) wp_parse_url( $url, PHP_URL_PATH ), '/' );
+	$home_path = trim( (string) wp_parse_url( home_url(), PHP_URL_PATH ), '/' );
+
+	// WordPress installed in a subdirectory: drop the shared prefix.
+	if ( '' !== $home_path && 0 === strpos( $path . '/', $home_path . '/' ) ) {
+		$path = trim( substr( $path, strlen( $home_path ) ), '/' );
+	}
+
+	if ( '' === $path ) {
+		// The bare home URL means the static front page, when one is set.
+		return 'page' === get_option( 'show_on_front' ) ? (int) get_option( 'page_on_front' ) : 0;
+	}
+
+	// Try the page hierarchy first, then any public post type by slug.
+	$page = get_page_by_path( $path );
+	if ( $page ) {
+		return (int) $page->ID;
+	}
+
+	$types = array_values( array_diff( array_keys( get_post_types( array( 'public' => true ) ) ), array( 'attachment' ) ) );
+	$posts = get_posts(
+		array(
+			'name'           => sanitize_title( basename( $path ) ),
+			'post_type'      => $types,
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+		)
+	);
+
+	return $posts ? (int) $posts[0]->ID : 0;
+}
+
+/**
  * Wraps raw code in the right tag at output time, unless it already looks
  * tagged. Runs on every request rather than at save time so changing a
  * snippet's type later doesn't require re-editing its code.

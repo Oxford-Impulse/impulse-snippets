@@ -124,7 +124,7 @@ class Wpci_Save_Handler {
 
 			$pasted_url = isset( $_POST['wpci_condition_post_url'] ) ? esc_url_raw( wp_unslash( $_POST['wpci_condition_post_url'] ) ) : '';
 			if ( '' !== $pasted_url ) {
-				$resolved_id = url_to_postid( $pasted_url );
+				$resolved_id = wpci_resolve_url_to_post_id( $pasted_url );
 				if ( $resolved_id > 0 ) {
 					$post_ids[] = $resolved_id;
 				} else {
